@@ -9,6 +9,8 @@ add_executable(Game
         Demo.cpp
         Demo.h
         main.cpp
+        interface.cpp
+        interface.h
 )
 
 cmake_print_variables(PROJECT_SOURCE_DIR)
