@@ -10,7 +10,7 @@
 #include "AudioDevice.h"
 #include <fmod.h>
 
-bool AudioDevice::init(Log* _debugLog) {
+bool AudioDevice::init(Log *_debugLog) {
 
     debugLog = _debugLog;
 
@@ -37,10 +37,10 @@ void AudioDevice::cleanup() {
 }
 
 
-SoundEffectRef AudioDevice::createSoundEffect(const std::string& filename) {
+SoundEffectRef AudioDevice::createSoundEffect(const std::string &filename) {
     if (debugLog != NULL) {
         debugLog->printf("Loading \"%s\".\n", filename.c_str());
-        if (! fileExists(filename)) {
+        if (!fileExists(filename)) {
             debugLog->printf("Error!  file does not exist\n");
             return NULL;
         }
@@ -50,10 +50,10 @@ SoundEffectRef AudioDevice::createSoundEffect(const std::string& filename) {
 }
 
 
-MusicStreamRef AudioDevice::createMusicStream(const std::string& filename) {
+MusicStreamRef AudioDevice::createMusicStream(const std::string &filename) {
     if (debugLog != NULL) {
         debugLog->printf("Loading \"%s\".\n", filename.c_str());
-        if (! fileExists(filename)) {
+        if (!fileExists(filename)) {
             debugLog->printf("Error!  file does not exist\n");
             return NULL;
         }
@@ -64,7 +64,7 @@ MusicStreamRef AudioDevice::createMusicStream(const std::string& filename) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-SoundEffect::SoundEffect(const std::string& filename) {
+SoundEffect::SoundEffect(const std::string &filename) {
     sample = FSOUND_Sample_Load(FSOUND_UNMANAGED, filename.c_str(), FSOUND_LOOP_OFF, 0);
 }
 
@@ -82,13 +82,13 @@ void SoundEffect::play(double volume) const {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-MusicStream::MusicStream(const std::string& filename) {
+MusicStream::MusicStream(const std::string &filename) {
     // Don't load music in debug mode
-    #ifdef _DEBUG
-        music   = NULL;
-    #else
-        music   = FSOUND_Stream_OpenFile(filename.c_str(), FSOUND_LOOP_NORMAL, 0);
-    #endif
+#ifdef _DEBUG
+    music   = NULL;
+#else
+    music = FSOUND_Stream_OpenFile(filename.c_str(), FSOUND_LOOP_NORMAL, 0);
+#endif
     playing = false;
     channel = 0;
 }
@@ -100,7 +100,7 @@ MusicStream::~MusicStream() {
 
 
 void MusicStream::play(double volume) {
-    if (! playing && (music != NULL)) {
+    if (!playing && (music != NULL)) {
         channel = FSOUND_Stream_Play(FSOUND_FREE, music);
         FSOUND_SetVolume(channel, min(volume, 1) * 255);
         playing = true;

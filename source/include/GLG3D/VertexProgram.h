@@ -14,7 +14,7 @@
 
 namespace G3D {
 
-typedef ReferenceCountedPointer<class VertexProgram> VertexProgramRef;
+    typedef ReferenceCountedPointer<class VertexProgram> VertexProgramRef;
 
 /**
   Abstraction of OpenGL vertex programs.  This class can be used with raw OpenGL, 
@@ -43,18 +43,18 @@ typedef ReferenceCountedPointer<class VertexProgram> VertexProgramRef;
   @deprecated
   Use G3D::VertexShader
  */
-class VertexProgram : public GPUProgram {
-private:
+    class VertexProgram : public GPUProgram {
+    private:
 
-    VertexProgram(const std::string& _name, const std::string& filename);
+        VertexProgram(const std::string &_name, const std::string &filename);
 
-public:
+    public:
 
-    static VertexProgramRef fromFile(const std::string& filename);
+        static VertexProgramRef fromFile(const std::string &filename);
 
-    static VertexProgramRef fromCode(const std::string& name, const std::string& code);
+        static VertexProgramRef fromCode(const std::string &name, const std::string &code);
 
-};
+    };
 
 }
 

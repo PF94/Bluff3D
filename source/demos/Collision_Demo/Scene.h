@@ -15,23 +15,23 @@
  */
 class Scene {
 //private:
-public:    
+public:
     /** Static objects */
-    Array<class Object*>        object;
+    Array<class Object *> object;
 
     /** Dynamic objects */
-    Array<class SimSphere*>     sim;
+    Array<class SimSphere *> sim;
 
-    SkyRef                      sky;
+    SkyRef sky;
 
-    TextureRef                  shadowMap;
+    TextureRef shadowMap;
 
     /** Draws all objects using current lighting and blending. */
     void renderingPass() const;
 
     /** Updates the shadow map texture. */
-    void generateShadowMap(    
-        const class CoordinateFrame& lightViewMatrix) const;
+    void generateShadowMap(
+            const class CoordinateFrame &lightViewMatrix) const;
 
 public:
 
@@ -42,27 +42,27 @@ public:
     /** Deletes all objects */
     void clear();
 
-    void insertStatic(class Object*);
+    void insertStatic(class Object *);
 
     /**
      Insert an object to be simulated.
      */
-    void insertDynamic(class SimSphere*);
+    void insertDynamic(class SimSphere *);
 
     void simulate(GameTime deltaTime);
 
-    virtual void render(const LightingParameters& lighting) const;
+    virtual void render(const LightingParameters &lighting) const;
 
     /** Returns the time until collision with a moving sphere,
         inf if no collision will ever occur.  Only <I>entering</I>
         collisions are detected, not ones where the sphere
         is leaving an object it is trapped inside. */
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 #endif

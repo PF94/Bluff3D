@@ -16,7 +16,7 @@
 
 namespace G3D {
 
-typedef ReferenceCountedPointer<class Milestone> MilestoneRef;
+    typedef ReferenceCountedPointer<class Milestone> MilestoneRef;
 
 /**
  Used by RenderDevice to force the CPU to wait for the
@@ -25,47 +25,47 @@ typedef ReferenceCountedPointer<class Milestone> MilestoneRef;
  NVIDIA fences.  On ATI cards the semantics are identical
  but performance is lower.
  */
-class Milestone : public ReferenceCountedObject {
-private:
+    class Milestone : public ReferenceCountedObject {
+    private:
 
-    typedef unsigned int GLFence;
+        typedef unsigned int GLFence;
 
-    friend class RenderDevice;
+        friend class RenderDevice;
 
-    /**
-     Pooled storage of free fences to make allocation fast.
-     */
-    static Array<GLFence>   factory;
+        /**
+         Pooled storage of free fences to make allocation fast.
+         */
+        static Array<GLFence> factory;
 
-    GLFence                 glfence;
-    std::string             _name;
+        GLFence glfence;
+        std::string _name;
 
-    /**
-     True when this milestone has been set by RenderDevice.
-     */
-    bool                    isSet;
+        /**
+         True when this milestone has been set by RenderDevice.
+         */
+        bool isSet;
 
-    
-    // The methods are private because in the future
-    // we may want to move parts of the implementation
-    // into RenderDevice.
 
-    Milestone(const std::string& n);
+        // The methods are private because in the future
+        // we may want to move parts of the implementation
+        // into RenderDevice.
 
-    /** Set the milestone. */
-    void set();
+        Milestone(const std::string &n);
 
-    /** Wait for it to be reached. */
-    void wait();
+        /** Set the milestone. */
+        void set();
 
-public:
+        /** Wait for it to be reached. */
+        void wait();
 
-    ~Milestone();
+    public:
 
-    inline const std::string& name() const {
-        return _name;
-    }
-};
+        ~Milestone();
+
+        inline const std::string &name() const {
+            return _name;
+        }
+    };
 
 
 }

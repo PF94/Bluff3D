@@ -18,307 +18,315 @@
 
 // declare HKEY constants as needed for VC6
 #if !defined(HKEY_PERFORMANCE_DATA)
-    #define HKEY_PERFORMANCE_DATA       (( HKEY ) ((LONG)0x80000004) )
+#define HKEY_PERFORMANCE_DATA       (( HKEY ) ((LONG)0x80000004) )
 #endif
 #if !defined(HKEY_PERFORMANCE_TEXT)
-    #define HKEY_PERFORMANCE_TEXT       (( HKEY ) ((LONG)0x80000050) )
+#define HKEY_PERFORMANCE_TEXT       (( HKEY ) ((LONG)0x80000050) )
 #endif
 #if !defined(HKEY_PERFORMANCE_NLSTEXT)
-    #define HKEY_PERFORMANCE_NLSTEXT    (( HKEY ) ((LONG)0x80000060) )
+#define HKEY_PERFORMANCE_NLSTEXT    (( HKEY ) ((LONG)0x80000060) )
 #endif
 
 namespace G3D {
 
 // static helpers
-static HKEY getKeyFromString(const char* str, size_t length) {
-    debugAssert(str);
+    static HKEY getKeyFromString(const char *str, size_t length) {
+        debugAssert(str);
 
-    if (str) {
-        if ( strncmp(str, "HKEY_CLASSES_ROOT", length) == 0 ) {
-            return HKEY_CLASSES_ROOT;
-        } else if  ( strncmp(str, "HKEY_CURRENT_CONFIG", length) == 0 ) {
-            return HKEY_CURRENT_CONFIG;
-        } else if  ( strncmp(str, "HKEY_CURRENT_USER", length) == 0 ) {
-            return HKEY_CURRENT_USER;
-        } else if  ( strncmp(str, "HKEY_LOCAL_MACHINE", length) == 0 ) {
-            return HKEY_LOCAL_MACHINE;
-        } else if  ( strncmp(str, "HKEY_PERFORMANCE_DATA", length) == 0 ) {
-            return HKEY_PERFORMANCE_DATA;
-        } else if  ( strncmp(str, "HKEY_PERFORMANCE_NLSTEXT", length) == 0 ) {
-            return HKEY_PERFORMANCE_NLSTEXT;
-        } else if  ( strncmp(str, "HKEY_PERFORMANCE_TEXT", length) == 0 ) {
-            return HKEY_PERFORMANCE_TEXT;
-        } else if  ( strncmp(str, "HKEY_CLASSES_ROOT", length) == 0 ) {
-            return HKEY_CLASSES_ROOT;
+        if (str) {
+            if (strncmp(str, "HKEY_CLASSES_ROOT", length) == 0) {
+                return HKEY_CLASSES_ROOT;
+            } else if (strncmp(str, "HKEY_CURRENT_CONFIG", length) == 0) {
+                return HKEY_CURRENT_CONFIG;
+            } else if (strncmp(str, "HKEY_CURRENT_USER", length) == 0) {
+                return HKEY_CURRENT_USER;
+            } else if (strncmp(str, "HKEY_LOCAL_MACHINE", length) == 0) {
+                return HKEY_LOCAL_MACHINE;
+            } else if (strncmp(str, "HKEY_PERFORMANCE_DATA", length) == 0) {
+                return HKEY_PERFORMANCE_DATA;
+            } else if (strncmp(str, "HKEY_PERFORMANCE_NLSTEXT", length) == 0) {
+                return HKEY_PERFORMANCE_NLSTEXT;
+            } else if (strncmp(str, "HKEY_PERFORMANCE_TEXT", length) == 0) {
+                return HKEY_PERFORMANCE_TEXT;
+            } else if (strncmp(str, "HKEY_CLASSES_ROOT", length) == 0) {
+                return HKEY_CLASSES_ROOT;
+            } else {
+                return NULL;
+            }
         } else {
             return NULL;
         }
-    } else {
-        return NULL;
-    }
-}
-
-bool RegistryUtil::keyExists(const std::string& key) {
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
-        return false;
     }
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
+    bool RegistryUtil::keyExists(const std::string &key) {
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
+        }
 
-    if ( hkey == NULL ) {
-        return false;
-    }
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
 
-    debugAssert(key.size() > (pos + 1));
-    HKEY openKey;
-    int32 result = RegOpenKeyEx(hkey, (key.c_str() + pos + 1), 0, KEY_ALL_ACCESS, &openKey);
+        if (hkey == NULL) {
+            return false;
+        }
 
-    if ( result == ERROR_SUCCESS ) {
-        RegCloseKey(openKey);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-bool RegistryUtil::readInt32(const std::string& key, int32& valueData) {
-
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
-        return false;
-    }
-
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
-
-    if ( hkey == NULL ) {
-        return false;
-    }
-
-    debugAssert(key.size() > (pos + 1));
-
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
-
+        debugAssert(key.size() > (pos + 1));
         HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+        int32 result = RegOpenKeyEx(hkey, (key.c_str() + pos + 1), 0, KEY_ALL_ACCESS, &openKey);
 
-        if ( result == ERROR_SUCCESS ) {
-            uint32 dataSize = sizeof(int32);
-            result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&valueData), reinterpret_cast<LPDWORD>(&dataSize));
-
-            debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
-
+        if (result == ERROR_SUCCESS) {
             RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
+            return true;
+        } else {
+            return false;
         }
     }
-    return false;
-}
 
-bool RegistryUtil::readBytes(const std::string& key, uint8* valueData, uint32& dataSize) {
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
-        return false;
-    }
+    bool RegistryUtil::readInt32(const std::string &key, int32 &valueData) {
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
+        }
 
-    if ( hkey == NULL ) {
-        return false;
-    }
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
 
-    debugAssert(key.size() > (pos + 1));
+        if (hkey == NULL) {
+            return false;
+        }
 
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+        debugAssert(key.size() > (pos + 1));
 
-        HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+        size_t valuePos = key.rfind('\\');
 
-        if ( result == ERROR_SUCCESS ) {
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
 
-            if ( valueData == NULL ) {
-                result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, NULL, reinterpret_cast<LPDWORD>(&dataSize));
-            } else {
-                result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&valueData), reinterpret_cast<LPDWORD>(&dataSize));
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+
+            if (result == ERROR_SUCCESS) {
+                uint32 dataSize = sizeof(int32);
+                result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&valueData),
+                                         reinterpret_cast<LPDWORD>(&dataSize));
+
+                debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
             }
-
-            debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
-
-            RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
         }
-    }
-
-    return false;
-}
-
-bool RegistryUtil::readString(const std::string& key, std::string& valueData) {
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
         return false;
     }
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
+    bool RegistryUtil::readBytes(const std::string &key, uint8 *valueData, uint32 &dataSize) {
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
+        }
 
-    if ( hkey == NULL ) {
-        return false;
-    }
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
 
-    debugAssert(key.size() > (pos + 1));
+        if (hkey == NULL) {
+            return false;
+        }
 
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+        debugAssert(key.size() > (pos + 1));
 
-        HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+        size_t valuePos = key.rfind('\\');
 
-        if ( result == ERROR_SUCCESS ) {
-            uint32 dataSize = 0;
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
 
-            result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, NULL, reinterpret_cast<LPDWORD>(&dataSize));
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
 
-            if ( result == ERROR_SUCCESS ) {
-                char* tmpStr = reinterpret_cast<char*>(System::malloc(dataSize));
-                System::memset(tmpStr, 0, dataSize);
+            if (result == ERROR_SUCCESS) {
 
-                result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(tmpStr), reinterpret_cast<LPDWORD>(&dataSize));
-                
-                if ( result == ERROR_SUCCESS ) {
-                    valueData = tmpStr;
+                if (valueData == NULL) {
+                    result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, NULL,
+                                             reinterpret_cast<LPDWORD>(&dataSize));
+                } else {
+                    result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(&valueData),
+                                             reinterpret_cast<LPDWORD>(&dataSize));
                 }
+
+                debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
             }
-            debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
-
-            RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
         }
-    }
 
-    return false;
-}
-
-bool RegistryUtil::writeInt32(const std::string& key, int32 valueData) {
-
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
         return false;
     }
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
-
-    if ( hkey == NULL ) {
-        return false;
-    }
-
-    debugAssert(key.size() > (pos + 1));
-
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
-
-        HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
-
-        if ( result == ERROR_SUCCESS ) {
-            result = RegSetValueEx(openKey, value.c_str(), NULL, REG_DWORD, reinterpret_cast<const BYTE*>(&valueData), sizeof(int32));
-
-            debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
-
-            RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
+    bool RegistryUtil::readString(const std::string &key, std::string &valueData) {
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
         }
-    }
-    return false;
-}
 
-bool RegistryUtil::writeBytes(const std::string& key, const uint8* valueData, uint32 dataSize) {
-    debugAssert(valueData);
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
 
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
-        return false;
-    }
+        if (hkey == NULL) {
+            return false;
+        }
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
+        debugAssert(key.size() > (pos + 1));
 
-    if ( hkey == NULL ) {
-        return false;
-    }
+        size_t valuePos = key.rfind('\\');
 
-    debugAssert(key.size() > (pos + 1));
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
 
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
 
-        HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+            if (result == ERROR_SUCCESS) {
+                uint32 dataSize = 0;
 
-        if ( result == ERROR_SUCCESS ) {
+                result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, NULL,
+                                         reinterpret_cast<LPDWORD>(&dataSize));
 
-            if (valueData) {
-                result = RegSetValueEx(openKey, value.c_str(), NULL, REG_BINARY, reinterpret_cast<const BYTE*>(valueData), dataSize);
+                if (result == ERROR_SUCCESS) {
+                    char *tmpStr = reinterpret_cast<char *>(System::malloc(dataSize));
+                    System::memset(tmpStr, 0, dataSize);
+
+                    result = RegQueryValueEx(openKey, value.c_str(), NULL, NULL, reinterpret_cast<LPBYTE>(tmpStr),
+                                             reinterpret_cast<LPDWORD>(&dataSize));
+
+                    if (result == ERROR_SUCCESS) {
+                        valueData = tmpStr;
+                    }
+                }
+                debugAssertM(result == ERROR_SUCCESS, "Could not read registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
             }
-
-            debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
-
-            RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
         }
-    }
 
-    return false;
-}
-
-bool RegistryUtil::writeString(const std::string& key, const std::string& valueData) {
-    size_t pos = key.find('\\', 0);
-    if ( pos == std::string::npos ) {
         return false;
     }
 
-    HKEY hkey = getKeyFromString(key.c_str(), pos);
+    bool RegistryUtil::writeInt32(const std::string &key, int32 valueData) {
 
-    if ( hkey == NULL ) {
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
+        }
+
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
+
+        if (hkey == NULL) {
+            return false;
+        }
+
+        debugAssert(key.size() > (pos + 1));
+
+        size_t valuePos = key.rfind('\\');
+
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+
+            if (result == ERROR_SUCCESS) {
+                result = RegSetValueEx(openKey, value.c_str(), NULL, REG_DWORD,
+                                       reinterpret_cast<const BYTE *>(&valueData), sizeof(int32));
+
+                debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
+            }
+        }
         return false;
     }
 
-    debugAssert(key.size() > (pos + 1));
+    bool RegistryUtil::writeBytes(const std::string &key, const uint8 *valueData, uint32 dataSize) {
+        debugAssert(valueData);
 
-    size_t valuePos = key.rfind('\\');
-    
-    if ( valuePos != std::string::npos ) {
-        std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
-        std::string value = key.substr(valuePos + 1, key.size() - valuePos);
-
-        HKEY openKey;
-        int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
-
-        if ( result == ERROR_SUCCESS ) {
-            result = RegSetValueEx(openKey, value.c_str(), NULL, REG_SZ, reinterpret_cast<const BYTE*>(valueData.c_str()), (valueData.size() + 1));                
-            debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
-
-            RegCloseKey(openKey);
-            return (result == ERROR_SUCCESS);
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
         }
+
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
+
+        if (hkey == NULL) {
+            return false;
+        }
+
+        debugAssert(key.size() > (pos + 1));
+
+        size_t valuePos = key.rfind('\\');
+
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+
+            if (result == ERROR_SUCCESS) {
+
+                if (valueData) {
+                    result = RegSetValueEx(openKey, value.c_str(), NULL, REG_BINARY,
+                                           reinterpret_cast<const BYTE *>(valueData), dataSize);
+                }
+
+                debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
+            }
+        }
+
+        return false;
     }
 
-    return false;
-}
+    bool RegistryUtil::writeString(const std::string &key, const std::string &valueData) {
+        size_t pos = key.find('\\', 0);
+        if (pos == std::string::npos) {
+            return false;
+        }
+
+        HKEY hkey = getKeyFromString(key.c_str(), pos);
+
+        if (hkey == NULL) {
+            return false;
+        }
+
+        debugAssert(key.size() > (pos + 1));
+
+        size_t valuePos = key.rfind('\\');
+
+        if (valuePos != std::string::npos) {
+            std::string subKey = key.substr(pos + 1, valuePos - pos - 1);
+            std::string value = key.substr(valuePos + 1, key.size() - valuePos);
+
+            HKEY openKey;
+            int32 result = RegOpenKeyEx(hkey, subKey.c_str(), 0, KEY_ALL_ACCESS, &openKey);
+
+            if (result == ERROR_SUCCESS) {
+                result = RegSetValueEx(openKey, value.c_str(), NULL, REG_SZ,
+                                       reinterpret_cast<const BYTE *>(valueData.c_str()), (valueData.size() + 1));
+                debugAssertM(result == ERROR_SUCCESS, "Could not write registry key value.");
+
+                RegCloseKey(openKey);
+                return (result == ERROR_SUCCESS);
+            }
+        }
+
+        return false;
+    }
 
 } // namespace G3D
 

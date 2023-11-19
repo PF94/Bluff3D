@@ -16,10 +16,10 @@
 namespace G3D {
 
 /** See G3D::markShadows */
-void beginMarkShadows(RenderDevice* renderDevice);
+    void beginMarkShadows(RenderDevice *renderDevice);
 
 /** See G3D::markShadows */
-void endMarkShadows(RenderDevice* renderDevice);
+    void endMarkShadows(RenderDevice *renderDevice);
 
 /**
  Given a posed model, renders a shadow volume using the algorithm
@@ -87,10 +87,10 @@ void endMarkShadows(RenderDevice* renderDevice);
     Transparent objects should not be used
     with shadow marking.
  */
-void markShadows(
-    RenderDevice*           renderDevice, 
-    const PosedModelRef&    model,
-    const Vector4&          light);
+    void markShadows(
+            RenderDevice *renderDevice,
+            const PosedModelRef &model,
+            const Vector4 &light);
 
 }
 

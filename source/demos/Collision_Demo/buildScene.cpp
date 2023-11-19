@@ -18,7 +18,7 @@
   it should appear to be resting.  It is hard to simulate this scene without
   the sphere bouncing higher and higher through successive iterations.
   */
-void Demo::insertRestingContactSpheres() { 
+void Demo::insertRestingContactSpheres() {
     // This sphere must stay at rest
     scene.insertDynamic(new SimSphere(Sphere(Vector3(4, 1.01f, 3), 1), Vector3(0, 0, 0), Color3::blue()));
 
@@ -62,26 +62,26 @@ void Demo::insertRollingContactSpheres() {
 void Demo::insertSpiralSlide() {
     int i;
     for (i = 0; i < 41; ++i) {
-        double angle = G3D_PI * i / 10.0;
-        double angle2 = G3D_PI * (i - 0.6) / 10.0;
+            double angle = G3D_PI * i / 10.0;
+            double angle2 = G3D_PI * (i - 0.6) / 10.0;
 
-        // Outer spiral
-        CoordinateFrame c;
-        Box b(Vector3(-1, -1, -.1f), Vector3(1, 1, .1f));
-        c.translation = Vector3(cos(angle) * 2.9f, i / 3.5f + 1.5f, sin(angle) * 2.9f);
-        c.lookAt(Vector3(cos(angle2) * 1.5f, i / 3.5 + 2.2f, sin(angle2) * 1.5f));
-        scene.insertStatic(new BoxObject(c.toWorldSpace(b), (Color3::yellow() + Color3::white()) / 2));
-
-        // Inner inner spiral
-        {
-            Box b(Vector3(-.3f, -.3f, -.1f), Vector3(.25f, .25f, .1f));
-            c.translation = Vector3(cos(angle) * 1.2f, i / 3.5f + 1, sin(angle) * 1.2f);
-            c.lookAt(Vector3(cos(angle2) * 3, i / 3.5f + 2, sin(angle2) * 3));
+            // Outer spiral
+            CoordinateFrame c;
+            Box b(Vector3(-1, -1, -.1f), Vector3(1, 1, .1f));
+            c.translation = Vector3(cos(angle) * 2.9f, i / 3.5f + 1.5f, sin(angle) * 2.9f);
+            c.lookAt(Vector3(cos(angle2) * 1.5f, i / 3.5 + 2.2f, sin(angle2) * 1.5f));
             scene.insertStatic(new BoxObject(c.toWorldSpace(b), (Color3::yellow() + Color3::white()) / 2));
-        }
-    }
 
-    scene.insertDynamic(new SimSphere(Sphere(Vector3(1.9f, 13, -1), .75f), Vector3(-2,-.5f,-2), Color3::blue()));
+            // Inner inner spiral
+            {
+                Box b(Vector3(-.3f, -.3f, -.1f), Vector3(.25f, .25f, .1f));
+                c.translation = Vector3(cos(angle) * 1.2f, i / 3.5f + 1, sin(angle) * 1.2f);
+                c.lookAt(Vector3(cos(angle2) * 3, i / 3.5f + 2, sin(angle2) * 3));
+                scene.insertStatic(new BoxObject(c.toWorldSpace(b), (Color3::yellow() + Color3::white()) / 2));
+            }
+        }
+
+    scene.insertDynamic(new SimSphere(Sphere(Vector3(1.9f, 13, -1), .75f), Vector3(-2, -.5f, -2), Color3::blue()));
 }
 
 
@@ -104,35 +104,38 @@ void Demo::insertRamps() {
         c.lookAt(Vector3(-2, 2, -2));
         c.translation = Vector3(-11.2f, 2.85f, -7.2f);
         scene.insertStatic(new BoxObject(c.toWorldSpace(b), (Color3::green() + Color3::white()) / 2));
-    }     
+    }
 }
 
-void Demo::buildScene() {    
+void Demo::buildScene() {
 //    scene.insertStatic(new CapsuleObject(Capsule(Vector3(-9, 1, 4), Vector3(-9, 4, 4), 1), (Color3::red() + Color3::white()) / 2));
 
     scene.insertStatic(new BoxObject(Box(Vector3(6, 0, 0), Vector3(7, 1, 8)), (Color3::green() + Color3::white()) / 2));
-    scene.insertStatic(new GeneralObject(Model::getModel("cow.ifs"), CoordinateFrame(Vector3(-7,1.7f,4)), Color3::yellow()));
-    scene.insertStatic(new GeneralObject(Model::getModel("p51-mustang.ifs"), CoordinateFrame(Vector3(10,1,2)), Color3::orange()));
-    scene.insertStatic(new GeneralObject(Model::getModel("knot.ifs"), CoordinateFrame(Vector3(7,2.2f,-4)), (Color3::blue() + Color3::white()) / 2));
+    scene.insertStatic(
+            new GeneralObject(Model::getModel("cow.ifs"), CoordinateFrame(Vector3(-7, 1.7f, 4)), Color3::yellow()));
+    scene.insertStatic(new GeneralObject(Model::getModel("p51-mustang.ifs"), CoordinateFrame(Vector3(10, 1, 2)),
+                                         Color3::orange()));
+    scene.insertStatic(new GeneralObject(Model::getModel("knot.ifs"), CoordinateFrame(Vector3(7, 2.2f, -4)),
+                                         (Color3::blue() + Color3::white()) / 2));
 
     insertTray();
     insertRamps();
     insertSpiralSlide();
     //insertRollingContactSpheres();
     //insertRestingContactSpheres();
-   
+
     // Spheres    
     int i;
-    scene.insertDynamic(new SimSphere(Sphere(Vector3(0, 7, 0), .5f), 
-        Vector3::random() * 10, 
-        Color3::wheelRandom()));
+    scene.insertDynamic(new SimSphere(Sphere(Vector3(0, 7, 0), .5f),
+                                      Vector3::random() * 10,
+                                      Color3::wheelRandom()));
     for (i = 0; i < 5; ++i) {
-        scene.insertDynamic(new SimSphere(Sphere(Vector3(0, 7, 0), .25f), 
-            Vector3::random() * 10, 
-            Color3::wheelRandom()));
-    }   
-    
-    
+            scene.insertDynamic(new SimSphere(Sphere(Vector3(0, 7, 0), .25f),
+                                              Vector3::random() * 10,
+                                              Color3::wheelRandom()));
+        }
+
+
     /*
     {
         CoordinateFrame c;

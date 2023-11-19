@@ -4,10 +4,10 @@
  */
 #include "GlutWindow.h"
 
-GlutWindow* GlutWindow::currentGlutWindow = NULL;
+GlutWindow *GlutWindow::currentGlutWindow = NULL;
 bool GlutWindow::glutInitialized = false;
 
-void GlutWindow::postEvent(GEvent& evt) {
+void GlutWindow::postEvent(GEvent &evt) {
     eventQueue.pushBack(evt);
 }
 
@@ -33,14 +33,14 @@ void GlutWindow::g_reshape(int width, int height) {
 }
 
 
-static void glutToSDLKeyEvent(GEvent& e, unsigned char c) {
+static void glutToSDLKeyEvent(GEvent &e, unsigned char c) {
     e.key.keysym.unicode = c;
 
     if ((c >= 'A') && (c <= 'Z')) {
         // Make key codes lower case canonically
         e.key.keysym.sym = (SDLKey)(c - 'A' + 'a');
     } else {
-        e.key.keysym.sym = (SDLKey)c;
+        e.key.keysym.sym = (SDLKey) c;
     }
     e.key.keysym.scancode = 0;
 
@@ -98,8 +98,8 @@ void GlutWindow::g_mousemotion(int x, int y) {
     GEvent e;
     e.motion.type = SDL_MOUSEMOTION;
     e.motion.state = currentGlutWindow->mouseButtons;
-    e.motion.xrel = (int16)(x - currentGlutWindow->mouse.x);
-    e.motion.yrel = (int16)(y - currentGlutWindow->mouse.y);
+    e.motion.xrel = (int16) (x - currentGlutWindow->mouse.x);
+    e.motion.yrel = (int16) (y - currentGlutWindow->mouse.y);
     e.motion.x = x;
     e.motion.y = y;
 
@@ -119,34 +119,34 @@ void GlutWindow::g_mousebtn(int b, int s, int x, int y) {
     GEvent e;
 
     switch (b) {
-    case GLUT_LEFT_BUTTON:
-        e.button.button = SDL_BUTTON_LEFT;
-        if (s == GLUT_UP) {
-            currentGlutWindow->mouseButtons &= 0xFE;
-        } else {
-            currentGlutWindow->mouseButtons |= 0x01;
-        }
-        break;
+        case GLUT_LEFT_BUTTON:
+            e.button.button = SDL_BUTTON_LEFT;
+            if (s == GLUT_UP) {
+                currentGlutWindow->mouseButtons &= 0xFE;
+            } else {
+                currentGlutWindow->mouseButtons |= 0x01;
+            }
+            break;
 
-    case GLUT_RIGHT_BUTTON:
-        // Button index 1
-        e.button.button = SDL_BUTTON_RIGHT;
-        if (s == GLUT_UP) {
-            currentGlutWindow->mouseButtons &= 0xFD;
-        } else {
-            currentGlutWindow->mouseButtons |= 0x02;
-        }
-        break;
+        case GLUT_RIGHT_BUTTON:
+            // Button index 1
+            e.button.button = SDL_BUTTON_RIGHT;
+            if (s == GLUT_UP) {
+                currentGlutWindow->mouseButtons &= 0xFD;
+            } else {
+                currentGlutWindow->mouseButtons |= 0x02;
+            }
+            break;
 
-    case GLUT_MIDDLE_BUTTON:
-        // Button index 2
-        e.button.button = SDL_BUTTON_MIDDLE;
-        if (s == GLUT_UP) {
-            currentGlutWindow->mouseButtons &= 0xFB;
-        } else {
-            currentGlutWindow->mouseButtons |= 0x04;
-        }
-        break;
+        case GLUT_MIDDLE_BUTTON:
+            // Button index 2
+            e.button.button = SDL_BUTTON_MIDDLE;
+            if (s == GLUT_UP) {
+                currentGlutWindow->mouseButtons &= 0xFB;
+            } else {
+                currentGlutWindow->mouseButtons |= 0x04;
+            }
+            break;
     }
 
     if (s == GLUT_UP) {
@@ -165,11 +165,11 @@ void GlutWindow::g_mousebtn(int b, int s, int x, int y) {
 
 
 /** Called from GlutWindow::GlutWindow */
-static int computeGlutFlags(const GWindowSettings& settings) {
-    int flags = 
-        GLUT_RGB |
-        GLUT_DOUBLE;
-    
+static int computeGlutFlags(const GWindowSettings &settings) {
+    int flags =
+            GLUT_RGB |
+            GLUT_DOUBLE;
+
     if (settings.stereo) {
         flags |= GLUT_STEREO;
     }
@@ -196,15 +196,15 @@ static int computeGlutFlags(const GWindowSettings& settings) {
 
 static void glutInitDummy() {
     int argc = 1;
-    char** argv = (char**)malloc(sizeof(char*));
+    char **argv = (char **) malloc(sizeof(char *));
     argv[0] = "";
-    char** argv2 = argv;
+    char **argv2 = argv;
     glutInit(&argc, argv2);
     free(argv);
 }
 
 
-GlutWindow::GlutWindow(const GWindowSettings& s) {
+GlutWindow::GlutWindow(const GWindowSettings &s) {
     _mouseVisible = true;
     _windowTitle = "G3D";
     settings = s;
@@ -213,10 +213,10 @@ GlutWindow::GlutWindow(const GWindowSettings& s) {
 
     // Set window size and position
     glutInitWindowSize(settings.width, settings.height);
-    glutInitWindowPosition(settings.x, settings.y);   
+    glutInitWindowPosition(settings.x, settings.y);
     glutInitDisplayMode(computeGlutFlags(settings));
 
-    if (! glutInitialized) {
+    if (!glutInitialized) {
         glutInitDummy();
         glutInitialized = true;
     }
@@ -225,8 +225,8 @@ GlutWindow::GlutWindow(const GWindowSettings& s) {
 
     if (settings.center) {
         glutPositionWindow(
-            iMax(0,(glutGet(GLUT_SCREEN_WIDTH) - settings.width) / 2),
-            iMax(0,(glutGet(GLUT_SCREEN_HEIGHT) - settings.height) / 2));            
+                iMax(0, (glutGet(GLUT_SCREEN_WIDTH) - settings.width) / 2),
+                iMax(0, (glutGet(GLUT_SCREEN_HEIGHT) - settings.height) / 2));
     }
 
     if (settings.fullScreen) {
@@ -246,15 +246,15 @@ GlutWindow::GlutWindow(const GWindowSettings& s) {
 
     mouseButtons = 0;
 
-	#ifdef G3D_LINUX
-		if (glXGetCurrentDisplay != NULL) {
-			G3D::_internal::x11Display = glXGetCurrentDisplay();
-		}
+#ifdef G3D_LINUX
+    if (glXGetCurrentDisplay != NULL) {
+        G3D::_internal::x11Display = glXGetCurrentDisplay();
+    }
 
-		if (glXGetCurrentDrawable != NULL) {
-			G3D::_internal::x11Window  = glXGetCurrentDrawable();
-		}
-	#endif
+    if (glXGetCurrentDrawable != NULL) {
+        G3D::_internal::x11Window  = glXGetCurrentDrawable();
+    }
+#endif
 
     glutReshapeFunc(g_reshape);
     glutKeyboardFunc(g_keyboard);
@@ -279,7 +279,7 @@ GlutWindow::~GlutWindow() {
 }
 
 
-bool GlutWindow::pollEvent(GEvent& e) {
+bool GlutWindow::pollEvent(GEvent &e) {
     if (eventQueue.size() > 0) {
         e = eventQueue.popFront();
         return true;
@@ -289,9 +289,9 @@ bool GlutWindow::pollEvent(GEvent& e) {
 }
 
 
-void GlutWindow::getSettings(GWindowSettings& _settings) const {
-    GlutWindow* w = const_cast<GlutWindow*>(this);
-    
+void GlutWindow::getSettings(GWindowSettings &_settings) const {
+    GlutWindow *w = const_cast<GlutWindow *>(this);
+
     w->settings.x = glutGet(GLUT_WINDOW_X);
     w->settings.y = glutGet(GLUT_WINDOW_Y);
     w->settings.width = glutGet(GLUT_WINDOW_WIDTH);
@@ -301,19 +301,19 @@ void GlutWindow::getSettings(GWindowSettings& _settings) const {
 
 
 int GlutWindow::width() const {
-    const_cast<GlutWindow*>(this)->settings.width = glutGet(GLUT_WINDOW_WIDTH);
+    const_cast<GlutWindow *>(this)->settings.width = glutGet(GLUT_WINDOW_WIDTH);
     return settings.width;
 }
 
 
 int GlutWindow::height() const {
-    const_cast<GlutWindow*>(this)->settings.height = glutGet(GLUT_WINDOW_HEIGHT);
+    const_cast<GlutWindow *>(this)->settings.height = glutGet(GLUT_WINDOW_HEIGHT);
     return settings.height;
 }
 
 
 Rect2D GlutWindow::dimensions() const {
-    GlutWindow* w = const_cast<GlutWindow*>(this);
+    GlutWindow *w = const_cast<GlutWindow *>(this);
 
     w->settings.x = glutGet(GLUT_WINDOW_X);
     w->settings.y = glutGet(GLUT_WINDOW_Y);
@@ -324,9 +324,9 @@ Rect2D GlutWindow::dimensions() const {
 }
 
 
-void GlutWindow::setDimensions(const Rect2D& dims) {
-    setPosition((int)dims.x0(), (int)dims.x1());
-    glutReshapeWindow((int)dims.width(), (int)dims.height());
+void GlutWindow::setDimensions(const Rect2D &dims) {
+    setPosition((int) dims.x0(), (int) dims.x1());
+    glutReshapeWindow((int) dims.width(), (int) dims.height());
 }
 
 
@@ -350,12 +350,12 @@ std::string GlutWindow::getAPIName() const {
 }
 
 
-void GlutWindow::setGammaRamp(const Array<uint16>& gammaRamp) {
+void GlutWindow::setGammaRamp(const Array<uint16> &gammaRamp) {
     // Not supported
 }
 
 
-void GlutWindow::setCaption(const std::string& caption) {
+void GlutWindow::setCaption(const std::string &caption) {
     if (caption != _windowTitle) {
         _windowTitle = caption;
         glutSetWindowTitle(caption.c_str());
@@ -379,7 +379,7 @@ std::string GlutWindow::caption() {
 }
 
 
-void GlutWindow::setIcon(const GImage& image) {}
+void GlutWindow::setIcon(const GImage &image) {}
 
 
 void GlutWindow::swapGLBuffers() {
@@ -398,32 +398,32 @@ void GlutWindow::setRelativeMousePosition(double x, double y) {
 }
 
 
-void GlutWindow::setRelativeMousePosition(const Vector2& p) {
+void GlutWindow::setRelativeMousePosition(const Vector2 &p) {
     setRelativeMousePosition(p.x, p.y);
 }
 
 
-void GlutWindow::getRelativeMouseState(Vector2& position, uint8& b) const {
+void GlutWindow::getRelativeMouseState(Vector2 &position, uint8 &b) const {
     position = mouse;
     b = mouseButtons;
 }
 
 
-void GlutWindow::getRelativeMouseState(int& x, int& y, uint8& b) const {
+void GlutWindow::getRelativeMouseState(int &x, int &y, uint8 &b) const {
     x = iRound(mouse.x);
     y = iRound(mouse.y);
     b = mouseButtons;
 }
 
 
-void GlutWindow::getRelativeMouseState(double& x, double& y, uint8& b) const {
+void GlutWindow::getRelativeMouseState(double &x, double &y, uint8 &b) const {
     x = mouse.x;
     y = mouse.y;
     b = mouseButtons;
 }
 
 
-void GlutWindow::getJoystickState(unsigned int stickNum, Array<float>& axis, Array<bool>& button) {
+void GlutWindow::getJoystickState(unsigned int stickNum, Array<float> &axis, Array<bool> &button) {
 }
 
 

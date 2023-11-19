@@ -19,21 +19,26 @@
  */
 
 #include <G3DAll.h>
+
 #ifdef G3D_WIN32
-    #include <direct.h>
-    #define _chdir chdir
+
+#include <direct.h>
+
+#define _chdir chdir
 #else
-    #include <unistd.h>
+#include <unistd.h>
 #endif
+
 #include "Mesh.h"
 
 class App : public GApp {
 protected:
     void main();
-public:
-    SkyRef              sky;
 
-    App(const GAppSettings& settings);
+public:
+    SkyRef sky;
+
+    App(const GAppSettings &settings);
 };
 
 
@@ -48,36 +53,36 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*              app;
+    class App *app;
 
-    Demo(App* app);
-    virtual ~Demo(){}
+    Demo(App *app);
 
-    Mesh                    model;
+    virtual ~Demo() {}
 
-    TextureRef              texture;
+    Mesh model;
+
+    TextureRef texture;
 
     /**
      Tangent space normal map with the bump map in 
      the alpha channel.
      */
-    TextureRef              normalMap;
+    TextureRef normalMap;
 
-    PixelProgramRef         parallaxPP;
-    VertexProgramRef        parallaxVP;
+    PixelProgramRef parallaxPP;
+    VertexProgramRef parallaxVP;
 
     virtual void onInit();
 
-    virtual void onUserInput(UserInput*);
+    virtual void onUserInput(UserInput *);
 
-    virtual void onGraphics(RenderDevice*);
+    virtual void onGraphics(RenderDevice *);
 };
 
 
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
-
-    if (! fileExists("texture.jpg")) {
+    if (!fileExists("texture.jpg")) {
         // Go into the right directory
         chdir("Cg_Shader_Demo");
     }
@@ -96,24 +101,24 @@ Demo::Demo(App* _app) : GApplet(_app), app(_app) {
 }
 
 
-void Demo::onInit()  {
+void Demo::onInit() {
     // Called before Demo::run() beings
     app->debugCamera.setPosition(Vector3(0, 4, 3));
     app->debugCamera.lookAt(Vector3(0, 1, 0));
 }
 
-void Demo::onUserInput(UserInput* ui) {
+void Demo::onUserInput(UserInput *ui) {
     if (ui->keyPressed(SDLK_ESCAPE)) {
         // Even when we aren't in debug mode, quit on escape.
         endApplet = true;
         app->endProgram = true;
     }
 
-	// Add other key handling here
+    // Add other key handling here
 }
 
 
-void Demo::onGraphics(RenderDevice* rd) {
+void Demo::onGraphics(RenderDevice *rd) {
 
     LightingParameters lighting(G3D::toSeconds(2, 00, 00, AM), false);
     rd->setProjectionAndCameraMatrix(app->debugCamera);
@@ -132,36 +137,36 @@ void Demo::onGraphics(RenderDevice* rd) {
 
     // Setup lighting
     rd->enableLighting();
-		rd->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
-		rd->setAmbientLightColor(lighting.ambient);
+    rd->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
+    rd->setAmbientLightColor(lighting.ambient);
 
-        CoordinateFrame cframe;
-        // Rotate the quad
-        cframe.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), System::getTick() * .1);
+    CoordinateFrame cframe;
+    // Rotate the quad
+    cframe.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), System::getTick() * .1);
 
-        rd->pushState();
-            GPUProgram::ArgList vertexArgs;
+    rd->pushState();
+    GPUProgram::ArgList vertexArgs;
 
-            rd->setObjectToWorldMatrix(cframe);
+    rd->setObjectToWorldMatrix(cframe);
 
-            // Take the light to object space
-            Vector4 osLight = cframe.toObjectSpace(wsLight);
+    // Take the light to object space
+    Vector4 osLight = cframe.toObjectSpace(wsLight);
 
-            // Take the viewer to object space
-            Vector3 osEye = cframe.pointToObjectSpace(app->debugCamera.getCoordinateFrame().translation);
+    // Take the viewer to object space
+    Vector3 osEye = cframe.pointToObjectSpace(app->debugCamera.getCoordinateFrame().translation);
 
-            vertexArgs.set("MVP", rd->getModelViewProjectionMatrix());
-            vertexArgs.set("osLight", osLight);
-            vertexArgs.set("osEye", osEye);
-            rd->setVertexProgram(parallaxVP, vertexArgs);
+    vertexArgs.set("MVP", rd->getModelViewProjectionMatrix());
+    vertexArgs.set("osLight", osLight);
+    vertexArgs.set("osEye", osEye);
+    rd->setVertexProgram(parallaxVP, vertexArgs);
 
-            GPUProgram::ArgList pixelArgs;
-            pixelArgs.set("texture", texture);
-            pixelArgs.set("normalMap", normalMap);
-            rd->setPixelProgram(parallaxPP, pixelArgs);
+    GPUProgram::ArgList pixelArgs;
+    pixelArgs.set("texture", texture);
+    pixelArgs.set("normalMap", normalMap);
+    rd->setPixelProgram(parallaxPP, pixelArgs);
 
-            model.render(rd);
-        rd->popState();
+    model.render(rd);
+    rd->popState();
 
 
     rd->disableLighting();
@@ -173,15 +178,17 @@ void Demo::onGraphics(RenderDevice* rd) {
     }
 
     rd->push2D();
-        app->debugFont->draw2D("The surface is a single quad textured with parallax bump mapping and per-pixel shading.", Vector2(10, 10), 10, Color3::white(), Color3::black());
-        app->debugFont->draw2D("Press TAB to toggle to first person camera controls.", Vector2(10, 30), 10, Color3::white(), Color3::black());
+    app->debugFont->draw2D("The surface is a single quad textured with parallax bump mapping and per-pixel shading.",
+                           Vector2(10, 10), 10, Color3::white(), Color3::black());
+    app->debugFont->draw2D("Press TAB to toggle to first person camera controls.", Vector2(10, 30), 10, Color3::white(),
+                           Color3::black());
     rd->pop2D();
 }
 
 
 void App::main() {
-	setDebugMode(true);
-	debugController.setActive(false);
+    setDebugMode(true);
+    debugController.setActive(false);
 
     // Load objects here
     sky = Sky::create(renderDevice, dataDir + "sky/");
@@ -191,12 +198,12 @@ void App::main() {
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
     renderDevice->setCaption("Cg Demo");
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
     settings.window.width = 800;
     settings.window.height = 600;

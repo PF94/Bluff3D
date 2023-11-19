@@ -1,10 +1,10 @@
 #include "Editor.h"
 #include "App.h"
 
-Editor::Editor(App* _app) : GApplet(_app), app(_app) {
-    for (int i= 0; i < 12; ++i) {
-        control.append(Vector2(random(40, 760), random(40, 540)));
-    }
+Editor::Editor(App *_app) : GApplet(_app), app(_app) {
+    for (int i = 0; i < 12; ++i) {
+            control.append(Vector2(random(40, 760), random(40, 540)));
+        }
 
     cyclic = true;
     cyclicCheckRect = Rect2D::xywh(580, 5, 20, 20);
@@ -15,7 +15,7 @@ Editor::Editor(App* _app) : GApplet(_app), app(_app) {
 }
 
 
-void Editor::init()  {
+void Editor::init() {
     // Called before Editor::run() beings
     app->debugCamera.setPosition(Vector3(0, 2, 10));
     app->debugCamera.lookAt(Vector3(0, 2, 0));
@@ -28,20 +28,20 @@ void Editor::cleanup() {
 
 
 void Editor::doNetwork() {
-	// Poll net messages here
+    // Poll net messages here
 }
 
 
 void Editor::doSimulation(SimTime dt) {
-	// Add physical simulation here
+    // Add physical simulation here
 }
 
 
-void Editor::addPoint(const Vector2& mouse) {
+void Editor::addPoint(const Vector2 &mouse) {
     // Add a point
-    Vector2 target = 
-        min(max(Vector2(0,0), mouse), 
-            Vector2(app->renderDevice->getWidth(), app->renderDevice->getHeight()));
+    Vector2 target =
+            min(max(Vector2(0, 0), mouse),
+                Vector2(app->renderDevice->getWidth(), app->renderDevice->getHeight()));
 
     // Find the curve location nearest the point and insert it between the
     // control points on either side.
@@ -49,15 +49,15 @@ void Editor::addPoint(const Vector2& mouse) {
     const int N = 300;
     int c0, c1;
     for (int a = 0; a < N; ++a) {
-        int t0, t1;
-        Vector2 x = evalCurve((double)a/N, t0, t1);
-        double d = (x - target).squaredLength();
-        if ((d < dist) && (d < 400)) {
-            dist = d;
-            c0 = t0;
-            c1 = t1;
+            int t0, t1;
+            Vector2 x = evalCurve((double) a / N, t0, t1);
+            double d = (x - target).squaredLength();
+            if ((d < dist) && (d < 400)) {
+                dist = d;
+                c0 = t0;
+                c1 = t1;
+            }
         }
-    }
 
     if (dist < inf()) {
         control.insert(c1, target);
@@ -67,23 +67,23 @@ void Editor::addPoint(const Vector2& mouse) {
 // The initial offet between the mouse and control point
 static Vector2 offset;
 
-void Editor::selectPoint(const Vector2& mouse) {
+void Editor::selectPoint(const Vector2 &mouse) {
     // Find the closest control point
     double dist = inf();
     selectedControl = -1;
     for (int c = 3; c < control.size() - 3; ++c) {
-        double d = (mouse - control[c]).length();
+            double d = (mouse - control[c]).length();
 
-        if ((d < 8) && (d < dist)) {
-            dist = d;
-            selectedControl = c;
-            offset = control[c] - mouse;
+            if ((d < 8) && (d < dist)) {
+                dist = d;
+                selectedControl = c;
+                offset = control[c] - mouse;
+            }
         }
-    }
 }
 
 
-void Editor::showMessage(const std::string& msg) {
+void Editor::showMessage(const std::string &msg) {
     message = msg;
     messageTime = System::time();
 }
@@ -98,21 +98,21 @@ void Editor::doLogic() {
     Vector2 mouse = app->userInput->mouseXY();
 
     if (app->userInput->keyPressed(SDL_LEFT_MOUSE_KEY)) {
-         if (app->userInput->keyDown(SDLK_RCTRL) ||
+        if (app->userInput->keyDown(SDLK_RCTRL) ||
             app->userInput->keyDown(SDLK_LCTRL)) {
 
             addPoint(mouse);
-         } else {
-     
-             // Must allow check box and dragging at the same
-             // time or points can get stuck behind the check box.
-             if (cyclicCheckRect.contains(mouse)) {
-                cyclic = ! cyclic;
-             }
+        } else {
 
-             selectPoint(mouse);
-             dragControl = selectedControl;
-         }
+            // Must allow check box and dragging at the same
+            // time or points can get stuck behind the check box.
+            if (cyclicCheckRect.contains(mouse)) {
+                cyclic = !cyclic;
+            }
+
+            selectPoint(mouse);
+            dragControl = selectedControl;
+        }
     }
 
     if (app->userInput->keyPressed(SDL_RIGHT_MOUSE_KEY)) {
@@ -126,9 +126,9 @@ void Editor::doLogic() {
 
     if (app->userInput->keyDown(SDL_LEFT_MOUSE_KEY) && (dragControl != -1)) {
         // Drag the control point, clamping it to the screen
-        control[dragControl] = 
-            min(max(Vector2(0,0), mouse + offset), 
-                Vector2(app->renderDevice->getWidth(), app->renderDevice->getHeight()));
+        control[dragControl] =
+                min(max(Vector2(0, 0), mouse + offset),
+                    Vector2(app->renderDevice->getWidth(), app->renderDevice->getHeight()));
     }
 
     if (app->userInput->keyPressed(SDLK_DELETE) && (selectedControl != -1)) {
@@ -209,14 +209,14 @@ void Editor::doLogic() {
 
 
 void Editor::save() {
-    
+
     // Write out text data
     TextOutput to("curve.txt");
     to.writeNumber(control.size() - 6);
     serialize(cyclic, to);
     for (int c = 3; c < control.size() - 3; ++c) {
-        control[c].serialize(to);
-    }
+            control[c].serialize(to);
+        }
     to.commit(false);
 
     // Write out IFS data
@@ -225,9 +225,9 @@ void Editor::save() {
     MeshBuilder builder;
 
     for (int q = 0; q < quadArray.size(); ++q) {
-        Quad& quad = quadArray[q];
-        builder.addQuad(quad.vertex[0],quad.vertex[1],quad.vertex[2],quad.vertex[3]);
-    }
+            Quad &quad = quadArray[q];
+            builder.addQuad(quad.vertex[0], quad.vertex[1], quad.vertex[2], quad.vertex[3]);
+        }
 
     Array<int> index;
     Array<Vector3> vertex;
@@ -239,23 +239,22 @@ void Editor::save() {
 }
 
 
-
 void Editor::load() {
     TextInput ti("curve.txt");
     control.resize(ti.readNumber() + 6);
     deserialize(cyclic, ti);
     for (int c = 3; c < control.size() - 3; ++c) {
-        control[c].deserialize(ti);
-    }
+            control[c].deserialize(ti);
+        }
 
     showMessage("Loaded curve.txt");
 }
 
 
-static void drawRectLines(const Rect2D& rect, RenderDevice* rd, const Color3& color) {
+static void drawRectLines(const Rect2D &rect, RenderDevice *rd, const Color3 &color) {
     rd->setColor(color);
     rd->beginPrimitive(RenderDevice::LINE_STRIP);
-        for (int v = 0; v <= 4; ++v) {
+    for (int v = 0; v <= 4; ++v) {
             rd->sendVertex(rect.corner(v % 4));
         }
     rd->endPrimitive();
@@ -263,15 +262,15 @@ static void drawRectLines(const Rect2D& rect, RenderDevice* rd, const Color3& co
 
 
 void Editor::drawControlPoints() {
-    RenderDevice* rd = app->renderDevice;
+    RenderDevice *rd = app->renderDevice;
     rd->pushState();
-        
-        rd->setLineWidth(1.0);
-        rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
 
-        for (int c = 3; c < control.size() - 3; ++c) {
+    rd->setLineWidth(1.0);
+    rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
+
+    for (int c = 3; c < control.size() - 3; ++c) {
             double r = (c == selectedControl) ? 4 : 3;
-            
+
             Rect2D rect = Rect2D::xywh(control[c].x - r, control[c].y - r, 2 * r + 1, 2 * r + 1);
 
             Draw::rect2D(rect, rd, (c == selectedControl) ? Color3::RED : Color3::YELLOW);
@@ -281,7 +280,7 @@ void Editor::drawControlPoints() {
 }
 
 
-Vector2 Editor::evalCurve(double a, int& t0, int& t1) const {
+Vector2 Editor::evalCurve(double a, int &t0, int &t1) const {
     double t;
 
     if (cyclic) {
@@ -299,67 +298,67 @@ Vector2 Editor::evalCurve(double a, int& t0, int& t1) const {
 
 
 void Editor::draw2DCurve() {
-    RenderDevice* rd = app->renderDevice;
+    RenderDevice *rd = app->renderDevice;
     rd->pushState();
-        rd->setLineWidth(0.5);
-        rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
+    rd->setLineWidth(0.5);
+    rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
 
-        rd->beginPrimitive(RenderDevice::LINE_STRIP);
-        rd->setColor(Color3::BLACK);
-        int N = 200;
+    rd->beginPrimitive(RenderDevice::LINE_STRIP);
+    rd->setColor(Color3::BLACK);
+    int N = 200;
 
-        for (int a = 0; a <= N; ++a) {            
-            rd->sendVertex(evalCurve((double)a / N));
+    for (int a = 0; a <= N; ++a) {
+            rd->sendVertex(evalCurve((double) a / N));
         }
 
-        rd->endPrimitive();
+    rd->endPrimitive();
 
     rd->popState();
 }
 
 
 void Editor::drawGrid() {
-    RenderDevice* rd = app->renderDevice;
+    RenderDevice *rd = app->renderDevice;
     rd->pushState();
-        rd->setLineWidth(0.5);
+    rd->setLineWidth(0.5);
 
-        rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
-        int w = rd->getWidth();
-        int h = rd->getHeight();
+    rd->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
+    int w = rd->getWidth();
+    int h = rd->getHeight();
 
-        double s = rd->getHeight() % 40;
+    double s = rd->getHeight() % 40;
 
-        rd->beginPrimitive(RenderDevice::LINES);
-            rd->setColor(Color3(.8, 1, 1));
-            rd->sendVertex(Vector2(0, 320));
-            rd->sendVertex(Vector2(800, 320));
-            rd->sendVertex(Vector2(400, 0));
-            rd->sendVertex(Vector2(400, 600));
+    rd->beginPrimitive(RenderDevice::LINES);
+    rd->setColor(Color3(.8, 1, 1));
+    rd->sendVertex(Vector2(0, 320));
+    rd->sendVertex(Vector2(800, 320));
+    rd->sendVertex(Vector2(400, 0));
+    rd->sendVertex(Vector2(400, 600));
 
-            rd->setColor(Color3(.5, .9, 1));
-            for (int x = 0; x < w; x += 40) {
-                rd->sendVertex(Vector2(x, 0));
-                rd->sendVertex(Vector2(x, h));
-            }
-            for (int y = 0; y < h; y += 40) {
-                rd->sendVertex(Vector2(0, y));
-                rd->sendVertex(Vector2(w, y));
-            }
-        rd->endPrimitive();
+    rd->setColor(Color3(.5, .9, 1));
+    for (int x = 0; x < w; x += 40) {
+            rd->sendVertex(Vector2(x, 0));
+            rd->sendVertex(Vector2(x, h));
+        }
+    for (int y = 0; y < h; y += 40) {
+            rd->sendVertex(Vector2(0, y));
+            rd->sendVertex(Vector2(w, y));
+        }
+    rd->endPrimitive();
 
-        rd->beginPrimitive(RenderDevice::LINE_STRIP);
-            for (int a = 0; a <= 40; ++a) {
-                double A = G3D_TWO_PI * a / 40;
-                rd->sendVertex(Vector2(w, h + 40)/2 + Vector2(cos(A), sin(A)) * 160);
-            }
-        rd->endPrimitive();
+    rd->beginPrimitive(RenderDevice::LINE_STRIP);
+    for (int a = 0; a <= 40; ++a) {
+            double A = G3D_TWO_PI * a / 40;
+            rd->sendVertex(Vector2(w, h + 40) / 2 + Vector2(cos(A), sin(A)) * 160);
+        }
+    rd->endPrimitive();
 
-        rd->beginPrimitive(RenderDevice::LINE_STRIP);
-            for (int a = 0; a <= 60; ++a) {
-                double A = G3D_TWO_PI * a / 60;
-                rd->sendVertex(Vector2(w, h + 40)/2 + Vector2(cos(A), sin(A)) * 280);
-            }
-        rd->endPrimitive();
+    rd->beginPrimitive(RenderDevice::LINE_STRIP);
+    for (int a = 0; a <= 60; ++a) {
+            double A = G3D_TWO_PI * a / 60;
+            rd->sendVertex(Vector2(w, h + 40) / 2 + Vector2(cos(A), sin(A)) * 280);
+        }
+    rd->endPrimitive();
     rd->popState();
 }
 
@@ -381,13 +380,13 @@ void Editor::drawUI() {
     // Show messages for a while
     double t = messageTime + 4 - System::time();
     if (t > 0) {
-        app->font->draw2D(message, Vector2(400, 300), 20, Color4(1,1,1,t), Color4::clear(), 
-            GFont::XALIGN_CENTER, GFont::YALIGN_CENTER);
+        app->font->draw2D(message, Vector2(400, 300), 20, Color4(1, 1, 1, t), Color4::clear(),
+                          GFont::XALIGN_CENTER, GFont::YALIGN_CENTER);
     }
 }
 
 
-void Editor::compute3DCurve(Array<Quad>& quadArray) {
+void Editor::compute3DCurve(Array<Quad> &quadArray) {
     // Number of strips
     int N = 100;
 
@@ -398,138 +397,138 @@ void Editor::compute3DCurve(Array<Quad>& quadArray) {
     double r = .1;
 
     for (int a = 0; a < N; ++a) {
-        // 'a' is this ring, 'b' is the next one
+            // 'a' is this ring, 'b' is the next one
 
-        double ta = (double)a / N;
-        double tb = (double)(a + 1) / N;
+            double ta = (double) a / N;
+            double tb = (double) (a + 1) / N;
 
-        Vector2 p0a = evalCurve(ta - 0.001);
-        Vector2 p1a = evalCurve(ta);
-        Vector2 p2a = evalCurve(ta + 0.001);
+            Vector2 p0a = evalCurve(ta - 0.001);
+            Vector2 p1a = evalCurve(ta);
+            Vector2 p2a = evalCurve(ta + 0.001);
 
-        Vector2 p0b = evalCurve(tb - 0.001);
-        Vector2 p1b = evalCurve(tb);
-        Vector2 p2b = evalCurve(tb + 0.001);
+            Vector2 p0b = evalCurve(tb - 0.001);
+            Vector2 p1b = evalCurve(tb);
+            Vector2 p2b = evalCurve(tb + 0.001);
 
-        // Scale to -1..1 range
-        Vector3 P0a(p0a.x / 400 - 1, 1 - p0a.y / 300, 0);
-        Vector3 P1a(p1a.x / 400 - 1, 1 - p1a.y / 300, 0);
-        Vector3 P2a(p2a.x / 400 - 1, 1 - p2a.y / 300, 0);
+            // Scale to -1..1 range
+            Vector3 P0a(p0a.x / 400 - 1, 1 - p0a.y / 300, 0);
+            Vector3 P1a(p1a.x / 400 - 1, 1 - p1a.y / 300, 0);
+            Vector3 P2a(p2a.x / 400 - 1, 1 - p2a.y / 300, 0);
 
-        Vector3 P0b(p0b.x / 400 - 1, 1 - p0b.y / 300, 0);
-        Vector3 P1b(p1b.x / 400 - 1, 1 - p1b.y / 300, 0);
-        Vector3 P2b(p2b.x / 400 - 1, 1 - p2b.y / 300, 0);
+            Vector3 P0b(p0b.x / 400 - 1, 1 - p0b.y / 300, 0);
+            Vector3 P1b(p1b.x / 400 - 1, 1 - p1b.y / 300, 0);
+            Vector3 P2b(p2b.x / 400 - 1, 1 - p2b.y / 300, 0);
 
-        // Direction of the curve
-        Vector3 dPa = (P2a - P0a).direction();
-        Vector3 Ua = Vector3::unitZ();
-        Vector3 Va = Ua.cross(dPa).direction();
-        Ua = -dPa.cross(Va);
+            // Direction of the curve
+            Vector3 dPa = (P2a - P0a).direction();
+            Vector3 Ua = Vector3::unitZ();
+            Vector3 Va = Ua.cross(dPa).direction();
+            Ua = -dPa.cross(Va);
 
-        Vector3 dPb = (P2b - P0b).direction();
-        Vector3 Ub = Vector3::unitZ();
-        Vector3 Vb = Ub.cross(dPb).direction();
-        Ub = -dPb.cross(Vb);
+            Vector3 dPb = (P2b - P0b).direction();
+            Vector3 Ub = Vector3::unitZ();
+            Vector3 Vb = Ub.cross(dPb).direction();
+            Ub = -dPb.cross(Vb);
 
-        for (int m = 0; m < M; ++m) {
-            // Angle
-            double q0 = G3D_TWO_PI * m / M; 
-            double q1 = G3D_TWO_PI * (m + 1) / M;
+            for (int m = 0; m < M; ++m) {
+                    // Angle
+                    double q0 = G3D_TWO_PI * m / M;
+                    double q1 = G3D_TWO_PI * (m + 1) / M;
 
-            Quad& quad = quadArray.next();
+                    Quad &quad = quadArray.next();
 
-            // Unit vertices relative to curve center
-            Vector3 v[4];
-            v[0] = Ua * cos(q0) + Va * sin(q0);
-            v[1] = Ua * cos(q1) + Va * sin(q1);
-            v[2] = Ub * cos(q1) + Vb * sin(q1);
-            v[3] = Ub * cos(q0) + Vb * sin(q0);
+                    // Unit vertices relative to curve center
+                    Vector3 v[4];
+                    v[0] = Ua * cos(q0) + Va * sin(q0);
+                    v[1] = Ua * cos(q1) + Va * sin(q1);
+                    v[2] = Ub * cos(q1) + Vb * sin(q1);
+                    v[3] = Ub * cos(q0) + Vb * sin(q0);
 
-            quad.vertex[0] = P1a + v[0] * r;
-            quad.normal[0] = v[0];
+                    quad.vertex[0] = P1a + v[0] * r;
+                    quad.normal[0] = v[0];
 
-            quad.vertex[1] = P1a + v[1] * r;
-            quad.normal[1] = v[1];
+                    quad.vertex[1] = P1a + v[1] * r;
+                    quad.normal[1] = v[1];
 
-            quad.vertex[2] = P1b + v[2] * r;
-            quad.normal[2] = v[2];
+                    quad.vertex[2] = P1b + v[2] * r;
+                    quad.normal[2] = v[2];
 
-            quad.vertex[3] = P1b + v[3] * r;
-            quad.normal[3] = v[3];
-        }
-
-        if (! cyclic) {
-            // Number of strips on cap
-            int I = 5;
-
-            // Put hemisphere caps on
-            if (a == 0) {
-                // Begin cap
-                Vector3 W = -dPa;
-                for (int i = 0; i < I; ++i) {
-
-                    // angle from tip to cap base
-                    double aa = G3D_HALF_PI * (double)i / I;
-                    double ab = G3D_HALF_PI * (i + 1.0) / I;
-
-                    for (int m = 0; m < M; ++m) {
-                        // Angle
-                        double q0 = G3D_TWO_PI * m / M; 
-                        double q1 = G3D_TWO_PI * (m + 1) / M;
-                        Quad& quad = quadArray.next();
-
-                        // Unit vertices relative to curve center
-                        Vector3 v[4];
-                        v[0] = (Ua * cos(q0) + Va * sin(q0)) * cos(aa) + W * sin(aa);
-                        v[1] = (Ua * cos(q1) + Va * sin(q1)) * cos(aa) + W * sin(aa);
-                        v[2] = (Ua * cos(q1) + Va * sin(q1)) * cos(ab) + W * sin(ab);
-                        v[3] = (Ua * cos(q0) + Va * sin(q0)) * cos(ab) + W * sin(ab);
-
-                        for (int j = 0; j < 4; ++j) {
-                            quad.vertex[j] = P1a + v[3 - j] * r;
-                            quad.normal[j] = v[3 - j];
-                        }
-                    }
+                    quad.vertex[3] = P1b + v[3] * r;
+                    quad.normal[3] = v[3];
                 }
 
-            } else if (a == N - 1) {
-                // End cap
-                Vector3 W = dPa;
-                for (int i = 0; i < I; ++i) {
-                    // angle from tip to cap base
-                    double aa = G3D_HALF_PI * (double)i / I;
-                    double ab = G3D_HALF_PI * (i + 1.0) / I;
+            if (!cyclic) {
+                // Number of strips on cap
+                int I = 5;
 
-                    for (int m = 0; m < M; ++m) {
-                        // Angle
-                        double q0 = G3D_TWO_PI * m / M; 
-                        double q1 = G3D_TWO_PI * (m + 1) / M;
-                        Quad& quad = quadArray.next();
+                // Put hemisphere caps on
+                if (a == 0) {
+                    // Begin cap
+                    Vector3 W = -dPa;
+                    for (int i = 0; i < I; ++i) {
 
-                        // Unit vertices relative to curve center
-                        Vector3 v[4];
-                        v[0] = (Ub * cos(q0) + Vb * sin(q0)) * cos(aa) + W * sin(aa);
-                        v[1] = (Ub * cos(q1) + Vb * sin(q1)) * cos(aa) + W * sin(aa);
-                        v[2] = (Ub * cos(q1) + Vb * sin(q1)) * cos(ab) + W * sin(ab);
-                        v[3] = (Ub * cos(q0) + Vb * sin(q0)) * cos(ab) + W * sin(ab);
+                            // angle from tip to cap base
+                            double aa = G3D_HALF_PI * (double) i / I;
+                            double ab = G3D_HALF_PI * (i + 1.0) / I;
 
-                        for (int j = 0; j < 4; ++j) {
-                            quad.vertex[j] = P1b + v[j] * r;
-                            quad.normal[j] = v[j];
+                            for (int m = 0; m < M; ++m) {
+                                    // Angle
+                                    double q0 = G3D_TWO_PI * m / M;
+                                    double q1 = G3D_TWO_PI * (m + 1) / M;
+                                    Quad &quad = quadArray.next();
+
+                                    // Unit vertices relative to curve center
+                                    Vector3 v[4];
+                                    v[0] = (Ua * cos(q0) + Va * sin(q0)) * cos(aa) + W * sin(aa);
+                                    v[1] = (Ua * cos(q1) + Va * sin(q1)) * cos(aa) + W * sin(aa);
+                                    v[2] = (Ua * cos(q1) + Va * sin(q1)) * cos(ab) + W * sin(ab);
+                                    v[3] = (Ua * cos(q0) + Va * sin(q0)) * cos(ab) + W * sin(ab);
+
+                                    for (int j = 0; j < 4; ++j) {
+                                            quad.vertex[j] = P1a + v[3 - j] * r;
+                                            quad.normal[j] = v[3 - j];
+                                        }
+                                }
                         }
-                    }
+
+                } else if (a == N - 1) {
+                    // End cap
+                    Vector3 W = dPa;
+                    for (int i = 0; i < I; ++i) {
+                            // angle from tip to cap base
+                            double aa = G3D_HALF_PI * (double) i / I;
+                            double ab = G3D_HALF_PI * (i + 1.0) / I;
+
+                            for (int m = 0; m < M; ++m) {
+                                    // Angle
+                                    double q0 = G3D_TWO_PI * m / M;
+                                    double q1 = G3D_TWO_PI * (m + 1) / M;
+                                    Quad &quad = quadArray.next();
+
+                                    // Unit vertices relative to curve center
+                                    Vector3 v[4];
+                                    v[0] = (Ub * cos(q0) + Vb * sin(q0)) * cos(aa) + W * sin(aa);
+                                    v[1] = (Ub * cos(q1) + Vb * sin(q1)) * cos(aa) + W * sin(aa);
+                                    v[2] = (Ub * cos(q1) + Vb * sin(q1)) * cos(ab) + W * sin(ab);
+                                    v[3] = (Ub * cos(q0) + Vb * sin(q0)) * cos(ab) + W * sin(ab);
+
+                                    for (int j = 0; j < 4; ++j) {
+                                            quad.vertex[j] = P1b + v[j] * r;
+                                            quad.normal[j] = v[j];
+                                        }
+                                }
+                        }
                 }
+
             }
-
         }
-    }
 
 }
 
 
 void Editor::draw3DCurve() {
     GCamera camera;
-    camera.setPosition(Vector3(0,0,5));
+    camera.setPosition(Vector3(0, 0, 5));
     camera.lookAt(Vector3::zero());
 
     static double q = 0;
@@ -537,7 +536,7 @@ void Editor::draw3DCurve() {
     CoordinateFrame cframe;
     cframe.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), q);
 
-    RenderDevice* rd = app->renderDevice;
+    RenderDevice *rd = app->renderDevice;
 
     rd->setProjectionAndCameraMatrix(camera);
     rd->setObjectToWorldMatrix(cframe);
@@ -552,18 +551,18 @@ void Editor::draw3DCurve() {
     rd->enableLighting();
     rd->setShadeMode(RenderDevice::SHADE_SMOOTH);
     rd->setAmbientLightColor(Color3::black());
-    rd->setLight(0, GLight::directional(Vector3(1,1,1), Color3::white()));
-    rd->setLight(1, GLight::directional(Vector3(-.5,-1,-.2), Color3::blue()));
-    rd->setLight(2, GLight::directional(Vector3(-1,0,0), Color3::yellow() * 0.5));
-    rd->setLight(3, GLight::directional(Vector3(1,0,0), Color3::yellow() * 0.25));
+    rd->setLight(0, GLight::directional(Vector3(1, 1, 1), Color3::white()));
+    rd->setLight(1, GLight::directional(Vector3(-.5, -1, -.2), Color3::blue()));
+    rd->setLight(2, GLight::directional(Vector3(-1, 0, 0), Color3::yellow() * 0.5));
+    rd->setLight(3, GLight::directional(Vector3(1, 0, 0), Color3::yellow() * 0.25));
     rd->setSpecularCoefficient(0.7);
     rd->beginPrimitive(RenderDevice::QUADS);
-        rd->setColor(Color3::fromARGB(0xFFF09621));
-        for (int q = 0; q < quadArray.size(); ++q) {
+    rd->setColor(Color3::fromARGB(0xFFF09621));
+    for (int q = 0; q < quadArray.size(); ++q) {
             for (int v = 0; v < 4; ++v) {
-                rd->setNormal(quadArray[q].normal[v]);
-                rd->sendVertex(quadArray[q].vertex[v] * 2);
-            }
+                    rd->setNormal(quadArray[q].normal[v]);
+                    rd->sendVertex(quadArray[q].vertex[v] * 2);
+                }
         }
     rd->endPrimitive();
     rd->popState();
@@ -586,9 +585,9 @@ void Editor::doGraphics() {
     // The first and last points are duplicated in the non-cyclic case 
     // in order to terminate the curve cleanly.
     for (int i = 0; i < 3; ++i) {
-        control[i] = control[3];
-        control[control.size() - i - 1] = control[control.size() - 4];
-    }
+            control[i] = control[3];
+            control[control.size() - i - 1] = control[control.size() - 4];
+        }
 
     // Cyan background
     app->renderDevice->setColorClearValue(Color3(.3, .7, 1));
@@ -597,19 +596,19 @@ void Editor::doGraphics() {
 
 
     app->renderDevice->push2D();
-        drawGrid();
+    drawGrid();
     app->renderDevice->pop2D();
 
     app->renderDevice->pushState();
 //        Rect2D view = Rect2D::xywh(500, 400, 300, 200);
 //        app->renderDevice->setViewport(view);
-        draw3DCurve();
+    draw3DCurve();
     app->renderDevice->popState();
 
     app->renderDevice->push2D();
-        draw2DCurve();
-        drawControlPoints();
-        drawUI();
+    draw2DCurve();
+    drawControlPoints();
+    drawUI();
     app->renderDevice->pop2D();
 
     /*
@@ -621,7 +620,7 @@ void Editor::doGraphics() {
 
   */
 //		Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
- //   app->renderDevice->disableLighting();
+    //   app->renderDevice->disableLighting();
 
 }
 

@@ -26,6 +26,7 @@
 
 #include <time.h>
 #include <sstream>
+
 #if !defined(G3D_MINGW32)
 #include <crtdbg.h>
 #endif
@@ -51,8 +52,8 @@ namespace G3D {
 
     static const UINT BLIT_BUFFER = 0xC001;
 
-#define WGL_SAMPLE_BUFFERS_ARB	0x2041
-#define WGL_SAMPLES_ARB		    0x2042
+#define WGL_SAMPLE_BUFFERS_ARB    0x2041
+#define WGL_SAMPLES_ARB            0x2042
 
     static bool hasWGLMultiSampleSupport = false;
 
@@ -63,8 +64,11 @@ namespace G3D {
 
 // Prototype static helper functions at end of file
     static bool ChangeResolution(int, int, int, int);
-    static void makeKeyEvent(int, int, GEvent&);
-    static void mouseButton(bool, int, DWORD, GEvent&);
+
+    static void makeKeyEvent(int, int, GEvent &);
+
+    static void mouseButton(bool, int, DWORD, GEvent &);
+
     static void initWin32KeyMap();
 //static LRESULT WINAPI _internal::window_proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
 
@@ -76,16 +80,13 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 /** Return the G3D window class, which owns a private DC. 
     See http://www.starstonesoftware.com/OpenGL/whyyou.htm
     for a discussion of why this is necessary. */
-    static const char* G3DWndClass();
+    static const char *G3DWndClass();
 
     std::auto_ptr<Win32Window> Win32Window::_shareWindow(NULL);
 
 
-    Win32Window::Win32Window(const GWindow::Settings& s, bool creatingShareWindow)
-            :createdWindow(true)
-            ,_diDevices(NULL)
-
-    {
+    Win32Window::Win32Window(const GWindow::Settings &s, bool creatingShareWindow)
+            : createdWindow(true), _diDevices(NULL) {
         _receivedCloseEvent = false;
 
         initWGL();
@@ -135,13 +136,13 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
         clientRectOffset.x = oldLeft - rect.left;
         clientRectOffset.y = oldTop - rect.top;
 
-        int total_width  = rect.right - rect.left;
+        int total_width = rect.right - rect.left;
         int total_height = rect.bottom - rect.top;
 
         int startX = 0;
         int startY = 0;
 
-        if (! s.fullScreen) {
+        if (!s.fullScreen) {
             if (s.center) {
 
                 startX = (GetSystemMetrics(SM_CXSCREEN) - total_width) / 2;
@@ -173,7 +174,7 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
         // Set early so windows messages have value
         this->window = window;
 
-        SetWindowLongPtr(window, GWLP_USERDATA, (LONG_PTR)this);
+        SetWindowLongPtr(window, GWLP_USERDATA, (LONG_PTR) this);
 
         if (s.visible) {
             ShowWindow(window, SW_SHOW);
@@ -181,7 +182,8 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 
         if (settings.fullScreen) {
             // Change the desktop resolution if we are running in fullscreen mode
-            if (!ChangeResolution(settings.width, settings.height, (settings.rgbBits * 3) + settings.alphaBits, settings.refreshRate)) {
+            if (!ChangeResolution(settings.width, settings.height, (settings.rgbBits * 3) + settings.alphaBits,
+                                  settings.refreshRate)) {
                 alwaysAssertM(false, "Failed to change resolution");
             }
         }
@@ -197,17 +199,17 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
                 defaultIcon.load(settings.defaultIconFilename);
 
                 setIcon(defaultIcon);
-            } catch (const GImage::Error& e) {
+            } catch (const GImage::Error &e) {
                 // Throw away default icon
                 debugPrintf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(), e.reason.c_str());
-                Log::common()->printf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(), e.reason.c_str());
+                Log::common()->printf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(),
+                                      e.reason.c_str());
             }
         }
     }
 
 
-
-    Win32Window::Win32Window(const GWindow::Settings& s, HWND hwnd) : createdWindow(false), _diDevices(NULL) {
+    Win32Window::Win32Window(const GWindow::Settings &s, HWND hwnd) : createdWindow(false), _diDevices(NULL) {
         initWGL();
 
         _thread = ::GetCurrentThread();
@@ -218,7 +220,7 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
     }
 
 
-    Win32Window::Win32Window(const GWindow::Settings& s, HDC hdc) : createdWindow(false), _diDevices(NULL)  {
+    Win32Window::Win32Window(const GWindow::Settings &s, HDC hdc) : createdWindow(false), _diDevices(NULL) {
         initWGL();
 
         _thread = ::GetCurrentThread();
@@ -234,7 +236,7 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
     }
 
 
-    Win32Window* Win32Window::create(const GWindow::Settings& settings) {
+    Win32Window *Win32Window::create(const GWindow::Settings &settings) {
 
         // Create Win32Window which uses DI8 joysticks but WM_ keyboard messages
         return new Win32Window(settings);
@@ -242,14 +244,14 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
     }
 
 
-    Win32Window* Win32Window::create(const GWindow::Settings& settings, HWND hwnd) {
+    Win32Window *Win32Window::create(const GWindow::Settings &settings, HWND hwnd) {
 
         // Create Win32Window which uses DI8 joysticks but WM_ keyboard messages
         return new Win32Window(settings, hwnd);
 
     }
 
-    Win32Window* Win32Window::create(const GWindow::Settings& settings, HDC hdc) {
+    Win32Window *Win32Window::create(const GWindow::Settings &settings, HDC hdc) {
 
         // Create Win32Window which uses DI8 joysticks but WM_ keyboard messages
         return new Win32Window(settings, hdc);
@@ -259,7 +261,7 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 
     void Win32Window::init(HWND hwnd, bool creatingShareWindow) {
 
-        if (! creatingShareWindow) {
+        if (!creatingShareWindow) {
             createShareWindow(settings);
         }
 
@@ -290,22 +292,22 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
             iAttributes.append(WGL_DRAW_TO_WINDOW_ARB, GL_TRUE);
             iAttributes.append(WGL_SUPPORT_OPENGL_ARB, GL_TRUE);
             if (settings.hardware) {
-                iAttributes.append(WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB);
+                iAttributes.append(WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB);
             }
-            iAttributes.append(WGL_DOUBLE_BUFFER_ARB,  GL_TRUE);
-            iAttributes.append(WGL_COLOR_BITS_ARB,     settings.rgbBits * 3);
-            iAttributes.append(WGL_RED_BITS_ARB,       settings.rgbBits);
-            iAttributes.append(WGL_GREEN_BITS_ARB,     settings.rgbBits);
-            iAttributes.append(WGL_BLUE_BITS_ARB,      settings.rgbBits);
-            iAttributes.append(WGL_ALPHA_BITS_ARB,     settings.alphaBits);
-            iAttributes.append(WGL_DEPTH_BITS_ARB,     settings.depthBits);
-            iAttributes.append(WGL_STENCIL_BITS_ARB,   settings.stencilBits);
-            iAttributes.append(WGL_STEREO_ARB,         settings.stereo);
+            iAttributes.append(WGL_DOUBLE_BUFFER_ARB, GL_TRUE);
+            iAttributes.append(WGL_COLOR_BITS_ARB, settings.rgbBits * 3);
+            iAttributes.append(WGL_RED_BITS_ARB, settings.rgbBits);
+            iAttributes.append(WGL_GREEN_BITS_ARB, settings.rgbBits);
+            iAttributes.append(WGL_BLUE_BITS_ARB, settings.rgbBits);
+            iAttributes.append(WGL_ALPHA_BITS_ARB, settings.alphaBits);
+            iAttributes.append(WGL_DEPTH_BITS_ARB, settings.depthBits);
+            iAttributes.append(WGL_STENCIL_BITS_ARB, settings.stencilBits);
+            iAttributes.append(WGL_STEREO_ARB, settings.stereo);
             if (hasWGLMultiSampleSupport && (settings.fsaaSamples > 1)) {
                 // On some ATI cards, even setting the samples to false will turn it on,
                 // so we only take this branch when FSAA is explicitly requested.
                 iAttributes.append(WGL_SAMPLE_BUFFERS_ARB, settings.fsaaSamples > 1);
-                iAttributes.append(WGL_SAMPLES_ARB,        settings.fsaaSamples);
+                iAttributes.append(WGL_SAMPLES_ARB, settings.fsaaSamples);
             } else {
                 // Report actual settings
                 settings.fsaaSamples = 0;
@@ -330,7 +332,7 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 
             // Corey - I don't think it does, but now I check for valid pixelFormat + valid return only.
 
-            if ( valid && (pixelFormat > 0)) {
+            if (valid && (pixelFormat > 0)) {
                 // Found a valid format
                 foundARBFormat = true;
             }
@@ -339,22 +341,22 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 
         PIXELFORMATDESCRIPTOR pixelFormatDesc;
 
-        if ( !foundARBFormat ) {
+        if (!foundARBFormat) {
 
             ZeroMemory(&pixelFormatDesc, sizeof(PIXELFORMATDESCRIPTOR));
 
-            pixelFormatDesc.nSize        = sizeof(PIXELFORMATDESCRIPTOR);
-            pixelFormatDesc.nVersion     = 1;
-            pixelFormatDesc.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-            pixelFormatDesc.iPixelType   = PFD_TYPE_RGBA;
-            pixelFormatDesc.cColorBits   = settings.rgbBits * 3;
-            pixelFormatDesc.cDepthBits   = settings.depthBits;
+            pixelFormatDesc.nSize = sizeof(PIXELFORMATDESCRIPTOR);
+            pixelFormatDesc.nVersion = 1;
+            pixelFormatDesc.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+            pixelFormatDesc.iPixelType = PFD_TYPE_RGBA;
+            pixelFormatDesc.cColorBits = settings.rgbBits * 3;
+            pixelFormatDesc.cDepthBits = settings.depthBits;
             pixelFormatDesc.cStencilBits = settings.stencilBits;
-            pixelFormatDesc.iLayerType   = PFD_MAIN_PLANE;
-            pixelFormatDesc.cRedBits     = settings.rgbBits;
-            pixelFormatDesc.cGreenBits   = settings.rgbBits;
-            pixelFormatDesc.cBlueBits    = settings.rgbBits;
-            pixelFormatDesc.cAlphaBits   = settings.alphaBits;
+            pixelFormatDesc.iLayerType = PFD_MAIN_PLANE;
+            pixelFormatDesc.cRedBits = settings.rgbBits;
+            pixelFormatDesc.cGreenBits = settings.rgbBits;
+            pixelFormatDesc.cBlueBits = settings.rgbBits;
+            pixelFormatDesc.cAlphaBits = settings.alphaBits;
 
             // Reset for completeness
             pixelFormat = 0;
@@ -376,14 +378,14 @@ static void printPixelFormatDescription(int, HDC, TextOutput&);
 
         alwaysAssertM(_glContext != NULL, "Failed to create OpenGL context.");
 
-        if (! creatingShareWindow) {
+        if (!creatingShareWindow) {
             // Now share resources with the global window
             wglShareLists(_shareWindow->_glContext, _glContext);
         }
 
         this->makeCurrent();
 
-        if (! creatingShareWindow) {
+        if (!creatingShareWindow) {
             GLCaps::init();
         }
     }
@@ -408,15 +410,15 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::setDimensions(const Rect2D& dims) {
+    void Win32Window::setDimensions(const Rect2D &dims) {
 
         int W = ::GetSystemMetrics(SM_CXSCREEN);
         int H = ::GetSystemMetrics(SM_CYSCREEN);
 
-        int x = iClamp((int)dims.x0(), 0, W);
-        int y = iClamp((int)dims.y0(), 0, H);
-        int w = iClamp((int)dims.width(), 1, W);
-        int h = iClamp((int)dims.height(), 1, H);
+        int x = iClamp((int) dims.x0(), 0, W);
+        int y = iClamp((int) dims.y0(), 0, H);
+        int w = iClamp((int) dims.width(), 1, W);
+        int h = iClamp((int) dims.height(), 1, H);
 
         // Set dimensions and repaint.
         ::MoveWindow(window, x, y, w, h, true);
@@ -424,13 +426,13 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
 
 
     Rect2D Win32Window::dimensions() const {
-        return Rect2D::xywh((float)clientX, (float)clientY, (float)width(), (float)height());
+        return Rect2D::xywh((float) clientX, (float) clientY, (float) width(), (float) height());
     }
 
 
     bool Win32Window::hasFocus() const {
         // Double check state with foreground and visibility just to be sure.
-        return ( (window == ::GetForegroundWindow()) && (::IsWindowVisible(window)) );
+        return ((window == ::GetForegroundWindow()) && (::IsWindowVisible(window)));
     }
 
 
@@ -449,7 +451,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::setIcon(const GImage& image) {
+    void Win32Window::setIcon(const GImage &image) {
         alwaysAssertM((image.channels == 3) ||
                       (image.channels == 4),
                       "Icon image must have at least 3 channels.");
@@ -458,7 +460,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
                       "Icons must be 32x32 on windows.");
 
         uint8 bwMaskData[128];
-        uint8 colorMaskData[1024*4];
+        uint8 colorMaskData[1024 * 4];
 
 
         GImage icon;
@@ -475,7 +477,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         System::memset(bwMaskData, 0x00, 128);
         for (int y = 0; y < 32; ++y) {
                 for (int x = 0; x < 32; ++x) {
-                        bwMaskData[ (y * 4) + (x / 8) ] |= ((icon.pixel4(x, y).a > 127) ? 1 : 0) << (x % 8);
+                        bwMaskData[(y * 4) + (x / 8)] |= ((icon.pixel4(x, y).a > 127) ? 1 : 0) << (x % 8);
 
                         // Windows icon images are BGRA like a lot of windows image data
                         colorMaskData[colorMaskIdx] = icon.pixel4()[y * 32 + x].b;
@@ -497,20 +499,20 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         iconInfo.fIcon = true;
 
         HICON hicon = ::CreateIconIndirect(&iconInfo);
-        _usedIcons.insert((int)(size_t)hicon);
+        _usedIcons.insert((int) (size_t) hicon);
 
         // Purposely leak any icon created indirectly like hicon becase we don't know.
-        HICON hsmall = (HICON)::SendMessage(this->window, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)hicon);
-        HICON hlarge = (HICON)::SendMessage(this->window, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)hicon);
+        HICON hsmall = (HICON) ::SendMessage(this->window, WM_SETICON, (WPARAM) ICON_SMALL, (LPARAM) hicon);
+        HICON hlarge = (HICON) ::SendMessage(this->window, WM_SETICON, (WPARAM) ICON_BIG, (LPARAM) hicon);
 
-        if (_usedIcons.contains((int)(size_t)hsmall)) {
+        if (_usedIcons.contains((int) (size_t) hsmall)) {
             ::DestroyIcon(hsmall);
-            _usedIcons.remove((int)(size_t)hsmall);
+            _usedIcons.remove((int) (size_t) hsmall);
         }
 
-        if (_usedIcons.contains((int)(size_t)hlarge)) {
+        if (_usedIcons.contains((int) (size_t) hlarge)) {
             ::DestroyIcon(hlarge);
-            _usedIcons.remove((int)(size_t)hlarge);
+            _usedIcons.remove((int) (size_t) hlarge);
         }
 
         ::DeleteObject(bwMask);
@@ -530,7 +532,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
 
     Win32Window::~Win32Window() {
         if (GWindow::current() == this) {
-            if (wglMakeCurrent(NULL, NULL) == FALSE)	{
+            if (wglMakeCurrent(NULL, NULL) == FALSE) {
                 debugAssertM(false, "Failed to set context");
             }
 
@@ -542,7 +544,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         }
 
         if (createdWindow) {
-            SetWindowLongPtr(window, GWLP_USERDATA, (LONG)NULL);
+            SetWindowLongPtr(window, GWLP_USERDATA, (LONG) NULL);
             close();
         }
 
@@ -552,12 +554,12 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::getSettings(GWindow::Settings& s) const {
+    void Win32Window::getSettings(GWindow::Settings &s) const {
         s = settings;
     }
 
 
-    void Win32Window::setCaption(const std::string& caption) {
+    void Win32Window::setCaption(const std::string &caption) {
         if (_title != caption) {
             _title = caption;
             SetWindowText(window, _title.c_str());
@@ -570,7 +572,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    bool Win32Window::pollEvent(GEvent& e) {
+    bool Win32Window::pollEvent(GEvent &e) {
         MSG message;
 
         while (PeekMessage(&message, window, 0, 0, PM_REMOVE)) {
@@ -670,8 +672,9 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
 
         if (settings.framed) {
             // Add the border offset
-            clientX	+= GetSystemMetrics(settings.resizable ? SM_CXSIZEFRAME : SM_CXFIXEDFRAME);
-            clientY += GetSystemMetrics(settings.resizable ? SM_CYSIZEFRAME : SM_CYFIXEDFRAME) + GetSystemMetrics(SM_CYCAPTION);
+            clientX += GetSystemMetrics(settings.resizable ? SM_CXSIZEFRAME : SM_CXFIXEDFRAME);
+            clientY += GetSystemMetrics(settings.resizable ? SM_CYSIZEFRAME : SM_CYFIXEDFRAME) +
+                       GetSystemMetrics(SM_CYCAPTION);
         }
 
         // Check for a resize event and use only most recent
@@ -720,20 +723,20 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::setGammaRamp(const Array<uint16>& gammaRamp) {
+    void Win32Window::setGammaRamp(const Array<uint16> &gammaRamp) {
         alwaysAssertM(gammaRamp.size() >= 256, "Gamma ramp must have at least 256 entries");
 
-        Log* debugLog = Log::common();
+        Log *debugLog = Log::common();
 
-        uint16* ptr = const_cast<uint16*>(gammaRamp.getCArray());
+        uint16 *ptr = const_cast<uint16 *>(gammaRamp.getCArray());
         uint16 wptr[3 * 256];
         for (int i = 0; i < 256; ++i) {
                 wptr[i] = wptr[i + 256] = wptr[i + 512] = ptr[i];
             }
         BOOL success = SetDeviceGammaRamp(hdc(), wptr);
 
-        if (! success) {
-            if (debugLog) {debugLog->println("Error setting gamma ramp! (Possibly LCD monitor)");}
+        if (!success) {
+            if (debugLog) { debugLog->println("Error setting gamma ramp! (Possibly LCD monitor)"); }
         }
     }
 
@@ -743,20 +746,20 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::setRelativeMousePosition(const Vector2& p) {
+    void Win32Window::setRelativeMousePosition(const Vector2 &p) {
         setRelativeMousePosition(p.x, p.y);
     }
 
 
-    void Win32Window::getRelativeMouseState(Vector2& p, uint8& mouseButtons) const {
+    void Win32Window::getRelativeMouseState(Vector2 &p, uint8 &mouseButtons) const {
         int x, y;
         getRelativeMouseState(x, y, mouseButtons);
-        p.x = (float)x;
-        p.y = (float)y;
+        p.x = (float) x;
+        p.y = (float) y;
     }
 
 
-    void Win32Window::getRelativeMouseState(int& x, int& y, uint8& mouseButtons) const {
+    void Win32Window::getRelativeMouseState(int &x, int &y, uint8 &mouseButtons) const {
         POINT point;
         GetCursorPos(&point);
         x = point.x - clientX;
@@ -770,7 +773,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    void Win32Window::getRelativeMouseState(double& x, double& y, uint8& mouseButtons) const {
+    void Win32Window::getRelativeMouseState(double &x, double &y, uint8 &mouseButtons) const {
         int ix, iy;
         getRelativeMouseState(ix, iy, mouseButtons);
         x = ix;
@@ -778,7 +781,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
     inline void Win32Window::enableDirectInput() const {
-        if (_diDevices==NULL)
+        if (_diDevices == NULL)
             _diDevices = new _DirectInput(window);
     }
 
@@ -788,14 +791,13 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    std::string Win32Window::joystickName(unsigned int sticknum)
-    {
+    std::string Win32Window::joystickName(unsigned int sticknum) {
         enableDirectInput();
         return _diDevices->getJoystickName(sticknum);
     }
 
 
-    void Win32Window::getJoystickState(unsigned int stickNum, Array<float>& axis, Array<bool>& button) {
+    void Win32Window::getJoystickState(unsigned int stickNum, Array<float> &axis, Array<bool> &button) {
 
         enableDirectInput();
         if (!_diDevices->joystickExists(stickNum)) {
@@ -843,15 +845,15 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         std::string name = "G3D";
         WNDCLASS window_class;
 
-        window_class.style         = CS_HREDRAW | CS_VREDRAW;
-        window_class.lpfnWndProc   = _internal::window_proc;
-        window_class.cbClsExtra    = 0;
-        window_class.cbWndExtra    = 0;
-        window_class.hInstance     = GetModuleHandle(NULL);
-        window_class.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
-        window_class.hCursor       = LoadCursor(NULL, IDC_ARROW);
-        window_class.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-        window_class.lpszMenuName  = name.c_str();
+        window_class.style = CS_HREDRAW | CS_VREDRAW;
+        window_class.lpfnWndProc = _internal::window_proc;
+        window_class.cbClsExtra = 0;
+        window_class.cbWndExtra = 0;
+        window_class.hInstance = GetModuleHandle(NULL);
+        window_class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+        window_class.hCursor = LoadCursor(NULL, IDC_ARROW);
+        window_class.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
+        window_class.lpszMenuName = name.c_str();
         window_class.lpszClassName = "window";
 
         int ret = RegisterClass(&window_class);
@@ -860,30 +862,30 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         // Create some dummy pixel format.
         PIXELFORMATDESCRIPTOR pfd =
                 {
-                        sizeof (PIXELFORMATDESCRIPTOR),									// Size Of This Pixel Format Descriptor
-                        1,																// Version Number
-                        PFD_DRAW_TO_WINDOW |											// Format Must Support Window
-                        PFD_SUPPORT_OPENGL |											// Format Must Support OpenGL
-                        PFD_DOUBLEBUFFER,												// Must Support Double Buffering
-                        PFD_TYPE_RGBA,													// Request An RGBA Format
-                        24,		                        								// Select Our Color Depth
-                        0, 0, 0, 0, 0, 0,												// Color Bits Ignored
-                        1,																// Alpha Buffer
-                        0,																// Shift Bit Ignored
-                        0,																// No Accumulation Buffer
-                        0, 0, 0, 0,														// Accumulation Bits Ignored
-                        16,																// 16Bit Z-Buffer (Depth Buffer)
-                        0,																// No Stencil Buffer
-                        0,																// No Auxiliary Buffer
-                        PFD_MAIN_PLANE,													// Main Drawing Layer
-                        0,																// Reserved
-                        0, 0, 0															// Layer Masks Ignored
+                        sizeof(PIXELFORMATDESCRIPTOR),                                    // Size Of This Pixel Format Descriptor
+                        1,                                                                // Version Number
+                        PFD_DRAW_TO_WINDOW |                                            // Format Must Support Window
+                        PFD_SUPPORT_OPENGL |                                            // Format Must Support OpenGL
+                        PFD_DOUBLEBUFFER,                                                // Must Support Double Buffering
+                        PFD_TYPE_RGBA,                                                    // Request An RGBA Format
+                        24,                                                                // Select Our Color Depth
+                        0, 0, 0, 0, 0, 0,                                                // Color Bits Ignored
+                        1,                                                                // Alpha Buffer
+                        0,                                                                // Shift Bit Ignored
+                        0,                                                                // No Accumulation Buffer
+                        0, 0, 0, 0,                                                        // Accumulation Bits Ignored
+                        16,                                                                // 16Bit Z-Buffer (Depth Buffer)
+                        0,                                                                // No Stencil Buffer
+                        0,                                                                // No Auxiliary Buffer
+                        PFD_MAIN_PLANE,                                                    // Main Drawing Layer
+                        0,                                                                // Reserved
+                        0, 0, 0                                                            // Layer Masks Ignored
                 };
 
         HWND hWnd = CreateWindow("window", "", 0, 0, 0, 100, 100, NULL, NULL, GetModuleHandle(NULL), NULL);
         debugAssert(hWnd);
 
-        HDC  hDC  = GetDC(hWnd);
+        HDC hDC = GetDC(hWnd);
         debugAssert(hDC);
 
         int pixelFormat = ChoosePixelFormat(hDC, &pfd);
@@ -896,7 +898,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         HGLRC hRC = wglCreateContext(hDC);
         debugAssert(hRC);
 
-        if (wglMakeCurrent(hDC, hRC) == FALSE)	{
+        if (wglMakeCurrent(hDC, hRC) == FALSE) {
             debugAssertM(false, "Failed to set context");
         }
 
@@ -904,10 +906,10 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         // destroy everything.
 
         wglChoosePixelFormatARB =
-                (PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+                (PFNWGLCHOOSEPIXELFORMATARBPROC) wglGetProcAddress("wglChoosePixelFormatARB");
 
         PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
-                (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+                (PFNWGLGETEXTENSIONSSTRINGARBPROC) wglGetProcAddress("wglGetExtensionsStringARB");
 
         if (wglGetExtensionsStringARB != NULL) {
 
@@ -917,7 +919,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
             extensionsStream.str(wglExtensions.c_str());
 
             std::string extension;
-            while ( extensionsStream >> extension ) {
+            while (extensionsStream >> extension) {
                 if (extension == "WGL_ARB_multisample") {
                     hasWGLMultiSampleSupport = true;
                     break;
@@ -957,10 +959,10 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         // recursion.
 #	if defined(_MSC_VER) && (_MSC_VER <= 1200)
         // VC6 doesn't have a "reset" method on auto_ptr.  This statement
-		// accomplishes the same purpose for that implementation, however.
-		// Morgan verified that the source correctly passes ownership from the
-		// newly created auto_ptr to the old one.
-		_shareWindow = std::auto_ptr<Win32Window>(new Win32Window(settings, true));
+        // accomplishes the same purpose for that implementation, however.
+        // Morgan verified that the source correctly passes ownership from the
+        // newly created auto_ptr to the old one.
+        _shareWindow = std::auto_ptr<Win32Window>(new Win32Window(settings, true));
 #	else
         _shareWindow.reset(new Win32Window(settings, true));
 #	endif
@@ -971,7 +973,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         debugAssertM(_thread == ::GetCurrentThread(),
                      "Cannot call GWindow::makeCurrent on different threads.");
 
-        if (wglMakeCurrent(_hDC, _glContext) == FALSE)	{
+        if (wglMakeCurrent(_hDC, _glContext) == FALSE) {
             debugAssertM(false, "Failed to set context");
         }
     }
@@ -999,10 +1001,10 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         bppTries[1] = 32;
         bppTries[2] = 16;
 
-        deviceMode.dmSize       = sizeof(DEVMODE);
-        deviceMode.dmPelsWidth  = width;
+        deviceMode.dmSize = sizeof(DEVMODE);
+        deviceMode.dmPelsWidth = width;
         deviceMode.dmPelsHeight = height;
-        deviceMode.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
+        deviceMode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
         deviceMode.dmDisplayFrequency = refreshRate;
 
         LONG result = -1;
@@ -1026,7 +1028,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
     }
 
 
-    static void makeKeyEvent(int vkCode, int lParam, GEvent& e) {
+    static void makeKeyEvent(int vkCode, int lParam, GEvent &e) {
 
         // If true, we're looking at the right hand version of
         // Fix VK_SHIFT, VK_CONTROL, VK_MENU
@@ -1087,23 +1089,23 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         if (lpKeyState[VK_RMENU] & 0x80) {
             mod = mod | KMOD_RALT;
         }
-        e.key.keysym.mod = (SDL_Keymod)mod;
+        e.key.keysym.mod = (SDL_Keymod) mod;
 
-        ToUnicode(vkCode, e.key.keysym.scancode, lpKeyState, (LPWSTR)&e.key.keysym.sym, 1, 0);
+        ToUnicode(vkCode, e.key.keysym.scancode, lpKeyState, (LPWSTR) &e.key.keysym.sym, 1, 0);
     }
 
 
 /** 
  Configures a mouse up/down event
  */
-    static void mouseButton(bool down, int keyEvent, DWORD flags, GEvent& e) {
-        (void)flags;
+    static void mouseButton(bool down, int keyEvent, DWORD flags, GEvent &e) {
+        (void) flags;
         // TODO: process flags
         if (down) {
-            e.key.type  = SDL_KEYDOWN;
+            e.key.type = SDL_KEYDOWN;
             e.key.state = SDL_PRESSED;
         } else {
-            e.key.type  = SDL_KEYUP;
+            e.key.type = SDL_KEYUP;
             e.key.state = SDL_RELEASED;
         }
 
@@ -1138,7 +1140,7 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         if (lpKeyState[VK_RMENU] & 0x80) {
             mod = mod | KMOD_RALT;
         }
-        e.key.keysym.mod = (SDL_Keymod)mod;
+        e.key.keysym.mod = (SDL_Keymod) mod;
     }
 
 
@@ -1323,23 +1325,23 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
 }
 #endif
 
-    namespace _internal{
+    namespace _internal {
         static LRESULT WINAPI window_proc(
-                HWND                window,
-                UINT                message,
-                WPARAM              wparam,
-                LPARAM              lparam) {
+                HWND window,
+                UINT message,
+                WPARAM wparam,
+                LPARAM lparam) {
 
-            Win32Window* this_window = (Win32Window*)GetWindowLongPtr(window, GWLP_USERDATA);
+            Win32Window *this_window = (Win32Window *) GetWindowLongPtr(window, GWLP_USERDATA);
 
             if (this_window != NULL) {
                 switch (message) {
                     case WM_ACTIVATE:
                         if ((LOWORD(wparam) != WA_INACTIVE) &&
                             (HIWORD(wparam) == 0) &&
-                            ((HWND)lparam != this_window->hwnd())) { // non-zero is minimized
+                            ((HWND) lparam != this_window->hwnd())) { // non-zero is minimized
                             this_window->_windowActive = true;
-                        } else if ((HWND)lparam != this_window->hwnd()) {
+                        } else if ((HWND) lparam != this_window->hwnd()) {
                             this_window->_windowActive = false;
                         }
                         break;
@@ -1382,9 +1384,9 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         }
     }
 
-    static const char* G3DWndClass() {
+    static const char *G3DWndClass() {
 
-        static char const* g3dWindowClassName = NULL;
+        static char const *g3dWindowClassName = NULL;
 
         if (g3dWindowClassName == NULL) {
 

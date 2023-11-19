@@ -23,7 +23,7 @@
 
 namespace G3D {
 
-class CoordinateFrame;
+    class CoordinateFrame;
 
 /**
  An arbitrary 3D box, useful as a bounding box. 
@@ -33,199 +33,200 @@ class CoordinateFrame;
 
  <CODE>Box box = cframe.toObjectSpace(Box(center - extent/2, center + extent/2));</CODE>
  */
-class Box {
-private:
+    class Box {
+    private:
 
-    static int32 dummy;
+        static int32 dummy;
 
-    friend class CoordinateFrame;
+        friend class CoordinateFrame;
 
-    /**
-      <PRE>
-       3    2       7    6
-    
-       0    1       4    5
+        /**
+          <PRE>
+           3    2       7    6
 
-       front    back (seen through front)
-      </PRE>
-     */
-    Vector3 _corner[8];
+           0    1       4    5
 
-    /**
-     Unit axes.
-     */
-    Vector3 _axis[3];
-   
-    Vector3 _center;
+           front    back (seen through front)
+          </PRE>
+         */
+        Vector3 _corner[8];
 
-    /**
-     Extent along each axis.
-     */
-    Vector3 _extent;
+        /**
+         Unit axes.
+         */
+        Vector3 _axis[3];
 
-    float  _area;
-    float  _volume;
+        Vector3 _center;
 
-    void init(
-        const Vector3& min,
-        const Vector3& max);
+        /**
+         Extent along each axis.
+         */
+        Vector3 _extent;
 
-public:
+        float _area;
+        float _volume;
 
-    /**
-     Does not initialize the fields.
-     */
-    Box();
+        void init(
+                const Vector3 &min,
+                const Vector3 &max);
 
-    /**
-      Constructs a box from two opposite corners.
-     */
-    Box(
-        const Vector3&      min,
-        const Vector3&      max);
+    public:
 
-	Box(class BinaryInput& b);
+        /**
+         Does not initialize the fields.
+         */
+        Box();
 
-    Box(const class AABox& b);
+        /**
+          Constructs a box from two opposite corners.
+         */
+        Box(
+                const Vector3 &min,
+                const Vector3 &max);
 
-	void serialize(class BinaryOutput& b) const;
-	void deserialize(class BinaryInput& b);
+        Box(class BinaryInput &b);
 
-    /**
-     Returns the object to world transformation for 
-     this box.  localFrame().worldToObject(...) takes
-     objects into the space where the box axes are
-     (1,0,0), (0,1,0), (0,0,1).  Note that there
-     is no scaling in this transformation.
-     */
-    CoordinateFrame localFrame() const;
+        Box(const class AABox &b);
 
-    void getLocalFrame(CoordinateFrame& frame) const;
+        void serialize(class BinaryOutput &b) const;
 
-    /**
-      Returns the centroid of the box.
-     */
-    inline Vector3 center() const {
-        return _center;
-    }
+        void deserialize(class BinaryInput &b);
 
-    inline Vector3 getCenter() const {
-        return center();
-    }
+        /**
+         Returns the object to world transformation for
+         this box.  localFrame().worldToObject(...) takes
+         objects into the space where the box axes are
+         (1,0,0), (0,1,0), (0,0,1).  Note that there
+         is no scaling in this transformation.
+         */
+        CoordinateFrame localFrame() const;
 
-    /**
-     Returns a corner (0 <= i < 8)
-     @deprecated
-     */
-    inline Vector3 getCorner(int i) const {
-        debugAssert(i < 8);
-        return _corner[i];
-    }
+        void getLocalFrame(CoordinateFrame &frame) const;
 
-    inline Vector3 corner(int i) const {
-        debugAssert(i < 8);
-        return _corner[i];
-    }
+        /**
+          Returns the centroid of the box.
+         */
+        inline Vector3 center() const {
+            return _center;
+        }
 
-    /**
-     Unit length.
-     */
-    inline Vector3 axis(int a) const {
-        debugAssert(a < 3);
-        return _axis[a];
-    }
+        inline Vector3 getCenter() const {
+            return center();
+        }
 
-    /**
-     Distance from corner(0) to the next corner
-     along the box's local axis a.
-     */
-    inline float extent(int a) const {
-        debugAssert(a < 3);
-        return (float)_extent[a];
-    }
+        /**
+         Returns a corner (0 <= i < 8)
+         @deprecated
+         */
+        inline Vector3 getCorner(int i) const {
+            debugAssert(i < 8);
+            return _corner[i];
+        }
 
-    inline Vector3 extent() const {
-        return _extent;
-    }
+        inline Vector3 corner(int i) const {
+            debugAssert(i < 8);
+            return _corner[i];
+        }
 
-    /**
-     Returns the four corners of a face (0 <= f < 6).
-     The corners are returned to form a counter clockwise quad facing outwards.
-     */
-    void getFaceCorners(
-        int                 f,
-        Vector3&            v0,
-        Vector3&            v1,
-        Vector3&            v2,
-        Vector3&            v3) const;
+        /**
+         Unit length.
+         */
+        inline Vector3 axis(int a) const {
+            debugAssert(a < 3);
+            return _axis[a];
+        }
+
+        /**
+         Distance from corner(0) to the next corner
+         along the box's local axis a.
+         */
+        inline float extent(int a) const {
+            debugAssert(a < 3);
+            return (float) _extent[a];
+        }
+
+        inline Vector3 extent() const {
+            return _extent;
+        }
+
+        /**
+         Returns the four corners of a face (0 <= f < 6).
+         The corners are returned to form a counter clockwise quad facing outwards.
+         */
+        void getFaceCorners(
+                int f,
+                Vector3 &v0,
+                Vector3 &v1,
+                Vector3 &v2,
+                Vector3 &v3) const;
 
 /**
 	 @deprecated Use culledBy(Array<Plane>&)
      */
-    bool culledBy(
-        const class Plane*  plane,
-        int                 numPlanes,
-		int32&				cullingPlaneIndex,
-		const uint32  		testMask,
-        uint32&             childMask) const;
+        bool culledBy(
+                const class Plane *plane,
+                int numPlanes,
+                int32 &cullingPlaneIndex,
+                const uint32 testMask,
+                uint32 &childMask) const;
 
-    /**
-	 @deprecated Use culledBy(Array<Plane>&)
-     */
-    bool culledBy(
-        const class Plane*  plane,
-        int                 numPlanes,
-		int32&				cullingPlaneIndex = dummy,
-		const uint32  		testMask = -1) const;
+        /**
+         @deprecated Use culledBy(Array<Plane>&)
+         */
+        bool culledBy(
+                const class Plane *plane,
+                int numPlanes,
+                int32 &cullingPlaneIndex = dummy,
+                const uint32 testMask = -1) const;
 
-	/**
-      See AABox::culledBy
-	 */
-	bool culledBy(
-		const Array<Plane>&		plane,
-		int32&					cullingPlaneIndex,
-		const uint32  			testMask,
-        uint32&                 childMask) const;
+        /**
+          See AABox::culledBy
+         */
+        bool culledBy(
+                const Array<Plane> &plane,
+                int32 &cullingPlaneIndex,
+                const uint32 testMask,
+                uint32 &childMask) const;
 
-    /**
-     Conservative culling test that does not produce a mask for children.
-     */
-	bool culledBy(
-		const Array<Plane>&		plane,
-		int32&					cullingPlaneIndex = dummy,
-		const uint32  			testMask		  = -1) const;
+        /**
+         Conservative culling test that does not produce a mask for children.
+         */
+        bool culledBy(
+                const Array<Plane> &plane,
+                int32 &cullingPlaneIndex = dummy,
+                const uint32 testMask = -1) const;
 
-    bool contains(
-        const Vector3&      point) const;
+        bool contains(
+                const Vector3 &point) const;
 
-    /** @deprecated */
-    float surfaceArea() const;
+        /** @deprecated */
+        float surfaceArea() const;
 
-    inline float area() const {
-        return surfaceArea();
-    }
+        inline float area() const {
+            return surfaceArea();
+        }
 
-    float volume() const;
+        float volume() const;
 
-    void getRandomSurfacePoint(Vector3& P, Vector3& N = Vector3::dummy) const;
+        void getRandomSurfacePoint(Vector3 &P, Vector3 &N = Vector3::dummy) const;
 
-    /**
-      @deprecated
-     Uniformly distributed on the surface.
-     */
-    inline Vector3 randomSurfacePoint() const {
-        Vector3 V;
-        getRandomSurfacePoint(V);
-        return V;
-    }
+        /**
+          @deprecated
+         Uniformly distributed on the surface.
+         */
+        inline Vector3 randomSurfacePoint() const {
+            Vector3 V;
+            getRandomSurfacePoint(V);
+            return V;
+        }
 
-    /**
-     Uniformly distributed on the interior (includes surface)
-     */
-    Vector3 randomInteriorPoint() const;
+        /**
+         Uniformly distributed on the interior (includes surface)
+         */
+        Vector3 randomInteriorPoint() const;
 
-    void getBounds(class AABox&) const;
-};
+        void getBounds(class AABox &) const;
+    };
 
 }
 

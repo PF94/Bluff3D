@@ -12,7 +12,9 @@
 
 #ifdef G3D_WIN32
 #   if (G3D_WINSOCK_MAJOR_VERSION == 2)
+
 #       include <winsock2.h>
+
 #   elif (G3D_WINSOCK_MAJOR_VERSION == 1)
 #       include <winsock.h>
 #   endif
@@ -30,70 +32,77 @@
 
 namespace G3D {
 
-class NetAddress {
-private:
-    friend class NetworkDevice;
-    friend class LightweightConduit;
-    friend class ReliableConduit;
+    class NetAddress {
+    private:
+        friend class NetworkDevice;
 
-    /** Host byte order */
-    void init(uint32 host, uint16 port);
-    void init(const std::string& hostname, uint16 port);
-    NetAddress(const SOCKADDR_IN& a);
-    NetAddress(const struct in_addr& addr, uint16 port = 0);
+        friend class LightweightConduit;
 
-    SOCKADDR_IN                 addr;
+        friend class ReliableConduit;
 
-public:
-    /**
-     In host byte order
-     */
-    NetAddress(uint32 host, uint16 port = 0);
+        /** Host byte order */
+        void init(uint32 host, uint16 port);
 
-    /**
-     Port is in host byte order.
-     */
-    NetAddress(const std::string& hostname, uint16 port);
+        void init(const std::string &hostname, uint16 port);
 
-    /**
-    String must be in the form "hostname:port"
-     */
-    NetAddress(const std::string& hostnameAndPort);
+        NetAddress(const SOCKADDR_IN &a);
 
-    /**
-     For use with a lightweight conduit.
-     */
-    static NetAddress broadcastAddress(uint16 port);
+        NetAddress(const struct in_addr &addr, uint16 port = 0);
 
-    NetAddress();
+        SOCKADDR_IN addr;
 
-    void serialize(class BinaryOutput& b) const;
-    void deserialize(class BinaryInput& b);
+    public:
+        /**
+         In host byte order
+         */
+        NetAddress(uint32 host, uint16 port = 0);
 
-    /** Returns true if this is not an illegal address. */
-    bool ok() const;
+        /**
+         Port is in host byte order.
+         */
+        NetAddress(const std::string &hostname, uint16 port);
 
-    /** Returns a value in host format */
-    inline uint32 ip() const {
-        return ntohl(addr.sin_addr.s_addr);
-        //return ntohl(addr.sin_addr.S_un.S_addr);
-    }
+        /**
+        String must be in the form "hostname:port"
+         */
+        NetAddress(const std::string &hostnameAndPort);
 
-    inline uint16 port() const {
-        return ntohs(addr.sin_port);
-    }
+        /**
+         For use with a lightweight conduit.
+         */
+        static NetAddress broadcastAddress(uint16 port);
 
-    std::string ipString() const;
-    std::string toString() const;
+        NetAddress();
 
-};
+        void serialize(class BinaryOutput &b) const;
 
-std::ostream& operator<<(std::ostream& os, const NetAddress&);
+        void deserialize(class BinaryInput &b);
+
+        /** Returns true if this is not an illegal address. */
+        bool ok() const;
+
+        /** Returns a value in host format */
+        inline uint32 ip() const {
+            return ntohl(addr.sin_addr.s_addr);
+            //return ntohl(addr.sin_addr.S_un.S_addr);
+        }
+
+        inline uint16 port() const {
+            return ntohs(addr.sin_port);
+        }
+
+        std::string ipString() const;
+
+        std::string toString() const;
+
+    };
+
+    std::ostream &operator<<(std::ostream &os, const NetAddress &);
 
 } // namespace G3D
 
-inline unsigned int hashCode(const G3D::NetAddress& a) {
-    return a.ip() + ((G3D::uint32)a.port() << 16);
+inline unsigned int hashCode(const G3D::NetAddress &a) {
+    return a.ip() + ((G3D::uint32) a.port() << 16);
 }
 
 namespace G3D {
@@ -102,14 +111,14 @@ namespace G3D {
  Two addresses may point to the same computer but be != because
  they have different IP's.
  */
-inline bool operator==(const NetAddress& a, const NetAddress& b) {
-	return (a.ip() == b.ip()) && (a.port() == b.port());
-}
+    inline bool operator==(const NetAddress &a, const NetAddress &b) {
+        return (a.ip() == b.ip()) && (a.port() == b.port());
+    }
 
 
-inline bool operator!=(const NetAddress& a, const NetAddress& b) {
-    return !(a == b);
-}
+    inline bool operator!=(const NetAddress &a, const NetAddress &b) {
+        return !(a == b);
+    }
 
 }
 

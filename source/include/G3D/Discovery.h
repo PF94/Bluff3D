@@ -59,60 +59,60 @@ namespace G3D {
  must have different ports.  However different programs can share the
  same ports if they run on the same LAN with different servers.
  */
-class DiscoverySettings {
-public:
+    class DiscoverySettings {
+    public:
 
-    /**
-     Name of the program using discovery; used so that mutliple
-     programs can use the same discovery ports on the same network.
-     */
-    const char*         appProtocolName;
+        /**
+         Name of the program using discovery; used so that mutliple
+         programs can use the same discovery ports on the same network.
+         */
+        const char *appProtocolName;
 
-    /**
-     Version of the network protocol of the program using discovery.
-     Used so that discovery can identify incompatible versions of 
-     the server.
-     */
-    int                 appProtocolVersion;
+        /**
+         Version of the network protocol of the program using discovery.
+         Used so that discovery can identify incompatible versions of
+         the server.
+         */
+        int appProtocolVersion;
 
-    /**
-     Port on which the server broadcasts its identity.    The client
-     and server must agree on this value.
-     */
-    uint16              serverBroadcastPort;
+        /**
+         Port on which the server broadcasts its identity.    The client
+         and server must agree on this value.
+         */
+        uint16 serverBroadcastPort;
 
-    /**
-     Port on which the client broadcasts a server request.  The client
-     and server must agree on this value.
-     */
-    uint16              clientBroadcastPort;
+        /**
+         Port on which the client broadcasts a server request.  The client
+         and server must agree on this value.
+         */
+        uint16 clientBroadcastPort;
 
-    /**
-     Clients connect into this port using a reliable conduit
-     to receive the advertisement from a server.  The client
-     doesn't look at this value; it uses whatever the server
-     sends it.
-    */
-    uint16              serverAdvertisementPort;
+        /**
+         Clients connect into this port using a reliable conduit
+         to receive the advertisement from a server.  The client
+         doesn't look at this value; it uses whatever the server
+         sends it.
+        */
+        uint16 serverAdvertisementPort;
 
-    /**
-     You can use the default G3D discovery ports as long as no other program
-     with the same protocol name is using this port.  You <B>can</B>
-     run two different G3D discovery programs on the same two ports
-     as long as they have different application protocol strings.
-     */
-    DiscoverySettings(
-        const char*     _appProtocolName,
-        int             _appProtocolVersion,
-        uint16          _serverBroadcast = 6173,
-        uint16          _clientBroadcast = 6174,
-        uint16          _serverAdvertisementPort = 6175) :
-        appProtocolName(_appProtocolName),
-        appProtocolVersion(_appProtocolVersion),
-        serverBroadcastPort(_serverBroadcast),
-        clientBroadcastPort(_clientBroadcast),
-        serverAdvertisementPort(_serverAdvertisementPort) {}
-};
+        /**
+         You can use the default G3D discovery ports as long as no other program
+         with the same protocol name is using this port.  You <B>can</B>
+         run two different G3D discovery programs on the same two ports
+         as long as they have different application protocol strings.
+         */
+        DiscoverySettings(
+                const char *_appProtocolName,
+                int _appProtocolVersion,
+                uint16 _serverBroadcast = 6173,
+                uint16 _clientBroadcast = 6174,
+                uint16 _serverAdvertisementPort = 6175) :
+                appProtocolName(_appProtocolName),
+                appProtocolVersion(_appProtocolVersion),
+                serverBroadcastPort(_serverBroadcast),
+                clientBroadcastPort(_clientBroadcast),
+                serverAdvertisementPort(_serverAdvertisementPort) {}
+    };
 
 /**
  Make your own subclass of this advertisement.  Add fields
@@ -121,188 +121,190 @@ public:
 
  Overrides must provide a default constructor.
  */
-class DiscoveryAdvertisement {
-public:
+    class DiscoveryAdvertisement {
+    public:
 
-    /**
-     Address to connect to on the server for the actual game. 
-     The IP portion is ignored (the client figures out the IP
-     address from the packet itself) but the port is essential.
-     Note that this port must not be the discovery port.
-     */
-    NetAddress                  address;
+        /**
+         Address to connect to on the server for the actual game.
+         The IP portion is ignored (the client figures out the IP
+         address from the packet itself) but the port is essential.
+         Note that this port must not be the discovery port.
+         */
+        NetAddress address;
 
-    /**
-     (Only used on the client)
-     Time since this advertisement was updated.
-     */
-    RealTime                    lastUpdateTime;
+        /**
+         (Only used on the client)
+         Time since this advertisement was updated.
+         */
+        RealTime lastUpdateTime;
 
-    /**
-     Overrides must call DiscoveryAdvertisement::serialize(b) first.
-     */
-    virtual void serialize(BinaryOutput& b) const;
+        /**
+         Overrides must call DiscoveryAdvertisement::serialize(b) first.
+         */
+        virtual void serialize(BinaryOutput &b) const;
 
-    /**
-     Overrides must call DiscoveryAdvertisement::deserialize(b) first.
-     */
-    virtual void deserialize(BinaryInput& b);
+        /**
+         Overrides must call DiscoveryAdvertisement::deserialize(b) first.
+         */
+        virtual void deserialize(BinaryInput &b);
 
-    /**
-     An empty virtual destructor for virtual methods.
-    */
-    virtual ~DiscoveryAdvertisement() {}
-};
+        /**
+         An empty virtual destructor for virtual methods.
+        */
+        virtual ~DiscoveryAdvertisement() {}
+    };
 
 
 /**
  Sent by servers to describe their location.
  */
-class DiscoveryServerAddressMessage {
-public:
+    class DiscoveryServerAddressMessage {
+    public:
 
-    /**
-     Not part of the message; these settings are used to determine
-     if the correct protocol is being used.
-     */
-    const DiscoverySettings*    settings;
+        /**
+         Not part of the message; these settings are used to determine
+         if the correct protocol is being used.
+         */
+        const DiscoverySettings *settings;
 
 
-    /**
-     Set to true if this server is running the correct protocol.
-     */
-    bool                        correctProtocol;
+        /**
+         Set to true if this server is running the correct protocol.
+         */
+        bool correctProtocol;
 
-    /**
-     This is set during the serialize process from the server's settings.
-     If different from the client's settings the discovery system will
-     classify this server as incompatible.
-     */
-    int                         serverProtocolVersion[2];
+        /**
+         This is set during the serialize process from the server's settings.
+         If different from the client's settings the discovery system will
+         classify this server as incompatible.
+         */
+        int serverProtocolVersion[2];
 
-    Array<NetAddress>           address;
+        Array<NetAddress> address;
 
-    DiscoveryServerAddressMessage() {}
-    DiscoveryServerAddressMessage(const DiscoverySettings* s) : settings(s) {}
+        DiscoveryServerAddressMessage() {}
 
-    void serialize(BinaryOutput& b) const;
+        DiscoveryServerAddressMessage(const DiscoverySettings *s) : settings(s) {}
 
-    void deserialize(BinaryInput& b);
-};
+        void serialize(BinaryOutput &b) const;
+
+        void deserialize(BinaryInput &b);
+    };
 
 
 /**
  Base class for DiscoveryClient and DiscoveryServer.
  */
-class Discovery {
-public:
-
-    NetworkDevice*              netDevice;
-    const DiscoverySettings*    settings;
-
-    enum {
-        SERVER_SHUTDOWN_MESSAGE  = 2,
-        SERVER_BROADCAST_MESSAGE = 3,
-        CLIENT_BROADCAST_MESSAGE = 4};
-
-    /**
-     Only called from subclasses.
-     */
-    virtual void init(
-        NetworkDevice*           _netDevice,
-        const DiscoverySettings* _settings) {
-        debugAssert(_netDevice);
-        netDevice = _netDevice;
-        settings  = _settings;
-    }
-
-    /**
-     An empty virtual destructor for virtual methods.
-    */
-    virtual ~Discovery() {}
-};
-
-
-class DiscoveryServer : private Discovery {
-private:
-
-    class ShutdownMessage {
+    class Discovery {
     public:
-        void serialize(BinaryOutput& b) const { (void)b; }
 
-        void deserialize(BinaryInput& b) { (void)b; }
+        NetworkDevice *netDevice;
+        const DiscoverySettings *settings;
+
+        enum {
+            SERVER_SHUTDOWN_MESSAGE = 2,
+            SERVER_BROADCAST_MESSAGE = 3,
+            CLIENT_BROADCAST_MESSAGE = 4
+        };
+
+        /**
+         Only called from subclasses.
+         */
+        virtual void init(
+                NetworkDevice *_netDevice,
+                const DiscoverySettings *_settings) {
+            debugAssert(_netDevice);
+            netDevice = _netDevice;
+            settings = _settings;
+        }
+
+        /**
+         An empty virtual destructor for virtual methods.
+        */
+        virtual ~Discovery() {}
     };
 
-    /**
-     For broadcast.
-     */
-    LightweightConduitRef           net;
 
-    /**
-     Listen for clients wanting to hear the advertisement over
-     a reliable connection.
-     */
-    NetListenerRef                  listener;
+    class DiscoveryServer : private Discovery {
+    private:
 
-    DiscoveryAdvertisement*         advertisement;
+        class ShutdownMessage {
+        public:
+            void serialize(BinaryOutput &b) const { (void) b; }
 
-    /**
-     Broadcast across the lightweight conduit.
-     */
-    DiscoveryServerAddressMessage   addressMessage;
+            void deserialize(BinaryInput &b) { (void) b; }
+        };
 
-    /**
-     Servers periodically broadcast (unsolicited) in case
-     anyone missed the previous message.
-     */
-    RealTime                        lastBroadcast;
+        /**
+         For broadcast.
+         */
+        LightweightConduitRef net;
 
-    void sendAnnouncement() const;
+        /**
+         Listen for clients wanting to hear the advertisement over
+         a reliable connection.
+         */
+        NetListenerRef listener;
 
-    void sendShutDown() const;
+        DiscoveryAdvertisement *advertisement;
 
-public:
+        /**
+         Broadcast across the lightweight conduit.
+         */
+        DiscoveryServerAddressMessage addressMessage;
 
-    /**
-     You may update the advertisement (synchronously with calling doNetwork)
-     after it has been passed in.  This allows a server to change the advertised
-     number of players or score for a game, for example.
-     */
-    virtual void init(
-        NetworkDevice*           _netDevice,
-        const DiscoverySettings* _settings,
-        DiscoveryAdvertisement*  _advertisement);
+        /**
+         Servers periodically broadcast (unsolicited) in case
+         anyone missed the previous message.
+         */
+        RealTime lastBroadcast;
 
-    /**
-     Returns true if this discovery server has been initialized
-     and is functioning properly.
-     */
-    bool ok() const;
+        void sendAnnouncement() const;
 
-    /**
-     Call periodically to let the server do its job.
-     */
-    void doNetwork();
+        void sendShutDown() const;
 
-    /**
-     Broadcast a shutdown message.
-     */
-    void cleanup();
-};
+    public:
+
+        /**
+         You may update the advertisement (synchronously with calling doNetwork)
+         after it has been passed in.  This allows a server to change the advertised
+         number of players or score for a game, for example.
+         */
+        virtual void init(
+                NetworkDevice *_netDevice,
+                const DiscoverySettings *_settings,
+                DiscoveryAdvertisement *_advertisement);
+
+        /**
+         Returns true if this discovery server has been initialized
+         and is functioning properly.
+         */
+        bool ok() const;
+
+        /**
+         Call periodically to let the server do its job.
+         */
+        void doNetwork();
+
+        /**
+         Broadcast a shutdown message.
+         */
+        void cleanup();
+    };
 
 
 /**
  Used by DiscoveryClient to report servers running a different version
  of this application's protocol.
  */
-class IncompatibleServerDescription {
-public:
-    NetAddress                  address;
-    int                         protocolVersion[2];
-    RealTime                    lastUpdateTime;
+    class IncompatibleServerDescription {
+    public:
+        NetAddress address;
+        int protocolVersion[2];
+        RealTime lastUpdateTime;
 
-    std::string toString() const;
-};
+        std::string toString() const;
+    };
 
 
 /**
@@ -311,275 +313,275 @@ public:
 
  AdType must be a subclass of DiscoveryAdvertisement.
  */
-template<class AdType> 
-class DiscoveryClient : private Discovery {
-public:
-
-    /**
-     List of servers.  Do not access on a second thread while in
-     doNetwork.
-     */
-    Array<AdType>                       serverList;
-
-    /**
-     List of servers running the same application but a different protocol.
-     It is useful to show these to users to help them recognize version
-     conflicts between client and server.
-     Do not access on a second thread while in doNetwork.
-     */
-    Array<IncompatibleServerDescription> incompatibleServerList;
-
-private:
-
-    class BroadcastMessage {
+    template<class AdType>
+    class DiscoveryClient : private Discovery {
     public:
-        void serialize(BinaryOutput& b) const {}
 
-        void deserialize(BinaryInput& b) {}
-    };
+        /**
+         List of servers.  Do not access on a second thread while in
+         doNetwork.
+         */
+        Array<AdType> serverList;
 
-    /**
-     The client periodically checks servers to make sure they are still up
-     and to update its information about them.
-     */
-    RealTime                            lastServerCheck;
+        /**
+         List of servers running the same application but a different protocol.
+         It is useful to show these to users to help them recognize version
+         conflicts between client and server.
+         Do not access on a second thread while in doNetwork.
+         */
+        Array<IncompatibleServerDescription> incompatibleServerList;
 
-    LightweightConduitRef               net;
+    private:
 
-    /**
-     Returns an index in serverList of the server with the given address.
-     Returns -1 if there is none.  Only checks IP addresses.
-     */
-    int findServerListIndex(const NetAddress& addr) const {
-        for (int i = 0; i < serverList.size(); ++i) {
-            if (addr.ip() == serverList[i].address.ip()) {
-                return i;
-            }
-        }
+        class BroadcastMessage {
+        public:
+            void serialize(BinaryOutput &b) const {}
 
-        return -1;
-    }
-    
-    /**
-     Returns true if this discovery client has been initialized
-     and is functioning properly.
-     */
-    bool ok() const {
-        return net->ok();
-    }
+            void deserialize(BinaryInput &b) {}
+        };
 
-    /**
-     Adds a server to the incompatible list if it is not already there.
-     */
-    void addToIncompatibleList(const NetAddress& addr, uint32 p0, uint32 p1) {
-        const RealTime now = System::time();
-        
-        bool alreadyHere = false;
+        /**
+         The client periodically checks servers to make sure they are still up
+         and to update its information about them.
+         */
+        RealTime lastServerCheck;
 
-        // Incorrect protocol; add to the incompatible list
-        for (int i = 0; i < incompatibleServerList.size(); ++i) {
-            IncompatibleServerDescription& server = incompatibleServerList[i];
+        LightweightConduitRef net;
 
-            if (server.address == addr) {
-                server.lastUpdateTime = now;
-                alreadyHere = true;
-                break;
-            }
-        }
-
-        if (! alreadyHere) {
-            IncompatibleServerDescription server;
-
-            server.lastUpdateTime       = now;
-            server.address              = addr;
-            server.protocolVersion[0]   = p0;
-            server.protocolVersion[1]   = p1;
-
-            incompatibleServerList.append(server);
-        }
-    }
-
-    /**
-     Connects to the specified server, reads its advertisement,
-     and adds it to the active server list.  Returns true if the server
-     can be reached.
-     */
-    bool readAdvertisement(const NetAddress& address) {
-        std::string hostname = address.toString();
-
-        RealTime TIMEOUT = 2.0;
-
-        ReliableConduitRef server = netDevice->createReliableConduit(address);
-
-        if (! server->ok()) {
-            return false;
-        }
-
-        AdType advertisement;
-
-        // Read the advertisement
-        RealTime stopWaiting = System::time() + TIMEOUT;
-        bool timedOut = false;
-
-        while (! server->messageWaiting() && ! timedOut && server->ok()) {
-            System::sleep(0.1);
-            timedOut = (System::time() > stopWaiting);
-        }
-
-        if (timedOut) {
-            if (netDevice->log()) {
-                netDevice->log()->printf("Discovery: Timed out while reading advertisment from %s\n",
-                    hostname.c_str());
-            }
-            return false;
-        }
-
-
-        if (! server->ok()) {
-            if (netDevice->log()) {
-                netDevice->log()->printf("Discovery: Server %s dropped connection\n", hostname.c_str());
-            }
-            return false;
-        }
-
-        // Read the advertisement
-        debugAssert(server->messageWaiting());
-        if (! server->receive(advertisement)) {
-            if (netDevice->log()) {
-                netDevice->log()->printf("Discovery: Server %s failed to send advertisement\n", hostname.c_str());
-            }
-            return false;
-        }
-
-        // Update existing server info or create a new entry
-        int index = findServerListIndex(address);
-        if (index == -1) {
-            index = serverList.size();
-            serverList.resize(index + 1);
-        }
-
-        // Update element index
-        advertisement.address = address;
-        serverList[index] = advertisement;
-
-        return true;
-    }
-
-    /**
-      Remove this address from our list if we previously
-      had a server there.
-      */
-    void removeServer(const NetAddress& address) {
-        int index = findServerListIndex(address);
-        if (index > -1) {
-            serverList.fastRemove(index);
-        }
-    }
-
-    /**
-     Tries to connect to the server through the addresses in the array.
-     */
-    void addToServerList(const Array<NetAddress>& addressArray) {
-        // Try to connect to each address listed
-        for (int a = addressArray.size() - 1; a >= 0; --a) {
-            const NetAddress& address = addressArray[a];
-
-            if (readAdvertisement(address)) {
-                // We've connected to the server
-                break;
-            } else {
-                removeServer(address);
-            }
-        }
-    }
-
-    void checkRandomServer() {
-        if (serverList.size() >= 1) {
-            int index = iRandom(0, serverList.size() - 1);
-
-            Array<NetAddress> address;
-            address.append(serverList[index].address);
-
-            // Remove this server
-            serverList.fastRemove(index);
-
-            // Add it back with new info (or leave it removed if no response)
-            addToServerList(address);
-        }
-    }
-
-public:
-
-    void init(
-        NetworkDevice*           _netDevice,
-        const DiscoverySettings* _settings) {
-
-        Discovery::init(_netDevice, _settings);
-
-        lastServerCheck = System::time();
-
-        net = netDevice->createLightweightConduit(settings->serverBroadcastPort, true, true);
-
-        // Send announcement
-        NetAddress broadcast = NetAddress::broadcastAddress(settings->clientBroadcastPort);
-        BroadcastMessage tmp;
-        net->send(broadcast, CLIENT_BROADCAST_MESSAGE, tmp);
-    }
-
-    /** Shut down the discovery client. */
-    void cleanup() {
-        net = NULL;
-    }
-
-    /**
-     Call this regularly (several times per second) to
-     update the server list.  Not threadsafe-- you must not touch
-     the server list while this is running.  This will not block.
-     */
-    void doNetwork() {
-        if (net->messageWaiting()) {
-            NetAddress sender;
-
-            switch (net->waitingMessageType()) {
-            case SERVER_SHUTDOWN_MESSAGE:
-                // Remove the server
-                net->receive(sender);
-                removeServer(sender);
-                break;
-
-            case SERVER_BROADCAST_MESSAGE:
-                // Check the G3D protocol and the network protocol, then read the ad
-                DiscoveryServerAddressMessage msg(settings);
-                net->receive(sender, msg);
-
-                if (msg.correctProtocol && (msg.address.size() > 0)) {
-                    // Add the actual return address as the first one to be tried.
-                    msg.address.append(NetAddress(sender.ip(), msg.address[0].port()));
-
-                    addToServerList(msg.address);
-
-                } else {
-
-                    addToIncompatibleList(
-                        sender,
-                        msg.serverProtocolVersion[0],
-                        msg.serverProtocolVersion[1]);
+        /**
+         Returns an index in serverList of the server with the given address.
+         Returns -1 if there is none.  Only checks IP addresses.
+         */
+        int findServerListIndex(const NetAddress &addr) const {
+            for (int i = 0; i < serverList.size(); ++i) {
+                    if (addr.ip() == serverList[i].address.ip()) {
+                        return i;
+                    }
                 }
-                break;
+
+            return -1;
+        }
+
+        /**
+         Returns true if this discovery client has been initialized
+         and is functioning properly.
+         */
+        bool ok() const {
+            return net->ok();
+        }
+
+        /**
+         Adds a server to the incompatible list if it is not already there.
+         */
+        void addToIncompatibleList(const NetAddress &addr, uint32 p0, uint32 p1) {
+            const RealTime now = System::time();
+
+            bool alreadyHere = false;
+
+            // Incorrect protocol; add to the incompatible list
+            for (int i = 0; i < incompatibleServerList.size(); ++i) {
+                    IncompatibleServerDescription &server = incompatibleServerList[i];
+
+                    if (server.address == addr) {
+                        server.lastUpdateTime = now;
+                        alreadyHere = true;
+                        break;
+                    }
+                }
+
+            if (!alreadyHere) {
+                IncompatibleServerDescription server;
+
+                server.lastUpdateTime = now;
+                server.address = addr;
+                server.protocolVersion[0] = p0;
+                server.protocolVersion[1] = p1;
+
+                incompatibleServerList.append(server);
             }
         }
 
-        // Periodically re-check servers in the list to see if they crashed
-        // (if they shut down, they should have broadcast a shut down message).
-        RealTime now = System::time();
-        const RealTime UPDATE_TIME_INTERVAL = 30;
+        /**
+         Connects to the specified server, reads its advertisement,
+         and adds it to the active server list.  Returns true if the server
+         can be reached.
+         */
+        bool readAdvertisement(const NetAddress &address) {
+            std::string hostname = address.toString();
 
-        if (now > lastServerCheck + UPDATE_TIME_INTERVAL) {
-            lastServerCheck = now;
-            checkRandomServer();
+            RealTime TIMEOUT = 2.0;
+
+            ReliableConduitRef server = netDevice->createReliableConduit(address);
+
+            if (!server->ok()) {
+                return false;
+            }
+
+            AdType advertisement;
+
+            // Read the advertisement
+            RealTime stopWaiting = System::time() + TIMEOUT;
+            bool timedOut = false;
+
+            while (!server->messageWaiting() && !timedOut && server->ok()) {
+                System::sleep(0.1);
+                timedOut = (System::time() > stopWaiting);
+            }
+
+            if (timedOut) {
+                if (netDevice->log()) {
+                    netDevice->log()->printf("Discovery: Timed out while reading advertisment from %s\n",
+                                             hostname.c_str());
+                }
+                return false;
+            }
+
+
+            if (!server->ok()) {
+                if (netDevice->log()) {
+                    netDevice->log()->printf("Discovery: Server %s dropped connection\n", hostname.c_str());
+                }
+                return false;
+            }
+
+            // Read the advertisement
+            debugAssert(server->messageWaiting());
+            if (!server->receive(advertisement)) {
+                if (netDevice->log()) {
+                    netDevice->log()->printf("Discovery: Server %s failed to send advertisement\n", hostname.c_str());
+                }
+                return false;
+            }
+
+            // Update existing server info or create a new entry
+            int index = findServerListIndex(address);
+            if (index == -1) {
+                index = serverList.size();
+                serverList.resize(index + 1);
+            }
+
+            // Update element index
+            advertisement.address = address;
+            serverList[index] = advertisement;
+
+            return true;
         }
-    }
-};
+
+        /**
+          Remove this address from our list if we previously
+          had a server there.
+          */
+        void removeServer(const NetAddress &address) {
+            int index = findServerListIndex(address);
+            if (index > -1) {
+                serverList.fastRemove(index);
+            }
+        }
+
+        /**
+         Tries to connect to the server through the addresses in the array.
+         */
+        void addToServerList(const Array<NetAddress> &addressArray) {
+            // Try to connect to each address listed
+            for (int a = addressArray.size() - 1; a >= 0; --a) {
+                    const NetAddress &address = addressArray[a];
+
+                    if (readAdvertisement(address)) {
+                        // We've connected to the server
+                        break;
+                    } else {
+                        removeServer(address);
+                    }
+                }
+        }
+
+        void checkRandomServer() {
+            if (serverList.size() >= 1) {
+                int index = iRandom(0, serverList.size() - 1);
+
+                Array<NetAddress> address;
+                address.append(serverList[index].address);
+
+                // Remove this server
+                serverList.fastRemove(index);
+
+                // Add it back with new info (or leave it removed if no response)
+                addToServerList(address);
+            }
+        }
+
+    public:
+
+        void init(
+                NetworkDevice *_netDevice,
+                const DiscoverySettings *_settings) {
+
+            Discovery::init(_netDevice, _settings);
+
+            lastServerCheck = System::time();
+
+            net = netDevice->createLightweightConduit(settings->serverBroadcastPort, true, true);
+
+            // Send announcement
+            NetAddress broadcast = NetAddress::broadcastAddress(settings->clientBroadcastPort);
+            BroadcastMessage tmp;
+            net->send(broadcast, CLIENT_BROADCAST_MESSAGE, tmp);
+        }
+
+        /** Shut down the discovery client. */
+        void cleanup() {
+            net = NULL;
+        }
+
+        /**
+         Call this regularly (several times per second) to
+         update the server list.  Not threadsafe-- you must not touch
+         the server list while this is running.  This will not block.
+         */
+        void doNetwork() {
+            if (net->messageWaiting()) {
+                NetAddress sender;
+
+                switch (net->waitingMessageType()) {
+                    case SERVER_SHUTDOWN_MESSAGE:
+                        // Remove the server
+                        net->receive(sender);
+                        removeServer(sender);
+                        break;
+
+                    case SERVER_BROADCAST_MESSAGE:
+                        // Check the G3D protocol and the network protocol, then read the ad
+                        DiscoveryServerAddressMessage msg(settings);
+                        net->receive(sender, msg);
+
+                        if (msg.correctProtocol && (msg.address.size() > 0)) {
+                            // Add the actual return address as the first one to be tried.
+                            msg.address.append(NetAddress(sender.ip(), msg.address[0].port()));
+
+                            addToServerList(msg.address);
+
+                        } else {
+
+                            addToIncompatibleList(
+                                    sender,
+                                    msg.serverProtocolVersion[0],
+                                    msg.serverProtocolVersion[1]);
+                        }
+                        break;
+                }
+            }
+
+            // Periodically re-check servers in the list to see if they crashed
+            // (if they shut down, they should have broadcast a shut down message).
+            RealTime now = System::time();
+            const RealTime UPDATE_TIME_INTERVAL = 30;
+
+            if (now > lastServerCheck + UPDATE_TIME_INTERVAL) {
+                lastServerCheck = now;
+                checkRandomServer();
+            }
+        }
+    };
 
 }
 

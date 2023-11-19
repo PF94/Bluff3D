@@ -49,7 +49,8 @@
   
   @author Morgan McGuire, morgan@cs.brown.edu
  */
-template<class T, class Storage=T> class Image : public ReferenceCountedObject {
+template<class T, class Storage=T>
+class Image : public ReferenceCountedObject {
 //
 // It doesn't make sense to automatically convert from T back to S
 // because the rounding rule (and scaling) is application dependent.
@@ -60,39 +61,39 @@ public:
     /**
      WRAP_ERROR generates an out of bounds error when th
      */
-    enum WrapMode {WRAP_CLAMP, WRAP_TILE, WRAP_ERROR};
+    enum WrapMode {
+        WRAP_CLAMP, WRAP_TILE, WRAP_ERROR
+    };
 
 private:
 
     /** Width, in pixels. */
-    uint32              w;
+    uint32 w;
 
     /** Height, in pixels. */
-    uint32              h;
+    uint32 h;
 
     /** The zero value.  Set by the constructor. */
-    T                   ZERO;
+    T ZERO;
 
-    WrapMode            _wrapMode;
+    WrapMode _wrapMode;
 
-    Array<Storage>      data;
+    Array<Storage> data;
 
     /** Handles the exceptional cases from get */
-    Storage& slowGet(int x, int y) {
+    Storage &slowGet(int x, int y) {
         switch (_wrapMode) {
-        case WRAP_CLAMP:
-            return _get(iClamp(x, 0, w - 1), iClamp(y, 0, h - 1));
+            case WRAP_CLAMP:
+                return _get(iClamp(x, 0, w - 1), iClamp(y, 0, h - 1));
 
-        case WRAP_TILE:
-            return _get(iWrap(x, w), iWrap(y, h));
+            case WRAP_TILE:
+                return _get(iWrap(x, w), iWrap(y, h));
 
-        case WRAP_ERROR:
-            alwaysAssertM(((uint32)x < w) && ((uint32)y < h), 
-                format("Index out of bounds: (%d, %d), w = %d, h = %d",
-                x, y, w, h));
+            case WRAP_ERROR: alwaysAssertM(((uint32) x < w) && ((uint32) y < h),
+                                           format("Index out of bounds: (%d, %d), w = %d, h = %d",
+                                                  x, y, w, h));
 
-        default:
-            {
+            default: {
                 static Storage temp;
                 return temp;
             }
@@ -100,8 +101,8 @@ private:
     }
 
 
-    inline Storage& _get(int x, int y) {
-        if (((uint32)x < w) && ((uint32)y < h)) {
+    inline Storage &_get(int x, int y) {
+        if (((uint32) x < w) && ((uint32) y < h)) {
             return data[x + y * w];
         } else {
             return slowGet(x, y);
@@ -109,11 +110,11 @@ private:
     }
 
 
-    inline const Storage& _get(int x, int y) const {
-        if (((uint32)x < w) && ((uint32)y < h)) {
+    inline const Storage &_get(int x, int y) const {
+        if (((uint32) x < w) && ((uint32) y < h)) {
             return data[x + y * w];
         } else {
-            return const_cast<Image<T, Storage>*>(this)->slowGet(x, y);
+            return const_cast<Image<T, Storage> *>(this)->slowGet(x, y);
         }
     }
 
@@ -121,16 +122,16 @@ private:
     /** Given four control points and a value on the range [0, 1)
         evaluates the Catmull-rom spline between the times of the
         middle two control points */
-    T bicubic(const T* ctrl, double s) const {
+    T bicubic(const T *ctrl, double s) const {
 
         // f = B * S * ctrl'
 
         // B matrix: Catmull-Rom spline basis
         static const double B[4][4] = {
-            { 0.0, -0.5,  1.0, -0.5},
-            { 1.0,  0.0, -2.5,  1.5},
-            { 0.0,  0.5,  2.0, -1.5},
-            { 0.0,  0.0, -0.5,  0.5}}; 
+                {0.0, -0.5, 1.0,  -0.5},
+                {1.0, 0.0,  -2.5, 1.5},
+                {0.0, 0.5,  2.0,  -1.5},
+                {0.0, 0.0,  -0.5, 0.5}};
 
         // S: Powers of the fraction
         double S[4];
@@ -142,12 +143,12 @@ private:
 
         T sum = ZERO;
         for (int c = 0; c < 4; ++c) {
-            double coeff = 0.0;
-            for (int power = 0; power < 4; ++power) {
-                coeff += B[c][power] * S[power];
+                double coeff = 0.0;
+                for (int power = 0; power < 4; ++power) {
+                        coeff += B[c][power] * S[power];
+                    }
+                sum += ctrl[c] * coeff;
             }
-            sum += ctrl[c] * coeff;
-        }
 
         return sum;
     }
@@ -156,7 +157,7 @@ private:
         resize(w, h);
 
         // Ensure that the zero value is zero.
-        ZERO = ZERO * 0.0; 
+        ZERO = ZERO * 0.0;
     }
 
 public:
@@ -178,12 +179,12 @@ public:
 
     /** Returns a pointer to the underlying row-major data. Be careful-- 
         this will be reallocated during a resize. */
-    Storage* getCArray() {
+    Storage *getCArray() {
         return data.getCArray();
     }
 
 
-    const Storage* getCArray() const {
+    const Storage *getCArray() const {
         return data.getCArray();
     }
 
@@ -193,11 +194,11 @@ public:
         type.  If the constructor promoting Storage to T rescales values
         (as Color3(Color3uint8) does), this will not match the value
         returned by Image::nearest.*/
-    Storage& operator()(int x, int y) {
+    Storage &operator()(int x, int y) {
         return _get(x, y);
     }
 
-    const Storage& operator()(int x, int y) const {
+    const Storage &operator()(int x, int y) const {
         return _get(x, y);
     }
 
@@ -205,19 +206,19 @@ public:
     /** Synonym for operator(), since that syntax is 
         frightening despite its convenience and some may wish
         to avoid it.*/
-    const Storage& get(int x, int y) const {
+    const Storage &get(int x, int y) const {
         return _get(x, y)
     }
 
-    void set(int x, int y, const Storage& v) {
+    void set(int x, int y, const Storage &v) {
         _get(x, y) = v;
     }
 
 
-    void setAll(const Storage& v) {
-        for(int i = 0; i < data.size(); ++i) {
-            data[i] = v;
-        }
+    void setAll(const Storage &v) {
+        for (int i = 0; i < data.size(); ++i) {
+                data[i] = v;
+            }
     }
 
 
@@ -233,11 +234,11 @@ public:
       to (floor(x) + 1, floor(y) + 1) and will use
       the wrap mode appropriately (possibly generating 
       out of bounds errors).
-      Guaranteed to match nearest(x, y) at integers. */ 
+      Guaranteed to match nearest(x, y) at integers. */
     T bilinear(double x, double y) const {
         i = iFloor(x);
         j = iFloor(y);
-    
+
         double fX = x - i;
         double fY = y - j;
 
@@ -271,14 +272,14 @@ public:
         static T vsample[4];
         for (int v = 0; v < 4; ++v) {
 
-            // Horizontal interpolation
-            static T hsample[4];
-            for (int u = 0; u < 4; ++u) {
-                hsample[u] = T((*this)(i + u - 1, j + v - 1));
+                // Horizontal interpolation
+                static T hsample[4];
+                for (int u = 0; u < 4; ++u) {
+                        hsample[u] = T((*this)(i + u - 1, j + v - 1));
+                    }
+
+                vsample[v] = bicubic(hsample, fX);
             }
-    
-            vsample[v] = bicubic(hsample, fX);
-        }
 
         //  Vertical interpolation
         return bicubic(vsample, fY);

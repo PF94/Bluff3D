@@ -12,7 +12,7 @@
 #include "GConsole.h"
 
 #if G3D_VER < 60800
-    #error Requires G3D 6.08
+#error Requires G3D 6.08
 #endif
 
 
@@ -23,15 +23,15 @@
 class Demo : public GApplet {
 private:
 
-    void consoleCallback(const std::string& cmd);
-    
-    static void _consoleCallback(const std::string& cmd, void* me) {
-        static_cast<Demo*>(me)->consoleCallback(cmd);
+    void consoleCallback(const std::string &cmd);
+
+    static void _consoleCallback(const std::string &cmd, void *me) {
+        static_cast<Demo *>(me)->consoleCallback(cmd);
     }
 
     void printHelp();
 
-    GConsoleRef         m_console;
+    GConsoleRef m_console;
 
 public:
 
@@ -39,9 +39,9 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*          app;
+    class App *app;
 
-    Demo(App* app);
+    Demo(App *app);
 
     virtual ~Demo() {}
 
@@ -49,34 +49,34 @@ public:
 
     virtual void onLogic();
 
-	virtual void onNetwork();
+    virtual void onNetwork();
 
     virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 
-    virtual void onGraphics(RenderDevice* rd);
+    virtual void onGraphics(RenderDevice *rd);
 
-    virtual void onUserInput(UserInput* ui);
+    virtual void onUserInput(UserInput *ui);
 
     virtual void onCleanup();
 };
 
 
-
 class App : public GApp {
 protected:
     void main();
+
 public:
-    SkyRef              sky;
+    SkyRef sky;
 
-    Demo*               applet;
+    Demo *applet;
 
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 
     ~App();
 };
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
     GConsole::Settings s;
     m_console = GConsole::create(app->debugFont, s, _consoleCallback, this);
     addModule(m_console, GApp::HIGH_PRIORITY);
@@ -84,7 +84,7 @@ Demo::Demo(App* _app) : GApplet(_app), app(_app) {
 }
 
 
-void Demo::consoleCallback(const std::string& cmd) {
+void Demo::consoleCallback(const std::string &cmd) {
     // Extremely simple interpreter.  You could easily connect to a scripting language
     // like lua or Python, or write your own language here.  See G3D::TextInput
     // for an easy way of parsing this string into useful tokens.
@@ -114,7 +114,7 @@ void Demo::printHelp() {
 }
 
 
-void Demo::onInit()  {
+void Demo::onInit() {
     // Called before Demo::run() beings
     app->debugCamera.setPosition(Vector3(0, 2, 10));
     app->debugCamera.lookAt(Vector3(0, 2, 0));
@@ -132,17 +132,17 @@ void Demo::onLogic() {
 
 
 void Demo::onNetwork() {
-	// Poll net messages here
+    // Poll net messages here
 }
 
 
 void Demo::onSimulation(RealTime rdt, SimTime sdt, SimTime idt) {
-	// Add physical simulation here.  You can make your time advancement
+    // Add physical simulation here.  You can make your time advancement
     // based on any of the three arguments.
 }
 
 
-void Demo::onUserInput(UserInput* ui) {
+void Demo::onUserInput(UserInput *ui) {
     if (ui->keyPressed(SDLK_ESCAPE)) {
         // Even when we aren't in debug mode, quit on escape.
         endApplet = true;
@@ -152,7 +152,7 @@ void Demo::onUserInput(UserInput* ui) {
 }
 
 
-void Demo::onGraphics(RenderDevice* rd) {
+void Demo::onGraphics(RenderDevice *rd) {
 
     LightingParameters lighting(G3D::toSeconds(11, 00, 00, AM));
     app->renderDevice->setProjectionAndCameraMatrix(app->debugCamera);
@@ -167,10 +167,10 @@ void Demo::onGraphics(RenderDevice* rd) {
 
     // Setup lighting
     app->renderDevice->enableLighting();
-		app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
-		app->renderDevice->setAmbientLightColor(lighting.ambient);
+    app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
+    app->renderDevice->setAmbientLightColor(lighting.ambient);
 
-		Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
+    Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
 
     app->renderDevice->disableLighting();
 
@@ -184,16 +184,16 @@ void Demo::onGraphics(RenderDevice* rd) {
 
 
 void App::main() {
-	setDebugMode(true);
+    setDebugMode(true);
 
     // Load objects here
     sky = Sky::create(NULL, dataDir + "sky/");
-    
+
     applet->run();
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
     applet = new Demo(this);
 }
 
@@ -202,7 +202,7 @@ App::~App() {
     delete applet;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
     settings.useNetwork = false;
     App(settings).run();

@@ -34,14 +34,17 @@ public:
     class Component {
     public:
         /** Color that is constant over the entire surface. */
-        Color3              constant;
+        Color3 constant;
 
         /** Color that varies over position.  NULL means white.*/
-        TextureRef          map;
+        TextureRef map;
 
         inline Component() : constant(0, 0, 0), map(NULL) {}
-        inline Component(const Color3& c) : constant(c), map(NULL) {}
+
+        inline Component(const Color3 &c) : constant(c), map(NULL) {}
+
         inline Component(double c) : constant(c, c, c), map(NULL) {}
+
         inline Component(TextureRef t) : constant(1, 1, 1), map(t) {}
 
         /** True if this material is definitely (0,0,0) everywhere */
@@ -54,13 +57,13 @@ public:
             return (constant.r == 1) && (constant.g == 1) && (constant.b == 1) && map.isNull();
         }
 
-        inline bool operator==(const Component& other) const {
+        inline bool operator==(const Component &other) const {
             return (constant == other.constant) && (map == other.map);
         }
 
         /** Returns true if both components will produce similar non-zero terms in a
             lighting equation.  Black and white are only similar to themselves. */
-        inline bool similarTo(const Component& other) const{
+        inline bool similarTo(const Component &other) const {
             // Black and white are only similar to themselves
             if (isBlack()) {
                 return other.isBlack();
@@ -106,53 +109,53 @@ public:
         non-convex objects) to prevent rendering surfaces out of order.
 
         */
-	class Material {
-	public:
+    class Material {
+    public:
         /** Diffuse reflection of lights */
-        Component               diffuse;
+        Component diffuse;
 
         /** Glow */
-        Component               emit;
+        Component emit;
 
         /** Specular (glossy) reflection of lights. */
-        Component               specular;
+        Component specular;
 
         /** Sharpness of light reflections.*/
-        Component               specularExponent;
+        Component specularExponent;
 
-        Component               transmit;
+        Component transmit;
 
         /** Perfect specular (mirror) reflection of the environment */
-        Component               reflect;
+        Component reflect;
 
         /** RGB*2-1 = tangent space normal, A = tangent space bump height.
           If NULL bump mapping is disabled. */
-        TextureRef              normalBumpMap;
-       
+        TextureRef normalBumpMap;
+
         /** Multiply normal map alpha values (originally on the range 0-1)
             by this constant to obtain the real-world bump height. Should
             already be factored in to the normal map normals.*/
-        float                   bumpMapScale;
+        float bumpMapScale;
 
         /**
          If the diffuse texture is changed, set this to true.  Defaults to true.
          */
-        bool                    changed;
+        bool changed;
 
-        Material() : diffuse(1), emit(0), 
-            specular(0.25), specularExponent(60), 
-            transmit(0), reflect(0), changed(true) {
+        Material() : diffuse(1), emit(0),
+                     specular(0.25), specularExponent(60),
+                     transmit(0), reflect(0), changed(true) {
         }
 
         /** Returns true if this material uses similar terms as other
             (used by SuperShader), although the actual textures may differ. */
-        bool similarTo(const Material& other) const;
+        bool similarTo(const Material &other) const;
 
         /** 
          To be identical, two materials must not only have the same images in their
          textures but must share pointers to the same underlying Texture objects.
          */
-        inline bool operator==(const Material& other) const {
+        inline bool operator==(const Material &other) const {
             return (diffuse == other.diffuse) &&
                    (specular == other.specular) &&
                    (specularExponent == other.specularExponent) &&
@@ -162,7 +165,7 @@ public:
                    (bumpMapScale == other.bumpMapScale);
         }
 
-        inline bool operator!=(const Material& other) const {
+        inline bool operator!=(const Material &other) const {
             return !(*this == other);
         }
 
@@ -171,22 +174,22 @@ public:
           all other maps.
          */
         void enforceDiffuseMask();
-	};
+    };
 
     /** Configures the material arguments on a SuperShader for
         the opaque pass. */
     static void configureShader(
-        const LightingRef&              lighting,
-        const Material&                 material,
-        VertexAndPixelShader::ArgList&  args);
+            const LightingRef &lighting,
+            const Material &material,
+            VertexAndPixelShader::ArgList &args);
 
 
     static void configureShadowShader(
-        const GLight&       light, 
-        const Matrix4&      lightMVP, 
-        const TextureRef&   shadowMap,
-        const Material&                 material,
-        VertexAndPixelShader::ArgList&  args);
+            const GLight &light,
+            const Matrix4 &lightMVP,
+            const TextureRef &shadowMap,
+            const Material &material,
+            VertexAndPixelShader::ArgList &args);
 
 private:
 
@@ -194,13 +197,13 @@ private:
     public:
         struct Pair {
         public:
-            ShaderRef       nonShadowedShader;
-            ShaderRef       shadowMappedShader;
+            ShaderRef nonShadowedShader;
+            ShaderRef shadowMappedShader;
         };
     private:
 
-        Array<Material>     materialArray;
-        Array<Pair>         shaderArray;
+        Array<Material> materialArray;
+        Array<Pair> shaderArray;
 
     public:
 
@@ -208,28 +211,28 @@ private:
 
         /** Adds a shader to the list of cached ones.  Only call when 
             getSimilar returned NULL.*/
-        void add(const Material& mat, const Pair& pair);
+        void add(const Material &mat, const Pair &pair);
 
         /** Returns the shader for a similar material or 
             NULL, NULL if one does not exist. */
-        Pair getSimilar(const Material& mat) const;
+        Pair getSimilar(const Material &mat) const;
     };
 
     static Cache cache;
 
-    static Cache::Pair getShader(const Material& material);
+    static Cache::Pair getShader(const Material &material);
 
     /** Configuration for a non-programmable card.
         No reflection map, single ambient color. */
-    void configureFixedFunction(RenderDevice* rd);
+    void configureFixedFunction(RenderDevice *rd);
 
-    LightingRef             lighting;
+    LightingRef lighting;
 
-    Material                material;
+    Material material;
 
     /** Underlying shader.  May be shared between multiple SuperShaders. */
-    ShaderRef               nonShadowedShader;
-    ShaderRef               shadowMappedShader;
+    ShaderRef nonShadowedShader;
+    ShaderRef shadowMappedShader;
 
     // Don't call
     SuperShader() {}
@@ -237,9 +240,9 @@ private:
 public:
 
     static void createShaders(
-        const Material& material,
-        ShaderRef&      nonShadowedShader,
-        ShaderRef&      shadowMappedShader);
+            const Material &material,
+            ShaderRef &nonShadowedShader,
+            ShaderRef &shadowMappedShader);
 
 }; // SuperShader
 

@@ -8,33 +8,34 @@
 #include <G3DAll.h>
 
 #if G3D_VER < 60800
-    #error Requires G3D 6.08
+#error Requires G3D 6.08
 #endif
 
 class App : public GApp {
 protected:
     void main();
-public:
-    VideoCapture        camera;
-    SkyRef              sky;
 
-    App(const GAppSettings& settings);
+public:
+    VideoCapture camera;
+    SkyRef sky;
+
+    App(const GAppSettings &settings);
 };
 
 
 class Demo : public GApplet {
-    TextureRef          video;
+    TextureRef video;
 public:
 
-    class App*          app;
+    class App *app;
 
-    Demo(App* app);    
+    Demo(App *app);
 
     virtual void init();
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 
@@ -45,11 +46,11 @@ public:
 };
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
 }
 
 
-void Demo::init()  {
+void Demo::init() {
     // Called before Demo::run() beings
     app->debugCamera.setPosition(Vector3(0, 2, 10));
     app->debugCamera.lookAt(Vector3(0, 2, 0));
@@ -62,16 +63,17 @@ void Demo::cleanup() {
 
 
 void Demo::doNetwork() {
-	// Poll net messages here
+    // Poll net messages here
 }
 
 
 void Demo::doSimulation(SimTime dt) {
-	// Add physical simulation here
+    // Add physical simulation here
     static GImage im;
     app->camera.captureFrame();
     app->camera.getGImage(im);
-    video = Texture::fromGImage("Video", im, TextureFormat::RGBA8, Texture::CLAMP, Texture::BILINEAR_NO_MIPMAP, Texture::DIM_2D_RECT);
+    video = Texture::fromGImage("Video", im, TextureFormat::RGBA8, Texture::CLAMP, Texture::BILINEAR_NO_MIPMAP,
+                                Texture::DIM_2D_RECT);
 }
 
 
@@ -82,7 +84,7 @@ void Demo::doLogic() {
         app->endProgram = true;
     }
 
-	// Add other key handling here
+    // Add other key handling here
 }
 
 
@@ -101,10 +103,10 @@ void Demo::doGraphics() {
 
     // Setup lighting
     app->renderDevice->enableLighting();
-		app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
-		app->renderDevice->setAmbientLightColor(lighting.ambient);
+    app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
+    app->renderDevice->setAmbientLightColor(lighting.ambient);
 
-		Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
+    Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
     app->renderDevice->disableLighting();
 
     app->renderDevice->setTexture(0, video);
@@ -113,17 +115,17 @@ void Demo::doGraphics() {
     double w = 1;
     double h = (w * v) / u;
     app->renderDevice->beginPrimitive(RenderDevice::QUADS);
-        app->renderDevice->setTexCoord(0, Vector2(0, v));
-        app->renderDevice->sendVertex(Vector2(0, 0));
+    app->renderDevice->setTexCoord(0, Vector2(0, v));
+    app->renderDevice->sendVertex(Vector2(0, 0));
 
-        app->renderDevice->setTexCoord(0, Vector2(u, v));
-        app->renderDevice->sendVertex(Vector2(w, 0));
+    app->renderDevice->setTexCoord(0, Vector2(u, v));
+    app->renderDevice->sendVertex(Vector2(w, 0));
 
-        app->renderDevice->setTexCoord(0, Vector2(u, 0));
-        app->renderDevice->sendVertex(Vector2(w, h));
+    app->renderDevice->setTexCoord(0, Vector2(u, 0));
+    app->renderDevice->sendVertex(Vector2(w, h));
 
-        app->renderDevice->setTexCoord(0, Vector2(0, 0));
-        app->renderDevice->sendVertex(Vector2(0, h));
+    app->renderDevice->setTexCoord(0, Vector2(0, 0));
+    app->renderDevice->sendVertex(Vector2(0, h));
     app->renderDevice->endPrimitive();
 
     /*Draw::rect2D(Rect2D::xywh(-1, 1, 2, -2),
@@ -139,22 +141,22 @@ void Demo::doGraphics() {
 
 
 void App::main() {
-	setDebugMode(true);
-	debugController.setActive(true);
+    setDebugMode(true);
+    debugController.setActive(true);
 
     camera.init(VideoCapture::enumerateDeviceNames()[0], 128, 96);
     // Load objects here
     sky = Sky::create(renderDevice, dataDir + "sky/");
-    
+
     Demo(this).run();
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
     settings.useNetwork = false;
     App(settings).run();

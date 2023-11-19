@@ -11,22 +11,23 @@
 
 class MD2 {
 public:
-    CoordinateFrame     cframe;
-    MD2ModelRef         model;
-    MD2Model::Pose      pose;
-    GMaterial           material;
+    CoordinateFrame cframe;
+    MD2ModelRef model;
+    MD2Model::Pose pose;
+    GMaterial material;
 
-    void load(const std::string& filename) {
+    void load(const std::string &filename) {
         model = MD2Model::create(filename + ".md2");
-        material.texture.append(Texture::fromFile(filename + ".pcx", 
-            TextureFormat::AUTO, Texture::TILE, Texture::TRILINEAR_MIPMAP, Texture::DIM_2D, 2.0));
+        material.texture.append(Texture::fromFile(filename + ".pcx",
+                                                  TextureFormat::AUTO, Texture::TILE, Texture::TRILINEAR_MIPMAP,
+                                                  Texture::DIM_2D, 2.0));
     }
 
-    void render(RenderDevice* rd) {
+    void render(RenderDevice *rd) {
         model->pose(cframe, pose, material)->render(rd);
     }
 
-    void renderShadow(RenderDevice* rd) {
+    void renderShadow(RenderDevice *rd) {
         CoordinateFrame cframe2 = cframe;
         cframe2.rotation.setColumn(1, Vector3::zero());
         cframe2.translation.y -= 1.7f;
@@ -36,8 +37,8 @@ public:
 
         // Intentionally render a lot of shadows to gauge rendering performance
         for (int i = 0; i < 20; ++i) {
-            m->render(rd);
-        }
+                m->render(rd);
+            }
     }
 
     void doSimulation(GameTime dt) {
@@ -59,27 +60,29 @@ public:
  */
 class Report : public GApplet {
 
-    MD2                 knight;
-    MD2                 ogre;
+    MD2 knight;
+    MD2 ogre;
 
-    enum Popup {NONE, PERFORMANCE};
+    enum Popup {
+        NONE, PERFORMANCE
+    };
 
-    Popup               popup;
+    Popup popup;
 
-    Rect2D              performanceButton;
-    Rect2D              closeButton;
+    Rect2D performanceButton;
+    Rect2D closeButton;
 
-    class App*          app;
+    class App *app;
 
     /** Draw some nice graphics */
     void doFunStuff();
 
     /** Draws the popup window, but not its contents.  Returns the window bounds. */
-    Rect2D drawPopup(const char* title);
+    Rect2D drawPopup(const char *title);
 
 public:
 
-    Report(App* app);
+    Report(App *app);
 
 
     virtual ~Report() {}
@@ -88,7 +91,7 @@ public:
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 

@@ -29,6 +29,7 @@ class ArticulatedModel : public ReferenceCountedObject {
 private:
 
     friend class PosedArticulatedModel;
+
     friend class Part;
 
 public:
@@ -36,26 +37,26 @@ public:
     /** Renders an array of PosedAModels in the order that they appear in the array, taking advantage of 
         the fact that all objects have the same subclass to optimize the rendering calls.*/
     static void renderNonShadowed(
-        const Array<PosedModelRef>& posedArray, 
-        RenderDevice* rd, 
-        const LightingRef& lighting);
+            const Array<PosedModelRef> &posedArray,
+            RenderDevice *rd,
+            const LightingRef &lighting);
 
     /** Renders an array of PosedAModels in the order that they appear in the array, taking advantage of 
         the fact that all objects have the same subclass to optimize the rendering calls.*/
     static void renderShadowMappedLightPass(
-        const Array<PosedModelRef>& posedAModelArray, 
-        RenderDevice* rd, 
-        const GLight& light, 
-        const Matrix4& lightMVP, 
-        const TextureRef& shadowMap);
+            const Array<PosedModelRef> &posedAModelArray,
+            RenderDevice *rd,
+            const GLight &light,
+            const Matrix4 &lightMVP,
+            const TextureRef &shadowMap);
 
     /** Removes the opaque PosedAModels from array @a all and appends them to the opaqueAmodels array (transparents
         must be rendered inline with other model types).
         This produces an array for the array versions of renderNonShadowed and renderShadowMappedLightPass. 
         */
     static void extractOpaquePosedAModels(
-        Array<PosedModelRef>& all, 
-        Array<PosedModelRef>& opaqueAmodels);
+            Array<PosedModelRef> &all,
+            Array<PosedModelRef> &opaqueAmodels);
 
     /** Classification of a graphics card. 
         FIXED_FUNCTION  Use OpenGL fixed function lighting only.
@@ -66,7 +67,8 @@ public:
         UNKNOWN = 0,
         FIXED_FUNCTION,
         PS14,
-        PS20};
+        PS20
+    };
 
     /** Measures the capabilities of this machine */
     static GraphicsProfile profile();
@@ -77,7 +79,7 @@ public:
             If a name is not present, its coordinate frame is assumed to
             be the identity.
          */
-        Table<std::string, CoordinateFrame>     cframe;
+        Table<std::string, CoordinateFrame> cframe;
 
         Pose() {}
     };
@@ -95,62 +97,62 @@ public:
 
         /** A set of triangles that have a single material and can be rendered as a 
             single OpenGL primitive. */
-	    class TriList {
-	    public:
-		    Array<int>		  	    indexArray;
+        class TriList {
+        public:
+            Array<int> indexArray;
 
             /** When true, this trilist enables two-sided lighting and texturing and
                 does not cull back faces.*/
-            bool                    twoSided;
-        
-            SuperShader::Material	material;
+            bool twoSided;
+
+            SuperShader::Material material;
 
             /** In the same space as the vertices. Computed by computeBounds() */
-            Sphere                  sphereBounds;
-            
+            Sphere sphereBounds;
+
             /** In the same space as the vertices. Computed by computeBounds() */
-            Box                     boxBounds;
+            Box boxBounds;
 
             /** Set by Part::updateShader */
-            ShaderRef               nonShadowedShader;
+            ShaderRef nonShadowedShader;
 
             /** Set by Part::updateShader */
-            ShaderRef               shadowMappedShader;
+            ShaderRef shadowMappedShader;
 
             TriList() : twoSided(false) {}
 
             /** Recomputes the bounds.  Called automatically by initIFS and init3DS.
                 Must be invoked manually if the geometry is later changed. */
-            void computeBounds(const Part& parentPart);
-	    };
+            void computeBounds(const Part &parentPart);
+        };
 
         /** Each part must have a unique name */
-        std::string                 name;
+        std::string name;
 
         /** Position of this part's reference frame <B>relative to parent</B> */
-        CoordinateFrame             cframe;
+        CoordinateFrame cframe;
 
-        VAR                         vertexVAR;
-        VAR                         normalVAR;
-        VAR                         tangentVAR;
-        VAR                         texCoord0VAR;
+        VAR vertexVAR;
+        VAR normalVAR;
+        VAR tangentVAR;
+        VAR texCoord0VAR;
 
-        MeshAlg::Geometry           geometry;
-        Array<Vector2>              texCoordArray;
-        Array<Vector3>              tangentArray;
-        Array<TriList>              triListArray;
+        MeshAlg::Geometry geometry;
+        Array<Vector2> texCoordArray;
+        Array<Vector3> tangentArray;
+        Array<TriList> triListArray;
 
         /** Indices into part array of sub-parts (scene graph children) in the containing model.*/
-        Array<int>                  subPartArray;
+        Array<int> subPartArray;
 
         /** Index into the part array of the parent.  If -1, this is a root node. */
-        int                         parent;
+        int parent;
 
         /** All faces.  Used for updateNormals and rendering without materials. 
             Call computeIndexArray to update this automatically (which
             might be less efficient than computing it manually if there are split 
             vertices) */
-        Array<int>                  indexArray;
+        Array<int> indexArray;
 
         inline Part() : parent(-1) {}
 
@@ -158,14 +160,14 @@ public:
          Does not restore rendering state when done.
          @param Net frame of parent.
          */
-        void render(RenderDevice* rd, const CoordinateFrame& parent, const Pose& pose) const;
+        void render(RenderDevice *rd, const CoordinateFrame &parent, const Pose &pose) const;
 
         void pose(
-            ArticulatedModelRef     model,
-            int                     partIndex,
-            Array<PosedModelRef>&   posedArray,
-            const CoordinateFrame&  parent, 
-            const Pose&             posex) const;
+                ArticulatedModelRef model,
+                int partIndex,
+                Array<PosedModelRef> &posedArray,
+                const CoordinateFrame &parent,
+                const Pose &posex) const;
 
         /** Some parts have no geometry because they are interior nodes in the hierarchy */
         inline bool hasGeometry() const {
@@ -194,11 +196,11 @@ public:
 
     // TODO: who fills this out?  when?
     /** Returns the index in partArray of the part with this name */
-    Table<std::string, int>     partNameToIndex;
+    Table<std::string, int> partNameToIndex;
 
     /** All parts. Root parts are identified by (parent == -1).
      */
-    Array<Part>                 partArray;
+    Array<Part> partArray;
 
     /** Update normals, var, and shaders on all Parts.  If you modify Parts explicitly,
         invoke this afterward to update dependent state. (slow)*/
@@ -207,14 +209,14 @@ public:
 private:
 
     /** Called from the constructor */
-    void init3DS(const std::string& filename, const CoordinateFrame& xform);
+    void init3DS(const std::string &filename, const CoordinateFrame &xform);
 
     /** Called from the constructor */
-    void initIFS(const std::string& filename, const CoordinateFrame& xform);
+    void initIFS(const std::string &filename, const CoordinateFrame &xform);
 
 public:
 
-    std::string                 name;
+    std::string name;
 
     /** Appends one posed model per sub-part with geometry.
 
@@ -225,17 +227,17 @@ public:
         providing detailed illuminaton.
     */
     void pose(
-        Array<PosedModelRef>&   posedModelArray, 
-        const CoordinateFrame&  cframe = CoordinateFrame(),
-        const Pose&             pose = DEFAULT_POSE);
+            Array<PosedModelRef> &posedModelArray,
+            const CoordinateFrame &cframe = CoordinateFrame(),
+            const Pose &pose = DEFAULT_POSE);
 
     /** 
       Supports 3DS, IFS, PLY2 file formats.  The format of a file is detected by the extension. 
       @param xform Transform all vertices by this scale factor on load
       */
-    static ArticulatedModelRef fromFile(const std::string& filename, const CoordinateFrame& xform);
+    static ArticulatedModelRef fromFile(const std::string &filename, const CoordinateFrame &xform);
 
-    static ArticulatedModelRef fromFile(const std::string& filename, const Vector3& scale) {
+    static ArticulatedModelRef fromFile(const std::string &filename, const Vector3 &scale) {
         CoordinateFrame xform;
         xform.rotation[0][0] = scale.x;
         xform.rotation[1][1] = scale.y;
@@ -248,13 +250,13 @@ public:
      */
     static ArticulatedModelRef createEmpty();
 
-    static ArticulatedModelRef fromFile(const std::string& filename, float scale = 1.0) {
+    static ArticulatedModelRef fromFile(const std::string &filename, float scale = 1.0) {
         return fromFile(filename, Vector3(scale, scale, scale));
     }
 };
 
 
-const char* toString(ArticulatedModel::GraphicsProfile p);
+const char *toString(ArticulatedModel::GraphicsProfile p);
 
 #endif //G3D_ARTICULATEDMODEL
 

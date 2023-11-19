@@ -5,7 +5,7 @@
 
   @created 2002-02-27
   @edited  2004-10-24
- */ 
+ */
 
 #ifndef XIFSModel_H
 #define XIFSModel_H
@@ -17,13 +17,13 @@ private:
 
     class Triangle {
     public:
-        int                 index[3];
+        int index[3];
     };
 
-    MeshAlg::Geometry       geometry;
-    Array<Vector2>          texCoordArray;
-    Array<Vector3>          faceNormalArray;
-    Array<Triangle>         triangleArray;
+    MeshAlg::Geometry geometry;
+    Array<Vector2> texCoordArray;
+    Array<Vector3> faceNormalArray;
+    Array<Triangle> triangleArray;
 
     class Edge {
     public:
@@ -35,24 +35,24 @@ private:
      only one face or if its faces do not
      contain the vertices (happens with colocated vertices)
      */
-    Array<MeshAlg::Edge>     brokenEdgeArray;
+    Array<MeshAlg::Edge> brokenEdgeArray;
 
-    Array<MeshAlg::Edge>     edgeArray;
+    Array<MeshAlg::Edge> edgeArray;
 
     /** G3D Indexed Face Set */
-    void loadIFS(const std::string& filename);
+    void loadIFS(const std::string &filename);
 
     /** Quake II Model */
-    void loadMD2(const std::string& filename);
+    void loadMD2(const std::string &filename);
 
     /** 3D Studio */
-    void load3DS(const std::string& filename);
+    void load3DS(const std::string &filename);
 
     /** Wavefront Object */
-    void loadOBJ(const std::string& filename);
+    void loadOBJ(const std::string &filename);
 
     /** Brown University Sketch Model */
-    void loadSM(const std::string& filename);
+    void loadSM(const std::string &filename);
 
     /** Algorithmically generate a twisted ring model */
     void createRing();
@@ -61,23 +61,26 @@ private:
     void createPolygon();
 
     /** Algorithmically generate a grid that is thickened to have a bottom (and therefore be closed) */
-    void createGrid(double(*y)(double,double), int numPolys, bool consistentDiagonal = false);
-    void createIsoGrid(double(*y)(double,double), int numPolys);
+    void createGrid(double(*y)(double, double), int numPolys, bool consistentDiagonal = false);
+
+    void createIsoGrid(double(*y)(double, double), int numPolys);
+
     void createCylinder();
 
     void createHalfGear();
 
-	bool _twoSided;
+    bool _twoSided;
 
     /** Configure from a builder */
-    void set(MeshBuilder& builder);
+    void set(MeshBuilder &builder);
 
 public:
 
-    std::string             name;
+    std::string name;
 
-	/**@param twoSided When true, all polygons are doubled on load */
-    XIFSModel(const std::string& filename, bool twoSided = false);
+    /**@param twoSided When true, all polygons are doubled on load */
+    XIFSModel(const std::string &filename, bool twoSided = false);
+
     XIFSModel() {}
 
     /**
@@ -100,7 +103,7 @@ public:
     /**
      Write the IFS file to disk.
      */
-    void save(const std::string& filename);
+    void save(const std::string &filename);
 };
 
 #endif

@@ -22,38 +22,38 @@
 #endif
 
 struct MD2ModelHeader {
-   int magic; 
-   int version; 
-   int skinWidth; 
-   int skinHeight; 
-   int frameSize; 
-   int numSkins; 
-   int numVertices; 
-   int numTexCoords; 
-   int numTriangles; 
-   int numGlCommands; 
-   int numFrames; 
-   int offsetSkins; 
-   int offsetTexCoords; 
-   int offsetTriangles; 
-   int offsetFrames; 
-   int offsetGlCommands; 
-   int offsetEnd; 
+    int magic;
+    int version;
+    int skinWidth;
+    int skinHeight;
+    int frameSize;
+    int numSkins;
+    int numVertices;
+    int numTexCoords;
+    int numTriangles;
+    int numGlCommands;
+    int numFrames;
+    int offsetSkins;
+    int offsetTexCoords;
+    int offsetTriangles;
+    int offsetFrames;
+    int offsetGlCommands;
+    int offsetEnd;
 };
 
 
 struct MD2Frame {
-   float scale[3];
-   float translate[3];
-   char name[16];
-   //triangleVertex_t vertices[1];
+    float scale[3];
+    float translate[3];
+    char name[16];
+    //triangleVertex_t vertices[1];
 };
 
 
 // Unused in this program
 struct MD2Triangle {
-   short vertexIndices[3];
-   short textureIndices[3];
+    short vertexIndices[3];
+    short textureIndices[3];
 };
 
 #ifdef G3D_WIN32

@@ -13,35 +13,36 @@
 class PosedArticulatedModel : public PosedModel {
 private:
     friend class ArticulatedModel;
+
     friend class ArticulatedModel::Part;
 
-    ArticulatedModelRef     model;
+    ArticulatedModelRef model;
 
-    int                     partIndex;
+    int partIndex;
 
-    int                     listIndex;
+    int listIndex;
 
     /** Object to world space */
-    CoordinateFrame         cframe;
+    CoordinateFrame cframe;
 
-    const char*             _name;
+    const char *_name;
 
-    inline PosedArticulatedModel(const CoordinateFrame& c, const char* n) : cframe(c), _name(n) {}
+    inline PosedArticulatedModel(const CoordinateFrame &c, const char *n) : cframe(c), _name(n) {}
 
 public:
 
-    static void* operator new(size_t size) {
+    static void *operator new(size_t size) {
         return System::malloc(size);
     }
 
-    static void operator delete(void* p) {
+    static void operator delete(void *p) {
         System::free(p);
     }
 
 protected:
 
     /** Called from render to draw geometry after the material properties are set.*/
-    void sendGeometry(RenderDevice* rd) const;
+    void sendGeometry(RenderDevice *rd) const;
 
     /** Renders emission, reflection, and lighting for non-shadowed lights.
         The first term rendered uses the current blending/depth mode
@@ -50,53 +51,53 @@ protected:
         all terms were black). 
     
         Called from renderNonShadowedOpaqueTerms.
-    */ 
+    */
     bool renderFFNonShadowedOpaqueTerms(
-        RenderDevice*                   rd,
-        const LightingRef&              lighting,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const LightingRef &lighting,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
     bool renderPS14NonShadowedOpaqueTerms(
-        RenderDevice*                   rd,
-        const LightingRef&              lighting,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const LightingRef &lighting,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
     bool renderPS20NonShadowedOpaqueTerms(
-        RenderDevice*                   rd,
-        const LightingRef&              lighting,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const LightingRef &lighting,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
     /** Switches between rendering paths.  Called from renderNonShadowed.*/
     bool renderNonShadowedOpaqueTerms(
-        RenderDevice*                   rd,
-        const LightingRef&              lighting,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const LightingRef &lighting,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
     void renderFFShadowMappedLightPass(
-        RenderDevice*                   rd,
-        const GLight&                   light,
-        const Matrix4&                  lightMVP, 
-        const TextureRef&               shadowMap,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const GLight &light,
+            const Matrix4 &lightMVP,
+            const TextureRef &shadowMap,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
     void renderPS20ShadowMappedLightPass(
-        RenderDevice*                   rd,
-        const GLight&                   light,
-        const Matrix4&                  lightMVP, 
-        const TextureRef&               shadowMap,
-        const ArticulatedModel::Part&   part,
-        const ArticulatedModel::Part::TriList& triList,
-        const SuperShader::Material&    material) const;
+            RenderDevice *rd,
+            const GLight &light,
+            const Matrix4 &lightMVP,
+            const TextureRef &shadowMap,
+            const ArticulatedModel::Part &part,
+            const ArticulatedModel::Part::TriList &triList,
+            const SuperShader::Material &material) const;
 
 public:
 
@@ -104,41 +105,42 @@ public:
 
     virtual bool hasTransparency() const;
 
-    virtual void getCoordinateFrame(CoordinateFrame& c) const;
+    virtual void getCoordinateFrame(CoordinateFrame &c) const;
 
-    virtual const MeshAlg::Geometry& objectSpaceGeometry() const;
+    virtual const MeshAlg::Geometry &objectSpaceGeometry() const;
 
-    virtual const Array<Vector3>& objectSpaceFaceNormals(bool normalize = true) const;
+    virtual const Array<Vector3> &objectSpaceFaceNormals(bool normalize = true) const;
 
-    virtual const Array<MeshAlg::Face>& faces() const;
+    virtual const Array<MeshAlg::Face> &faces() const;
 
-    virtual const Array<MeshAlg::Edge>& edges() const;
+    virtual const Array<MeshAlg::Edge> &edges() const;
 
-    virtual const Array<MeshAlg::Vertex>& vertices() const;
+    virtual const Array<MeshAlg::Vertex> &vertices() const;
 
-    virtual const Array<Vector2>& texCoords() const;
+    virtual const Array<Vector2> &texCoords() const;
 
     virtual bool hasTexCoords() const;
 
-    virtual const Array<MeshAlg::Face>& weldedFaces() const;
+    virtual const Array<MeshAlg::Face> &weldedFaces() const;
 
-    virtual const Array<MeshAlg::Edge>& weldedEdges() const;
+    virtual const Array<MeshAlg::Edge> &weldedEdges() const;
 
-    virtual const Array<MeshAlg::Vertex>& weldedVertices() const;
+    virtual const Array<MeshAlg::Vertex> &weldedVertices() const;
 
-    virtual const Array<int>& triangleIndices() const;
+    virtual const Array<int> &triangleIndices() const;
 
-    virtual void getObjectSpaceBoundingSphere(Sphere&) const;
+    virtual void getObjectSpaceBoundingSphere(Sphere &) const;
 
-    virtual void getObjectSpaceBoundingBox(Box&) const;
+    virtual void getObjectSpaceBoundingBox(Box &) const;
 
-    virtual void render(RenderDevice* renderDevice) const;
-    
-    virtual void renderNonShadowed(RenderDevice* rd, const LightingRef& lighting) const;
-    
-    virtual void renderShadowedLightPass(RenderDevice* rd, const GLight& light) const;
+    virtual void render(RenderDevice *renderDevice) const;
 
-    virtual void renderShadowMappedLightPass(RenderDevice* rd, const GLight& light, const Matrix4& lightMVP, const TextureRef& shadowMap) const;
+    virtual void renderNonShadowed(RenderDevice *rd, const LightingRef &lighting) const;
+
+    virtual void renderShadowedLightPass(RenderDevice *rd, const GLight &light) const;
+
+    virtual void renderShadowMappedLightPass(RenderDevice *rd, const GLight &light, const Matrix4 &lightMVP,
+                                             const TextureRef &shadowMap) const;
 
     virtual int numBoundaryEdges() const;
 
@@ -147,53 +149,53 @@ public:
 
 
 void ArticulatedModel::renderNonShadowed(
-    const Array<PosedModelRef>& posedArray, 
-    RenderDevice* rd, 
-    const LightingRef& lighting) {
+        const Array<PosedModelRef> &posedArray,
+        RenderDevice *rd,
+        const LightingRef &lighting) {
 
     // TODO : Optimize
     for (int i = 0; i < posedArray.size(); ++i) {
-        debugAssertM(
-            dynamic_cast<const PosedArticulatedModel*>(posedArray[i].getPointer()),
-            "Cannot pass PosedModels not produced by ArticulatedModel to optimized routines.");
-        posedArray[i]->renderNonShadowed(rd, lighting);
-    }
+            debugAssertM(
+                    dynamic_cast<const PosedArticulatedModel *>(posedArray[i].getPointer()),
+                    "Cannot pass PosedModels not produced by ArticulatedModel to optimized routines.");
+            posedArray[i]->renderNonShadowed(rd, lighting);
+        }
 }
 
 
 void ArticulatedModel::renderShadowMappedLightPass(
-    const Array<PosedModelRef>&    posedArray, 
-    RenderDevice*                   rd, 
-    const GLight&                   light, 
-    const Matrix4&                  lightMVP, 
-    const TextureRef&               shadowMap) {
+        const Array<PosedModelRef> &posedArray,
+        RenderDevice *rd,
+        const GLight &light,
+        const Matrix4 &lightMVP,
+        const TextureRef &shadowMap) {
 
     // TODO : Optimize
     for (int i = 0; i < posedArray.size(); ++i) {
-        debugAssertM(
-            dynamic_cast<const PosedArticulatedModel*>(posedArray[i].getPointer()),
-            "Cannot pass PosedModels not produced by ArticulatedModel to optimized routines.");
-        posedArray[i]->renderShadowMappedLightPass(rd, light, lightMVP, shadowMap);
-    }
+            debugAssertM(
+                    dynamic_cast<const PosedArticulatedModel *>(posedArray[i].getPointer()),
+                    "Cannot pass PosedModels not produced by ArticulatedModel to optimized routines.");
+            posedArray[i]->renderShadowMappedLightPass(rd, light, lightMVP, shadowMap);
+        }
 }
 
 
 void ArticulatedModel::extractOpaquePosedAModels(
-    Array<PosedModelRef>&   all, 
-    Array<PosedModelRef>&   opaqueAmodels) {
-    
+        Array<PosedModelRef> &all,
+        Array<PosedModelRef> &opaqueAmodels) {
+
     for (int i = 0; i < all.size(); ++i) {
-        ReferenceCountedPointer<PosedArticulatedModel> m = all[i].downcast<PosedArticulatedModel>();
+            ReferenceCountedPointer<PosedArticulatedModel> m = all[i].downcast<PosedArticulatedModel>();
 
-        if (m.notNull() && ! m->hasTransparency()) {
-            // This is a most-derived subclass and is opaque
+            if (m.notNull() && !m->hasTransparency()) {
+                // This is a most-derived subclass and is opaque
 
-            opaqueAmodels.append(m);
-            all.fastRemove(i);
-            // Iterate over again
-            --i;
+                opaqueAmodels.append(m);
+                all.fastRemove(i);
+                // Iterate over again
+                --i;
+            }
         }
-    }
 }
 
 /////////////////////////////////////////////////////////////////
@@ -203,38 +205,38 @@ static TextureRef whiteMap() {
     static TextureRef map;
 
     if (map.isNull()) {
-        GImage im(4,4,3);
+        GImage im(4, 4, 3);
         for (int y = 0; y < im.height; ++y) {
-            for (int x = 0; x < im.width; ++x) {
-                im.pixel3(x, y) = Color3(1, 1, 1);
+                for (int x = 0; x < im.width; ++x) {
+                        im.pixel3(x, y) = Color3(1, 1, 1);
+                    }
             }
-        }
         map = Texture::fromGImage("White", im, TextureFormat::RGB8);
     }
     return map;
 }
 
 void ArticulatedModel::pose(
-    Array<PosedModelRef>&       posedArray, 
-    const CoordinateFrame&      cframe, 
-    const Pose&                 posex) {
+        Array<PosedModelRef> &posedArray,
+        const CoordinateFrame &cframe,
+        const Pose &posex) {
 
     for (int p = 0; p < partArray.size(); ++p) {
-        const Part& part = partArray[p];
-        if (part.parent == -1) {
-            // This is a root part, pose it
-            part.pose(this, p, posedArray, cframe, posex);
+            const Part &part = partArray[p];
+            if (part.parent == -1) {
+                // This is a root part, pose it
+                part.pose(this, p, posedArray, cframe, posex);
+            }
         }
-    }
 }
 
 
 void ArticulatedModel::Part::pose(
-    ArticulatedModelRef         model,
-    int                         partIndex,
-    Array<PosedModelRef>&       posedArray,
-    const CoordinateFrame&      parent, 
-    const Pose&                 posex) const {
+        ArticulatedModelRef model,
+        int partIndex,
+        Array<PosedModelRef> &posedArray,
+        const CoordinateFrame &parent,
+        const Pose &posex) const {
 
     CoordinateFrame frame;
 
@@ -247,31 +249,31 @@ void ArticulatedModel::Part::pose(
     if (hasGeometry()) {
 
         for (int t = 0; t < triListArray.size(); ++t) {
-            PosedArticulatedModel* posed = new PosedArticulatedModel(frame, model->name.c_str());
+                PosedArticulatedModel *posed = new PosedArticulatedModel(frame, model->name.c_str());
 
-            posed->partIndex = partIndex;
-            posed->listIndex = t;
-            posed->model = model;
+                posed->partIndex = partIndex;
+                posed->listIndex = t;
+                posed->model = model;
 
-            posedArray.append(posed);
-        }
+                posedArray.append(posed);
+            }
     }
 
     // Recursively pose subparts and pass along our coordinate frame.
     for (int i = 0; i < subPartArray.size(); ++i) {
-        int p = subPartArray[i];
-        debugAssertM(model->partArray[p].parent == partIndex,
-            "Parent and child pointers do not match.");
+            int p = subPartArray[i];
+            debugAssertM(model->partArray[p].parent == partIndex,
+                         "Parent and child pointers do not match.");
 
-        model->partArray[p].pose(model, p, posedArray, frame, posex);
-    }
+            model->partArray[p].pose(model, p, posedArray, frame, posex);
+        }
 }
 
-void PosedArticulatedModel::render(RenderDevice* renderDevice) const {
+void PosedArticulatedModel::render(RenderDevice *renderDevice) const {
 
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
-    const SuperShader::Material& material = triList.material;
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
+    const SuperShader::Material &material = triList.material;
 
     // Only configure color if the renderer requires it
     if (renderDevice->colorWrite()) {
@@ -304,8 +306,8 @@ void PosedArticulatedModel::render(RenderDevice* renderDevice) const {
 /** 
  Switches to additive rendering, if not already in that mode.
  */
-static void setAdditive(RenderDevice* rd, bool& additive) {
-    if (! additive) {
+static void setAdditive(RenderDevice *rd, bool &additive) {
+    if (!additive) {
         rd->setBlendFunc(RenderDevice::BLEND_ONE, RenderDevice::BLEND_ONE);
         rd->setDepthWrite(false);
         additive = true;
@@ -314,18 +316,18 @@ static void setAdditive(RenderDevice* rd, bool& additive) {
 
 
 bool PosedArticulatedModel::renderNonShadowedOpaqueTerms(
-    RenderDevice*                   rd,
-    const LightingRef&              lighting,
-    const ArticulatedModel::Part&   part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material&    material) const {
+        RenderDevice *rd,
+        const LightingRef &lighting,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
     bool renderedOnce = false;
 
     rd->pushState();
-        rd->setAlphaTest(RenderDevice::ALPHA_GREATER, 0.5);
+    rd->setAlphaTest(RenderDevice::ALPHA_GREATER, 0.5);
 
-        switch (ArticulatedModel::profile()) {
+    switch (ArticulatedModel::profile()) {
         case ArticulatedModel::FIXED_FUNCTION:
             renderedOnce = renderFFNonShadowedOpaqueTerms(rd, lighting, part, triList, material);
             break;
@@ -340,7 +342,7 @@ bool PosedArticulatedModel::renderNonShadowedOpaqueTerms(
 
         default:
             debugAssertM(false, "Fell through switch");
-        }        
+    }
     rd->popState();
 
     return renderedOnce;
@@ -348,13 +350,13 @@ bool PosedArticulatedModel::renderNonShadowedOpaqueTerms(
 
 
 bool PosedArticulatedModel::renderPS20NonShadowedOpaqueTerms(
-    RenderDevice*                   rd,
-    const LightingRef&              lighting,
-    const ArticulatedModel::Part&   part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material&    material) const {
+        RenderDevice *rd,
+        const LightingRef &lighting,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
-    if (material.emit.isBlack() && 
+    if (material.emit.isBlack() &&
         material.reflect.isBlack() &&
         material.specular.isBlack() &&
         material.diffuse.isBlack()) {
@@ -371,62 +373,62 @@ bool PosedArticulatedModel::renderPS20NonShadowedOpaqueTerms(
 
 
 bool PosedArticulatedModel::renderFFNonShadowedOpaqueTerms(
-    RenderDevice*                   rd,
-    const LightingRef&              lighting,
-    const ArticulatedModel::Part&   part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material&    material) const {
+        RenderDevice *rd,
+        const LightingRef &lighting,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
     bool renderedOnce = false;
 
     // Emissive
-    if (! material.emit.isBlack()) {
+    if (!material.emit.isBlack()) {
         rd->setColor(material.emit.constant);
         rd->setTexture(0, material.emit.map);
         sendGeometry(rd);
         setAdditive(rd, renderedOnce);
     }
-    
+
     // Add reflective
-    if (! material.reflect.isBlack() && 
+    if (!material.reflect.isBlack() &&
         lighting.notNull() &&
         (lighting->environmentMapColor != Color3::black())) {
 
         rd->pushState();
 
-            // Reflections are specular and not affected by surface texture, only
-            // the reflection coefficient
-            rd->setColor(material.reflect.constant * lighting->environmentMapColor);
-            rd->setTexture(0, material.reflect.map);
+        // Reflections are specular and not affected by surface texture, only
+        // the reflection coefficient
+        rd->setColor(material.reflect.constant * lighting->environmentMapColor);
+        rd->setTexture(0, material.reflect.map);
 
-            // Configure reflection map
-            if (lighting->environmentMap.isNull()) {
-                rd->setTexture(1, NULL);
-            } else if (GLCaps::supports_GL_ARB_texture_cube_map() &&
-                (lighting->environmentMap->getDimension() == Texture::DIM_CUBE_MAP)) {
-                rd->configureReflectionMap(1, lighting->environmentMap);
-            } else {
-                // Use the top texture as a sphere map
-                glActiveTextureARB(GL_TEXTURE0_ARB + 1);
-                glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-                glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-                glEnable(GL_TEXTURE_GEN_S);
-                glEnable(GL_TEXTURE_GEN_T);
-
-                rd->setTexture(1, lighting->environmentMap);
-            }
-
-            sendGeometry(rd);
-            setAdditive(rd, renderedOnce);
-
-            // Disable reflection map
+        // Configure reflection map
+        if (lighting->environmentMap.isNull()) {
             rd->setTexture(1, NULL);
+        } else if (GLCaps::supports_GL_ARB_texture_cube_map() &&
+                   (lighting->environmentMap->getDimension() == Texture::DIM_CUBE_MAP)) {
+            rd->configureReflectionMap(1, lighting->environmentMap);
+        } else {
+            // Use the top texture as a sphere map
+            glActiveTextureARB(GL_TEXTURE0_ARB + 1);
+            glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+            glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+            glEnable(GL_TEXTURE_GEN_S);
+            glEnable(GL_TEXTURE_GEN_T);
+
+            rd->setTexture(1, lighting->environmentMap);
+        }
+
+        sendGeometry(rd);
+        setAdditive(rd, renderedOnce);
+
+        // Disable reflection map
+        rd->setTexture(1, NULL);
         rd->popState();
     }
 
     // Add ambient + lights
     rd->enableLighting();
-    if (! material.diffuse.isBlack() || ! material.specular.isBlack()) {
+    if (!material.diffuse.isBlack() || !material.specular.isBlack()) {
         rd->setTexture(0, material.diffuse.map);
         rd->setColor(material.diffuse.constant);
 
@@ -438,14 +440,14 @@ bool PosedArticulatedModel::renderFFNonShadowedOpaqueTerms(
         if (lighting.notNull()) {
             rd->setAmbientLightColor(lighting->ambientTop);
             if (lighting->ambientBottom != lighting->ambientTop) {
-                rd->setLight(0, GLight::directional(-Vector3::unitY(), 
-                    lighting->ambientBottom - lighting->ambientTop, false)); 
+                rd->setLight(0, GLight::directional(-Vector3::unitY(),
+                                                    lighting->ambientBottom - lighting->ambientTop, false));
             }
-            
+
             // Lights
             for (int L = 0; L < iMin(8, lighting->lightArray.size()); ++L) {
-                rd->setLight(L + 1, lighting->lightArray[L]);
-            }
+                    rd->setLight(L + 1, lighting->lightArray[L]);
+                }
         }
 
         if (renderedOnce) {
@@ -462,22 +464,22 @@ bool PosedArticulatedModel::renderFFNonShadowedOpaqueTerms(
 
 
 bool PosedArticulatedModel::renderPS14NonShadowedOpaqueTerms(
-    RenderDevice*                   rd,
-    const LightingRef&              lighting,
-    const ArticulatedModel::Part&   part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material&    material) const {
+        RenderDevice *rd,
+        const LightingRef &lighting,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
     bool renderedOnce = false;
 
     // Emissive
-    if (! material.emit.isBlack()) {
+    if (!material.emit.isBlack()) {
         rd->setColor(material.emit.constant);
         rd->setTexture(0, material.emit.map);
         sendGeometry(rd);
         setAdditive(rd, renderedOnce);
     }
-    
+
 
     // Full combiner setup (in practice, we only use combiners that are
     // needed):
@@ -503,10 +505,10 @@ bool PosedArticulatedModel::renderPS14NonShadowedOpaqueTerms(
     // arg1 = texture0
 
 
-    bool hasDiffuse = ! material.diffuse.isBlack();
-    bool hasReflection = ! material.reflect.isBlack() && 
-            lighting.notNull() &&
-            (lighting->environmentMapColor != Color3::black());
+    bool hasDiffuse = !material.diffuse.isBlack();
+    bool hasReflection = !material.reflect.isBlack() &&
+                         lighting.notNull() &&
+                         (lighting->environmentMapColor != Color3::black());
 
     // Add reflective and diffuse
 
@@ -514,117 +516,117 @@ bool PosedArticulatedModel::renderPS14NonShadowedOpaqueTerms(
     glPushAttrib(GL_TEXTURE_BIT);
     rd->pushState();
 
-        GLint nextUnit = 0;
-        GLint diffuseUnit = GL_PRIMARY_COLOR_ARB;
+    GLint nextUnit = 0;
+    GLint diffuseUnit = GL_PRIMARY_COLOR_ARB;
 
-        if (hasDiffuse) {
+    if (hasDiffuse) {
 
-            // Add ambient + lights
-            rd->enableLighting();
-            if (! material.diffuse.isBlack() || ! material.specular.isBlack()) {
-                rd->setTexture(nextUnit, material.diffuse.map);
-                rd->setColor(material.diffuse.constant);
+        // Add ambient + lights
+        rd->enableLighting();
+        if (!material.diffuse.isBlack() || !material.specular.isBlack()) {
+            rd->setTexture(nextUnit, material.diffuse.map);
+            rd->setColor(material.diffuse.constant);
 
-                // Fixed function does not receive specular texture maps, only constants.
-                rd->setSpecularCoefficient(material.specular.constant);
-                rd->setShininess(material.specularExponent.constant.average());
+            // Fixed function does not receive specular texture maps, only constants.
+            rd->setSpecularCoefficient(material.specular.constant);
+            rd->setShininess(material.specularExponent.constant.average());
 
-                // Ambient
-                if (lighting.notNull()) {
-                    rd->setAmbientLightColor(lighting->ambientTop);
-                    if (lighting->ambientBottom != lighting->ambientTop) {
-                        rd->setLight(0, GLight::directional(-Vector3::unitY(), 
-                            lighting->ambientBottom - lighting->ambientTop, false)); 
-                    }
-            
-                    // Lights
-                    for (int L = 0; L < iMin(8, lighting->lightArray.size()); ++L) {
+            // Ambient
+            if (lighting.notNull()) {
+                rd->setAmbientLightColor(lighting->ambientTop);
+                if (lighting->ambientBottom != lighting->ambientTop) {
+                    rd->setLight(0, GLight::directional(-Vector3::unitY(),
+                                                        lighting->ambientBottom - lighting->ambientTop, false));
+                }
+
+                // Lights
+                for (int L = 0; L < iMin(8, lighting->lightArray.size()); ++L) {
                         rd->setLight(L + 1, lighting->lightArray[L]);
                     }
-                }
-            }
-
-            if (material.diffuse.map.notNull()) {
-                glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,  GL_COMBINE_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB,   GL_MODULATE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB,   GL_PRIMARY_COLOR_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB,  GL_SRC_COLOR);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB,   GL_TEXTURE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB,  GL_SRC_COLOR);
-                diffuseUnit = GL_TEXTURE0_ARB + nextUnit;
-                ++nextUnit;
             }
         }
 
-        if (hasReflection) {
-
-            // First configure the reflection map.  There must be one or we wouldn't
-            // have taken this branch.
-
-            if (GLCaps::supports_GL_ARB_texture_cube_map() &&
-                (lighting->environmentMap->getDimension() == Texture::DIM_CUBE_MAP)) {
-                rd->configureReflectionMap(nextUnit, lighting->environmentMap);
-            } else {
-                // Use the top texture as a sphere map
-                glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
-                glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-                glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-                glEnable(GL_TEXTURE_GEN_S);
-                glEnable(GL_TEXTURE_GEN_T);
-
-                rd->setTexture(nextUnit, lighting->environmentMap);
-            }
-            debugAssertGLOk();
-
+        if (material.diffuse.map.notNull()) {
             glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
-            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,  GL_COMBINE_ARB);
-            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB,   GL_MODULATE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB,   GL_CONSTANT_ARB);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB,  GL_SRC_COLOR);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB,   GL_TEXTURE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB,  GL_SRC_COLOR);
-            glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, 
-                Color4(material.reflect.constant * lighting->environmentMapColor, 1));
-            debugAssertGLOk();
-
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_MODULATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PRIMARY_COLOR_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
+            diffuseUnit = GL_TEXTURE0_ARB + nextUnit;
             ++nextUnit;
+        }
+    }
 
-            rd->setTexture(nextUnit, material.reflect.map);
-            if (material.reflect.map.notNull()) {
-                // If there is a reflection map for the surface, modulate
-                // the reflected color by it.
-                glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,  GL_COMBINE_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB,   GL_MODULATE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB,   GL_PREVIOUS_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB,  GL_SRC_COLOR);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB,   GL_TEXTURE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB,  GL_SRC_COLOR);
-                ++nextUnit;
-                debugAssertGLOk();
-            }
+    if (hasReflection) {
 
-            if (hasDiffuse) {
-                // Need a dummy texture
-                rd->setTexture(nextUnit, whiteMap());
+        // First configure the reflection map.  There must be one or we wouldn't
+        // have taken this branch.
 
-                // Add diffuse to the previous (reflective) unit
-                glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
-                glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,  GL_COMBINE_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB,   GL_ADD);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB,   GL_PREVIOUS_ARB);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB,  GL_SRC_COLOR);
-                glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB,   diffuseUnit);
-                glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB,  GL_SRC_COLOR);
-                debugAssertGLOk();
-                ++nextUnit;
-            }
+        if (GLCaps::supports_GL_ARB_texture_cube_map() &&
+            (lighting->environmentMap->getDimension() == Texture::DIM_CUBE_MAP)) {
+            rd->configureReflectionMap(nextUnit, lighting->environmentMap);
+        } else {
+            // Use the top texture as a sphere map
+            glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
+            glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+            glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
+            glEnable(GL_TEXTURE_GEN_S);
+            glEnable(GL_TEXTURE_GEN_T);
+
+            rd->setTexture(nextUnit, lighting->environmentMap);
+        }
+        debugAssertGLOk();
+
+        glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_CONSTANT_ARB);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
+        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR,
+                   Color4(material.reflect.constant * lighting->environmentMapColor, 1));
+        debugAssertGLOk();
+
+        ++nextUnit;
+
+        rd->setTexture(nextUnit, material.reflect.map);
+        if (material.reflect.map.notNull()) {
+            // If there is a reflection map for the surface, modulate
+            // the reflected color by it.
+            glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_MODULATE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PREVIOUS_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
+            ++nextUnit;
+            debugAssertGLOk();
         }
 
+        if (hasDiffuse) {
+            // Need a dummy texture
+            rd->setTexture(nextUnit, whiteMap());
 
-        sendGeometry(rd);
-        setAdditive(rd, renderedOnce);
+            // Add diffuse to the previous (reflective) unit
+            glActiveTextureARB(GL_TEXTURE0_ARB + nextUnit);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB_ARB, GL_ADD);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB_ARB, GL_PREVIOUS_ARB);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB_ARB, GL_SRC_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB_ARB, diffuseUnit);
+            glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB_ARB, GL_SRC_COLOR);
+            debugAssertGLOk();
+            ++nextUnit;
+        }
+    }
+
+
+    sendGeometry(rd);
+    setAdditive(rd, renderedOnce);
 
     rd->popState();
     glPopAttrib();
@@ -634,23 +636,23 @@ bool PosedArticulatedModel::renderPS14NonShadowedOpaqueTerms(
 
 
 void PosedArticulatedModel::renderNonShadowed(
-    RenderDevice*                   rd,
-    const LightingRef&              lighting) const {
+        RenderDevice *rd,
+        const LightingRef &lighting) const {
 
-    if (! rd->colorWrite()) {
+    if (!rd->colorWrite()) {
         // No need for fancy shading
         render(rd);
         return;
     }
 
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
-    const SuperShader::Material& material = triList.material;
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
+    const SuperShader::Material &material = triList.material;
 
     rd->pushState();
     rd->setAlphaTest(RenderDevice::ALPHA_GREATER, 0.5);
 
-    if (! material.transmit.isBlack()) {
+    if (!material.transmit.isBlack()) {
         // Transparent
         bool oldDepthWrite = rd->depthWrite();
 
@@ -664,22 +666,22 @@ void PosedArticulatedModel::renderNonShadowed(
         }
 
         for (int i = 0; i < passes; ++i) {
-            rd->disableLighting();
+                rd->disableLighting();
 
-            // Modulate background by transparent color
-            rd->setBlendFunc(RenderDevice::BLEND_ZERO, RenderDevice::BLEND_SRC_COLOR);
-            rd->setTexture(0, material.transmit.map);
-            rd->setColor(material.transmit.constant);
-            sendGeometry(rd);
+                // Modulate background by transparent color
+                rd->setBlendFunc(RenderDevice::BLEND_ZERO, RenderDevice::BLEND_SRC_COLOR);
+                rd->setTexture(0, material.transmit.map);
+                rd->setColor(material.transmit.constant);
+                sendGeometry(rd);
 
-            bool alreadyAdditive = false;
-            setAdditive(rd, alreadyAdditive);
-            renderNonShadowedOpaqueTerms(rd, lighting, part, triList, material);
-        
-            // restore depth write
-            rd->setDepthWrite(oldDepthWrite);
-            rd->setCullFace(RenderDevice::CULL_BACK);
-        }
+                bool alreadyAdditive = false;
+                setAdditive(rd, alreadyAdditive);
+                renderNonShadowedOpaqueTerms(rd, lighting, part, triList, material);
+
+                // restore depth write
+                rd->setDepthWrite(oldDepthWrite);
+                rd->setCullFace(RenderDevice::CULL_BACK);
+            }
     } else {
         // Opaque
         rd->setBlendFunc(RenderDevice::BLEND_ONE, RenderDevice::BLEND_ZERO);
@@ -687,7 +689,7 @@ void PosedArticulatedModel::renderNonShadowed(
         bool ps20 = ArticulatedModel::profile() == ArticulatedModel::PS20;
 
         if (triList.twoSided) {
-            if (! ps20) {
+            if (!ps20) {
                 rd->enableTwoSidedLighting();
                 rd->setCullFace(RenderDevice::CULL_NONE);
             } else {
@@ -706,9 +708,9 @@ void PosedArticulatedModel::renderNonShadowed(
             renderNonShadowedOpaqueTerms(rd, lighting, part, triList, material);
             triList.nonShadowedShader->args.set("backside", 1.0f);
         }
-        
 
-        if (! wroteDepth) {
+
+        if (!wroteDepth) {
             // We failed to write to the depth buffer, so
             // do so now.
             rd->disableLighting();
@@ -722,8 +724,8 @@ void PosedArticulatedModel::renderNonShadowed(
 
 
 void PosedArticulatedModel::renderShadowedLightPass(
-    RenderDevice*       rd, 
-    const GLight&       light) const {
+        RenderDevice *rd,
+        const GLight &light) const {
 
     // TODO
     debugAssertM(false, "Unimplemented");
@@ -731,23 +733,23 @@ void PosedArticulatedModel::renderShadowedLightPass(
 
 
 void PosedArticulatedModel::renderShadowMappedLightPass(
-    RenderDevice*       rd, 
-    const GLight&       light, 
-    const Matrix4&      lightMVP, 
-    const TextureRef&   shadowMap) const {
+        RenderDevice *rd,
+        const GLight &light,
+        const Matrix4 &lightMVP,
+        const TextureRef &shadowMap) const {
 
-    const ArticulatedModel::Part& part              = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList  = part.triListArray[listIndex];
-    const SuperShader::Material& material           = triList.material;
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
+    const SuperShader::Material &material = triList.material;
 
     if (material.diffuse.isBlack() && material.specular.isBlack()) {
         return;
     }
 
     rd->pushState();
-        rd->setAlphaTest(RenderDevice::ALPHA_GREATER, 0.5);
+    rd->setAlphaTest(RenderDevice::ALPHA_GREATER, 0.5);
 
-        switch (ArticulatedModel::profile()) {
+    switch (ArticulatedModel::profile()) {
         case ArticulatedModel::FIXED_FUNCTION:
         case ArticulatedModel::PS14:
             if (triList.twoSided) {
@@ -777,19 +779,19 @@ void PosedArticulatedModel::renderShadowMappedLightPass(
 
         default:
             debugAssertM(false, "Fell through switch");
-        }
+    }
     rd->popState();
 }
 
 
 void PosedArticulatedModel::renderPS20ShadowMappedLightPass(
-    RenderDevice*       rd,
-    const GLight&       light, 
-    const Matrix4&      lightMVP, 
-    const TextureRef&   shadowMap,
-    const ArticulatedModel::Part& part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material& material) const {
+        RenderDevice *rd,
+        const GLight &light,
+        const Matrix4 &lightMVP,
+        const TextureRef &shadowMap,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
     if (material.specular.isBlack() &&
         material.diffuse.isBlack()) {
@@ -805,13 +807,13 @@ void PosedArticulatedModel::renderPS20ShadowMappedLightPass(
 
 
 void PosedArticulatedModel::renderFFShadowMappedLightPass(
-    RenderDevice*       rd,
-    const GLight&       light, 
-    const Matrix4&      lightMVP, 
-    const TextureRef&   shadowMap,
-    const ArticulatedModel::Part& part,
-    const ArticulatedModel::Part::TriList& triList,
-    const SuperShader::Material& material) const {
+        RenderDevice *rd,
+        const GLight &light,
+        const Matrix4 &lightMVP,
+        const TextureRef &shadowMap,
+        const ArticulatedModel::Part &part,
+        const ArticulatedModel::Part::TriList &triList,
+        const SuperShader::Material &material) const {
 
     rd->configureShadowMap(1, lightMVP, shadowMap);
 
@@ -834,7 +836,7 @@ void PosedArticulatedModel::renderFFShadowMappedLightPass(
 
     sendGeometry(rd);
 
-    if (! material.specular.isBlack()) {
+    if (!material.specular.isBlack()) {
         // Make a separate pass for specular. 
         static bool separateSpecular = GLCaps::supports("GL_EXT_separate_specular_color");
 
@@ -845,7 +847,8 @@ void PosedArticulatedModel::renderFFShadowMappedLightPass(
             glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, GL_SINGLE_COLOR_EXT);
         }
 
-        rd->setColor(Color3::white()); // TODO: when I put the specular coefficient here, it doesn't modulate.  What's wrong?
+        rd->setColor(
+                Color3::white()); // TODO: when I put the specular coefficient here, it doesn't modulate.  What's wrong?
         rd->setTexture(0, material.specular.map);
         rd->setSpecularCoefficient(material.specular.constant);
 
@@ -859,7 +862,7 @@ void PosedArticulatedModel::renderFFShadowMappedLightPass(
 
         if (separateSpecular) {
             // Restore normal behavior
-            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT, 
+            glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL_EXT,
                           GL_SEPARATE_SPECULAR_COLOR_EXT);
         }
 
@@ -870,10 +873,10 @@ void PosedArticulatedModel::renderFFShadowMappedLightPass(
 
 
 void PosedArticulatedModel::sendGeometry(
-    RenderDevice*           rd) const {
+        RenderDevice *rd) const {
 
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
 
     CoordinateFrame o2w = rd->getObjectToWorldMatrix();
     rd->setObjectToWorldMatrix(cframe);
@@ -882,19 +885,19 @@ void PosedArticulatedModel::sendGeometry(
 
         rd->setShadeMode(RenderDevice::SHADE_SMOOTH);
         rd->beginIndexedPrimitives();
-            rd->setVertexArray(part.vertexVAR);
-            rd->setNormalArray(part.normalVAR);
-            if (part.texCoordArray.size() > 0) {
-                rd->setTexCoordArray(0, part.texCoord0VAR);
-            }
+        rd->setVertexArray(part.vertexVAR);
+        rd->setNormalArray(part.normalVAR);
+        if (part.texCoordArray.size() > 0) {
+            rd->setTexCoordArray(0, part.texCoord0VAR);
+        }
 
-            // In programmable pipeline mode, load the tangents into tex coord 1
-            if ((part.tangentArray.size()) > 0 && 
-                (ArticulatedModel::profile() == ArticulatedModel::PS20)) {
-                rd->setTexCoordArray(1, part.tangentVAR);
-            }
+        // In programmable pipeline mode, load the tangents into tex coord 1
+        if ((part.tangentArray.size()) > 0 &&
+            (ArticulatedModel::profile() == ArticulatedModel::PS20)) {
+            rd->setTexCoordArray(1, part.tangentVAR);
+        }
 
-            rd->sendIndices(RenderDevice::TRIANGLES, triList.indexArray);
+        rd->sendIndices(RenderDevice::TRIANGLES, triList.indexArray);
         rd->endIndexedPrimitives();
 
     } else {
@@ -903,16 +906,16 @@ void PosedArticulatedModel::sendGeometry(
         // switch to begin/end
         rd->beginPrimitive(RenderDevice::TRIANGLES);
         for (int i = 0; i < triList.indexArray.size(); ++i) {
-            int v = triList.indexArray[i];
-            if (part.texCoordArray.size() > 0) {
-                rd->setTexCoord(0, part.texCoordArray[v]);
+                int v = triList.indexArray[i];
+                if (part.texCoordArray.size() > 0) {
+                    rd->setTexCoord(0, part.texCoordArray[v]);
+                }
+                if (part.tangentArray.size() > 0) {
+                    rd->setTexCoord(1, part.tangentArray[v]);
+                }
+                rd->setNormal(part.geometry.normalArray[v]);
+                rd->sendVertex(part.geometry.vertexArray[v]);
             }
-            if (part.tangentArray.size() > 0) {
-                rd->setTexCoord(1, part.tangentArray[v]);
-            }
-            rd->setNormal(part.geometry.normalArray[v]);
-            rd->sendVertex(part.geometry.vertexArray[v]);
-        }
         rd->endPrimitive();
     }
 
@@ -927,24 +930,24 @@ std::string PosedArticulatedModel::name() const {
 
 
 bool PosedArticulatedModel::hasTransparency() const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
-    return ! triList.material.transmit.isBlack();
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
+    return !triList.material.transmit.isBlack();
 }
 
 
-void PosedArticulatedModel::getCoordinateFrame(CoordinateFrame& c) const {
+void PosedArticulatedModel::getCoordinateFrame(CoordinateFrame &c) const {
     c = cframe;
 }
 
 
-const MeshAlg::Geometry& PosedArticulatedModel::objectSpaceGeometry() const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
+const MeshAlg::Geometry &PosedArticulatedModel::objectSpaceGeometry() const {
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
     return part.geometry;
 }
 
 
-const Array<Vector3>& PosedArticulatedModel::objectSpaceFaceNormals(bool normalize) const {
+const Array<Vector3> &PosedArticulatedModel::objectSpaceFaceNormals(bool normalize) const {
     static Array<Vector3> n;
     debugAssert(false);
     return n;
@@ -952,7 +955,7 @@ const Array<Vector3>& PosedArticulatedModel::objectSpaceFaceNormals(bool normali
 }
 
 
-const Array<MeshAlg::Face>& PosedArticulatedModel::faces() const {
+const Array<MeshAlg::Face> &PosedArticulatedModel::faces() const {
     static Array<MeshAlg::Face> f;
     debugAssert(false);
     return f;
@@ -960,7 +963,7 @@ const Array<MeshAlg::Face>& PosedArticulatedModel::faces() const {
 }
 
 
-const Array<MeshAlg::Edge>& PosedArticulatedModel::edges() const {
+const Array<MeshAlg::Edge> &PosedArticulatedModel::edges() const {
     static Array<MeshAlg::Edge> f;
     debugAssert(false);
     return f;
@@ -968,26 +971,26 @@ const Array<MeshAlg::Edge>& PosedArticulatedModel::edges() const {
 }
 
 
-const Array<MeshAlg::Vertex>& PosedArticulatedModel::vertices() const {
+const Array<MeshAlg::Vertex> &PosedArticulatedModel::vertices() const {
     static Array<MeshAlg::Vertex> f;
     debugAssert(false);
     return f;
     // TODO
 }
 
-const Array<Vector2>& PosedArticulatedModel::texCoords() const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
+const Array<Vector2> &PosedArticulatedModel::texCoords() const {
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
     return part.texCoordArray;
 }
 
 
 bool PosedArticulatedModel::hasTexCoords() const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
     return part.texCoordArray.size() > 0;
 }
 
 
-const Array<MeshAlg::Face>& PosedArticulatedModel::weldedFaces() const {
+const Array<MeshAlg::Face> &PosedArticulatedModel::weldedFaces() const {
     static Array<MeshAlg::Face> f;
     debugAssert(false);
     return f;
@@ -995,7 +998,7 @@ const Array<MeshAlg::Face>& PosedArticulatedModel::weldedFaces() const {
 }
 
 
-const Array<MeshAlg::Edge>& PosedArticulatedModel::weldedEdges() const {
+const Array<MeshAlg::Edge> &PosedArticulatedModel::weldedEdges() const {
     static Array<MeshAlg::Edge> e;
     debugAssert(false);
     return e;
@@ -1003,7 +1006,7 @@ const Array<MeshAlg::Edge>& PosedArticulatedModel::weldedEdges() const {
 }
 
 
-const Array<MeshAlg::Vertex>& PosedArticulatedModel::weldedVertices() const {
+const Array<MeshAlg::Vertex> &PosedArticulatedModel::weldedVertices() const {
     static Array<MeshAlg::Vertex> v;
     return v;
     debugAssert(false);
@@ -1011,23 +1014,23 @@ const Array<MeshAlg::Vertex>& PosedArticulatedModel::weldedVertices() const {
 }
 
 
-const Array<int>& PosedArticulatedModel::triangleIndices() const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
+const Array<int> &PosedArticulatedModel::triangleIndices() const {
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
     return triList.indexArray;
 }
 
 
-void PosedArticulatedModel::getObjectSpaceBoundingSphere(Sphere& s) const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
+void PosedArticulatedModel::getObjectSpaceBoundingSphere(Sphere &s) const {
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
     s = triList.sphereBounds;
 }
 
 
-void PosedArticulatedModel::getObjectSpaceBoundingBox(Box& b) const {
-    const ArticulatedModel::Part& part = model->partArray[partIndex];
-    const ArticulatedModel::Part::TriList& triList = part.triListArray[listIndex];
+void PosedArticulatedModel::getObjectSpaceBoundingBox(Box &b) const {
+    const ArticulatedModel::Part &part = model->partArray[partIndex];
+    const ArticulatedModel::Part::TriList &triList = part.triListArray[listIndex];
     b = triList.boxBounds;
 }
 

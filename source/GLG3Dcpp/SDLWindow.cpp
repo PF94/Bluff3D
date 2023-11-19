@@ -40,6 +40,7 @@
 namespace G3D {
 
 #ifdef G3D_WIN32
+
     int screenWidth() {
         return GetSystemMetrics(SM_CXFULLSCREEN);
         /*
@@ -68,19 +69,20 @@ namespace G3D {
         }
         */
     }
+
 #endif
 
 
 #ifdef G3D_LINUX
 
     int screenWidth(Display* display) {
-	const int screenNumber = DefaultScreen(display);
-	return DisplayWidth(display, screenNumber);
+    const int screenNumber = DefaultScreen(display);
+    return DisplayWidth(display, screenNumber);
 }
 
 int screenHeight(Display* display) {
-	const int screenNumber = DefaultScreen(display);
-	return DisplayHeight(display, screenNumber);
+    const int screenNumber = DefaultScreen(display);
+    return DisplayHeight(display, screenNumber);
 }
 
 #endif
@@ -99,8 +101,8 @@ static bool SDL_handleDebugAssert_(
 
     SDL_ShowCursor(SDL_ENABLE);
     SDL_WM_GrabInput(SDL_GRAB_OFF);
-	
-	return _internal::_handleDebugAssert_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
+
+    return _internal::_handleDebugAssert_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
 }
 
 /** Replacement for the default failure hook on Linux. */
@@ -115,15 +117,15 @@ static bool SDL_handleErrorCheck_(
     SDL_ShowCursor(SDL_ENABLE);
     SDL_WM_GrabInput(SDL_GRAB_OFF);
 
-	return _internal::_handleErrorCheck_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
+    return _internal::_handleErrorCheck_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
 }
 #endif
 
 
-    SDLWindow::SDLWindow(const GWindowSettings& settings) {
+    SDLWindow::SDLWindow(const GWindowSettings &settings) {
 
         if (SDL_Init(SDL_INIT_NOPARACHUTE | SDL_INIT_VIDEO |
-                     SDL_INIT_JOYSTICK) < 0 ) {
+                     SDL_INIT_JOYSTICK) < 0) {
 
             fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
             debugPrintf("Unable to initialize SDL: %s\n", SDL_GetError());
@@ -140,15 +142,16 @@ static bool SDL_handleErrorCheck_(
                 defaultIcon.load(settings.defaultIconFilename);
 
                 setIcon(defaultIcon);
-            } catch (const GImage::Error& e) {
+            } catch (const GImage::Error &e) {
                 // Throw away default icon
                 fprintf(stderr, "GWindow's default icon failed to load: %s (%s)", e.filename.c_str(), e.reason.c_str());
                 debugPrintf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(), e.reason.c_str());
-                Log::common()->printf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(), e.reason.c_str());
+                Log::common()->printf("GWindow's default icon failed to load: %s (%s)", e.filename.c_str(),
+                                      e.reason.c_str());
             }
         }
 
-        if (! settings.fullScreen) {
+        if (!settings.fullScreen) {
             // This doesn't really work very well due to SDL bugs so we fix up
             // the position after the window is created.
             if (settings.center) {
@@ -162,14 +165,14 @@ static bool SDL_handleErrorCheck_(
         _inputCapture = false;
 
         // Request various OpenGL parameters
-        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,      settings.depthBits);
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,    1);
-        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,    settings.stencilBits);
-        SDL_GL_SetAttribute(SDL_GL_RED_SIZE,        settings.rgbBits);
-        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,      settings.rgbBits);
-        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,       settings.rgbBits);
-        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,      settings.alphaBits);
-        SDL_GL_SetAttribute(SDL_GL_STEREO,          settings.stereo);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, settings.depthBits);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, settings.stencilBits);
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, settings.rgbBits);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, settings.rgbBits);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, settings.rgbBits);
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, settings.alphaBits);
+        SDL_GL_SetAttribute(SDL_GL_STEREO, settings.stereo);
 
 #if SDL_FSAA
         if (settings.fsaaSamples > 1) {
@@ -205,9 +208,9 @@ static bool SDL_handleErrorCheck_(
         glGetIntegerv(GL_DEPTH_BITS, &depthBits);
         glGetIntegerv(GL_STENCIL_BITS, &stencilBits);
 
-        glGetIntegerv(GL_RED_BITS,   &redBits);
+        glGetIntegerv(GL_RED_BITS, &redBits);
         glGetIntegerv(GL_GREEN_BITS, &greenBits);
-        glGetIntegerv(GL_BLUE_BITS,  &blueBits);
+        glGetIntegerv(GL_BLUE_BITS, &blueBits);
         glGetIntegerv(GL_ALPHA_BITS, &alphaBits);
         int actualFSAABuffers = 0, actualFSAASamples = 0;
 
@@ -218,10 +221,10 @@ static bool SDL_handleErrorCheck_(
         (void)actualFSAABuffers;
         (void)actualFSAASamples;
 #endif
-        _settings.rgbBits     = iMin(iMin(redBits, greenBits), blueBits);
-        _settings.alphaBits   = alphaBits;
+        _settings.rgbBits = iMin(iMin(redBits, greenBits), blueBits);
+        _settings.alphaBits = alphaBits;
         _settings.stencilBits = stencilBits;
-        _settings.depthBits   = depthBits;
+        _settings.depthBits = depthBits;
         _settings.fsaaSamples = actualFSAASamples;
 
         SDL_version ver;
@@ -238,7 +241,7 @@ static bool SDL_handleErrorCheck_(
 
         // TODO
 #if 0
-        #if defined(G3D_WIN32)
+#if defined(G3D_WIN32)
         // Extract SDL HDC/HWND on Win32
         _Win32HWND  = info.window;
         _Win32HDC   = wglGetCurrentDC();
@@ -290,7 +293,7 @@ static bool SDL_handleErrorCheck_(
                 x = (W  - settings.width) / 2;
                 y = (H - settings.height) / 2;
             }
-			XMoveWindow(_X11Display, _X11WMWindow, x, y);
+            XMoveWindow(_X11Display, _X11WMWindow, x, y);
         }
 #endif
 #endif
@@ -321,18 +324,17 @@ static bool SDL_handleErrorCheck_(
 
 #	if defined(G3D_LINUX)
         // If G3D is using the default assertion hooks, replace them with our own that use
-		// SDL functions to release the mouse, since we've been unable to implement
-		// a non-SDL way of releasing the mouse using the X11 handle directly.
-		if (assertionHook() == _internal::_handleDebugAssert_) {
-			setFailureHook(SDL_handleDebugAssert_);
-		}
+        // SDL functions to release the mouse, since we've been unable to implement
+        // a non-SDL way of releasing the mouse using the X11 handle directly.
+        if (assertionHook() == _internal::_handleDebugAssert_) {
+            setFailureHook(SDL_handleDebugAssert_);
+        }
 
-		if (failureHook() == _internal::_handleErrorCheck_) {
-			setFailureHook(SDL_handleErrorCheck_);
-		}
+        if (failureHook() == _internal::_handleErrorCheck_) {
+            setFailureHook(SDL_handleErrorCheck_);
+        }
 #	endif
     }
-
 
 
     SDLWindow::~SDLWindow() {
@@ -351,8 +353,8 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    ::SDL_Joystick* SDLWindow::getSDL_Joystick(unsigned int num) const {
-        if ((unsigned int)joy.size() >= num) {
+    ::SDL_Joystick *SDLWindow::getSDL_Joystick(unsigned int num) const {
+        if ((unsigned int) joy.size() >= num) {
             return joy[num];
         } else {
             return NULL;
@@ -360,7 +362,7 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::getSettings(GWindowSettings& settings) const {
+    void SDLWindow::getSettings(GWindowSettings &settings) const {
         settings = _settings;
     }
 
@@ -380,15 +382,15 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::setDimensions(const Rect2D& dims) {
+    void SDLWindow::setDimensions(const Rect2D &dims) {
 #ifdef G3D_WIN32
         int W = screenWidth();
         int H = screenHeight();
 
-        int x = iClamp((int)dims.x0(), 0, W);
-        int y = iClamp((int)dims.y0(), 0, H);
-        int w = iClamp((int)dims.width(), 1, W);
-        int h = iClamp((int)dims.height(), 1, H);
+        int x = iClamp((int) dims.x0(), 0, W);
+        int y = iClamp((int) dims.y0(), 0, H);
+        int w = iClamp((int) dims.width(), 1, W);
+        int h = iClamp((int) dims.height(), 1, H);
 
         SetWindowPos(_Win32HWND, NULL, x, y, w, h, SWP_NOZORDER);
         // Do not update settings-- wait for an event to notify us
@@ -421,7 +423,7 @@ static bool SDL_handleErrorCheck_(
         x = iClamp(x, 0, W);
         y = iClamp(y, 0, H);
 
-		XMoveWindow(_X11Display, _X11WMWindow, x, y);
+        XMoveWindow(_X11Display, _X11WMWindow, x, y);
 #endif
         // TODO: OS X
     }
@@ -445,12 +447,12 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::setGammaRamp(const Array<uint16>& gammaRamp) {
+    void SDLWindow::setGammaRamp(const Array<uint16> &gammaRamp) {
         alwaysAssertM(gammaRamp.size() >= 256, "Gamma ramp must have at least 256 entries");
 
-        Log* debugLog = Log::common();
+        Log *debugLog = Log::common();
 
-        uint16* ptr = const_cast<uint16*>(gammaRamp.getCArray());
+        uint16 *ptr = const_cast<uint16 *>(gammaRamp.getCArray());
 #ifdef WIN32
         // On windows, use the more reliable SetDeviceGammaRamp function.
         // It requires separate RGB gamma ramps.
@@ -463,8 +465,8 @@ static bool SDL_handleErrorCheck_(
         bool success = (SDL_SetGammaRamp(ptr, ptr, ptr) != -1);
 #endif
 
-        if (! success) {
-            if (debugLog) {debugLog->println("Error setting gamma ramp!");}
+        if (!success) {
+            if (debugLog) { debugLog->println("Error setting gamma ramp!"); }
 
 #ifdef WIN32
             debugAssertM(false, "Failed to set gamma ramp");
@@ -482,13 +484,13 @@ static bool SDL_handleErrorCheck_(
 
 
     void SDLWindow::getJoystickState(
-            unsigned int    stickNum,
-            Array<float>&   axis,
-            Array<bool>&    button) {
+            unsigned int stickNum,
+            Array<float> &axis,
+            Array<bool> &button) {
 
         debugAssert(stickNum < ((unsigned int) joy.size()));
 
-        SDL_Joystick* sdlstick = joy[stickNum];
+        SDL_Joystick *sdlstick = joy[stickNum];
 
         axis.resize(SDL_JoystickNumAxes(sdlstick), DONT_SHRINK_UNDERLYING_ARRAY);
 
@@ -510,7 +512,7 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::setCaption(const std::string& caption) {
+    void SDLWindow::setCaption(const std::string &caption) {
         _caption = caption;
         SDL_SetWindowTitle(this->window, _caption.c_str());
     }
@@ -521,7 +523,7 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::setIcon(const GImage& image) {
+    void SDLWindow::setIcon(const GImage &image) {
         alwaysAssertM((image.channels == 3) ||
                       (image.channels == 4),
                       "Icon image must have at least 3 channels.");
@@ -541,11 +543,11 @@ static bool SDL_handleErrorCheck_(
             amask = 0x00000000;
         }
 
-        int pixelBitLen     = image.channels * 8;
+        int pixelBitLen = image.channels * 8;
         int scanLineByteLen = image.channels * image.width;
 
-        SDL_Surface* surface =
-                SDL_CreateRGBSurfaceFrom((void*)image.byte(), image.width, image.height,
+        SDL_Surface *surface =
+                SDL_CreateRGBSurfaceFrom((void *) image.byte(), image.width, image.height,
                                          pixelBitLen, scanLineByteLen,
                                          rmask, gmask, bmask, amask);
 
@@ -573,7 +575,7 @@ static bool SDL_handleErrorCheck_(
         // Mutate the SDL surface (which one is not supposed to do).
         // We can't resize the actual surface or SDL will destroy
         // our GL context, however.
-        SDL_Surface* surface = SDL_GetWindowSurface(this->window);
+        SDL_Surface *surface = SDL_GetWindowSurface(this->window);
         surface->w = w;
         surface->h = h;
         surface->clip_rect.x = 0;
@@ -588,12 +590,12 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::setRelativeMousePosition(const Vector2& p) {
+    void SDLWindow::setRelativeMousePosition(const Vector2 &p) {
         setRelativeMousePosition(p.x, p.y);
     }
 
 
-    void SDLWindow::getRelativeMouseState(Vector2& p, uint8& mouseButtons) const {
+    void SDLWindow::getRelativeMouseState(Vector2 &p, uint8 &mouseButtons) const {
         int x, y;
         getRelativeMouseState(x, y, mouseButtons);
         p.x = x;
@@ -601,12 +603,12 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    void SDLWindow::getRelativeMouseState(int& x, int& y, uint8& mouseButtons) const {
+    void SDLWindow::getRelativeMouseState(int &x, int &y, uint8 &mouseButtons) const {
         mouseButtons = SDL_GetMouseState(&x, &y);
     }
 
 
-    void SDLWindow::getRelativeMouseState(double& x, double& y, uint8& mouseButtons) const {
+    void SDLWindow::getRelativeMouseState(double &x, double &y, uint8 &mouseButtons) const {
         int ix, iy;
         getRelativeMouseState(ix, iy, mouseButtons);
         x = ix;
@@ -647,7 +649,7 @@ static bool SDL_handleErrorCheck_(
     }
 
 
-    bool SDLWindow::pollEvent(GEvent& e) {
+    bool SDLWindow::pollEvent(GEvent &e) {
         return (SDL_PollEvent(&e) != 0);
     }
 
@@ -683,7 +685,7 @@ Display* SDLWindow::x11Display() const {
 
     void SDLWindow::reallyMakeCurrent() const {
 #   ifdef G3D_WIN32
-        if (wglMakeCurrent(_Win32HDC, _glContext) == FALSE)	{
+        if (wglMakeCurrent(_Win32HDC, _glContext) == FALSE) {
             debugAssertM(false, "Failed to set context");
         }
 #   elif defined(G3D_LINUX)

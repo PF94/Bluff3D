@@ -57,182 +57,194 @@ namespace G3D {
   <B>BETA API</B>
   <DT>This API is subject to change in future versions.
  */
-class TextOutput {
-public:
-
-    class Options {
+    class TextOutput {
     public:
-        /** 
-          WRAP_NONE             Word wrapping is disabled
-          WRAP_WITHOUT_BREAKING Word-wrap, but don't break continuous lines that
-                                are longer than numColumns (default)
-          WRAP_ALWAYS           Wrap even if it means breaking a continuous line or
-                                a quoted string.
 
-          Word wrapping is only allowed at whitespaces ('\n', '\r', '\t', ' '); it
-          will not occur after commas, punctuation, minus signs, or any other characters
-        */
-        enum WordWrapMode {WRAP_NONE, WRAP_WITHOUT_BREAKING, WRAP_ALWAYS};
+        class Options {
+        public:
+            /**
+              WRAP_NONE             Word wrapping is disabled
+              WRAP_WITHOUT_BREAKING Word-wrap, but don't break continuous lines that
+                                    are longer than numColumns (default)
+              WRAP_ALWAYS           Wrap even if it means breaking a continuous line or
+                                    a quoted string.
 
-        /** Defaults to WRAP_WITHOUT_BREAKING */
-        WordWrapMode        wordWrap;
+              Word wrapping is only allowed at whitespaces ('\n', '\r', '\t', ' '); it
+              will not occur after commas, punctuation, minus signs, or any other characters
+            */
+            enum WordWrapMode {
+                WRAP_NONE, WRAP_WITHOUT_BREAKING, WRAP_ALWAYS
+            };
 
-        /** Is word-wrapping allowed to insert newlines inside double quotes?
-            Default: false */
-        bool                allowWordWrapInsideDoubleQuotes;
+            /** Defaults to WRAP_WITHOUT_BREAKING */
+            WordWrapMode wordWrap;
 
-        /** Number of columns for word wrapping. Default: 8 */
-        int                 numColumns;
+            /** Is word-wrapping allowed to insert newlines inside double quotes?
+                Default: false */
+            bool allowWordWrapInsideDoubleQuotes;
 
-        /** Number of spaces in each indent. Default: 4 */
-        int                 spacesPerIndent;
+            /** Number of columns for word wrapping. Default: 8 */
+            int numColumns;
 
-        /** Style of newline used by word wrapping and by (optional) conversion.
-            default: Windows: NEWLINE_WINDOWS, Linux, OS X: NEWLINE_UNIX.
-          */
-        enum NewlineStyle {NEWLINE_WINDOWS, NEWLINE_UNIX};
+            /** Number of spaces in each indent. Default: 4 */
+            int spacesPerIndent;
 
-        NewlineStyle        newlineStyle;
+            /** Style of newline used by word wrapping and by (optional) conversion.
+                default: Windows: NEWLINE_WINDOWS, Linux, OS X: NEWLINE_UNIX.
+              */
+            enum NewlineStyle {
+                NEWLINE_WINDOWS, NEWLINE_UNIX
+            };
 
-        /** If true, all newlines are converted to NewlineStyle regardless of 
-            how they start out. Default: true. */
-        bool                convertNewlines;
+            NewlineStyle newlineStyle;
 
-        Options() :
-            wordWrap(WRAP_WITHOUT_BREAKING),
-            allowWordWrapInsideDoubleQuotes(false),
-            numColumns(80),
-            spacesPerIndent(4),
-            convertNewlines(true) {
-            #ifdef G3D_WIN32
+            /** If true, all newlines are converted to NewlineStyle regardless of
+                how they start out. Default: true. */
+            bool convertNewlines;
+
+            Options() :
+                    wordWrap(WRAP_WITHOUT_BREAKING),
+                    allowWordWrapInsideDoubleQuotes(false),
+                    numColumns(80),
+                    spacesPerIndent(4),
+                    convertNewlines(true) {
+#ifdef G3D_WIN32
                 newlineStyle = NEWLINE_WINDOWS;
-            #else
+#else
                 newlineStyle = NEWLINE_UNIX;
-            #endif
-        }
-    };
+#endif
+            }
+        };
 
-private:
+    private:
 
-    /** Used by indentAndAppend to tell when we are writing the
-        first character of a new line. 
-      
-        So that push/popIndent work correctly, we cannot indent
-        immediately after writing a newline.  Instead we must
-        indent on writing the first character <B>after</B> that 
-        newline.
-      */
-    bool                    startingNewLine;
+        /** Used by indentAndAppend to tell when we are writing the
+            first character of a new line.
 
-    /** Number of characters at the end of the buffer since the last newline */
-    int                     currentColumn;
+            So that push/popIndent work correctly, we cannot indent
+            immediately after writing a newline.  Instead we must
+            indent on writing the first character <B>after</B> that
+            newline.
+          */
+        bool startingNewLine;
 
-    /** True if we have seen an open " and no close ".*/
-    bool                    inDQuote;
+        /** Number of characters at the end of the buffer since the last newline */
+        int currentColumn;
 
-    /** Empty if there is none */
-    std::string             filename;
+        /** True if we have seen an open " and no close ".*/
+        bool inDQuote;
 
-    Array<char>             data;
+        /** Empty if there is none */
+        std::string filename;
 
-    Options                 option;
+        Array<char> data;
 
-    /** Number of indents to prepend before each line.  Always set using setIndentLevel.*/
-    int                     indentLevel;
+        Options option;
 
-    void setIndentLevel(int i);
+        /** Number of indents to prepend before each line.  Always set using setIndentLevel.*/
+        int indentLevel;
 
-    /** Actual number of spaces to indent. */
-    int                     indentSpaces;
+        void setIndentLevel(int i);
 
-    /** the newline character(s) */
-    std::string             newline;
+        /** Actual number of spaces to indent. */
+        int indentSpaces;
 
-    void setOptions(const Options& _opt);
+        /** the newline character(s) */
+        std::string newline;
 
-    /** Converts to the desired newlines.  Called from vprintf */
-    void convertNewlines(const std::string& in, std::string& out);
+        void setOptions(const Options &_opt);
 
-    /** Called from vprintf */
-    void wordWrapIndentAppend(const std::string& str);
+        /** Converts to the desired newlines.  Called from vprintf */
+        void convertNewlines(const std::string &in, std::string &out);
 
-    /** Appends the character to data, indenting whenever a newline is encountered.
-        Called from wordWrapIndentAppend */
-    void indentAppend(char c);
+        /** Called from vprintf */
+        void wordWrapIndentAppend(const std::string &str);
 
-public:
+        /** Appends the character to data, indenting whenever a newline is encountered.
+            Called from wordWrapIndentAppend */
+        void indentAppend(char c);
 
-    explicit TextOutput(const std::string& filename, const Options& options = Options());
+    public:
 
-    /** Constructs a text output that can later be commited to a string instead of a file.*/
-    explicit TextOutput(const Options& options = Options());
+        explicit TextOutput(const std::string &filename, const Options &options = Options());
 
-    /** Commit to the filename specified on the constructor. 
-         <B>Not</B> called from the destructor; you must call
-     it yourself.
-    @param flush If true (default) the file is ready for reading when the method returns, otherwise 
-     the method returns immediately and writes the file in the background.*/
-    void commit(bool flush = true);
+        /** Constructs a text output that can later be commited to a string instead of a file.*/
+        explicit TextOutput(const Options &options = Options());
 
-    /** Commits to this string */
-    void commitString(std::string& string);
+        /** Commit to the filename specified on the constructor.
+             <B>Not</B> called from the destructor; you must call
+         it yourself.
+        @param flush If true (default) the file is ready for reading when the method returns, otherwise
+         the method returns immediately and writes the file in the background.*/
+        void commit(bool flush = true);
 
-    /** Increase indent level by 1 */
-    void pushIndent();
+        /** Commits to this string */
+        void commitString(std::string &string);
 
-    void popIndent();
+        /** Increase indent level by 1 */
+        void pushIndent();
 
-    /** Produces a new string that contains the output */
-    std::string commitString();
+        void popIndent();
 
-    /** Writes a quoted string. Special characters in the string (e.g., \, \t, \n) are escaped so that 
-        TextInput will produce the identical string on reading.*/
-    void writeString(const std::string& string);
+        /** Produces a new string that contains the output */
+        std::string commitString();
 
-    void writeNumber(double n);
+        /** Writes a quoted string. Special characters in the string (e.g., \, \t, \n) are escaped so that
+            TextInput will produce the identical string on reading.*/
+        void writeString(const std::string &string);
 
-    void writeNumber(int n);
+        void writeNumber(double n);
 
-    void writeNewline();
-    void writeNewlines(int numLines);
+        void writeNumber(int n);
 
-    /** The symbol is written without quotes.  Symbols are required to begin with a
-        letter or underscore and contain only letters, underscores, and numbers 
-        or be a C++ symbol (e.g. "{", "(", "++", etc.)
-        so that they may be properly parsed by TextInput::readSymbol. Symbols are
-        printed with a trailing space.*/
-    void writeSymbol(const std::string& string);
+        void writeNewline();
 
-    /** Convenient idiom for writing multiple symbols in a row, e.g.
-        writeSymbols("name", "=");  The empty symbols are not written.
-        */
-    void writeSymbols(
-        const std::string& a,
-        const std::string& b = "",
-        const std::string& c = "",
-        const std::string& d = "",
-        const std::string& e = "",
-        const std::string& f = "");
+        void writeNewlines(int numLines);
 
-    /** Normal printf conventions.  Note that the output will be reformatted
-        for word-wrapping and newlines */
-    void __cdecl printf(const char* fmt, ...)
+        /** The symbol is written without quotes.  Symbols are required to begin with a
+            letter or underscore and contain only letters, underscores, and numbers
+            or be a C++ symbol (e.g. "{", "(", "++", etc.)
+            so that they may be properly parsed by TextInput::readSymbol. Symbols are
+            printed with a trailing space.*/
+        void writeSymbol(const std::string &string);
+
+        /** Convenient idiom for writing multiple symbols in a row, e.g.
+            writeSymbols("name", "=");  The empty symbols are not written.
+            */
+        void writeSymbols(
+                const std::string &a,
+                const std::string &b = "",
+                const std::string &c = "",
+                const std::string &d = "",
+                const std::string &e = "",
+                const std::string &f = "");
+
+        /** Normal printf conventions.  Note that the output will be reformatted
+            for word-wrapping and newlines */
+        void __cdecl printf(const char *fmt, ...)
         G3D_CHECK_PRINTF_METHOD_ARGS;
 
-    // Can't pass by reference because that confuses va_start
-    void __cdecl printf(const std::string fmt, ...);
-    void __cdecl vprintf(const char* fmt, va_list argPtr) 
+        // Can't pass by reference because that confuses va_start
+        void __cdecl printf(const std::string fmt, ...);
+
+        void __cdecl vprintf(const char *fmt, va_list argPtr)
         G3D_CHECK_VPRINTF_METHOD_ARGS;
-};
+    };
 
 // Primitive serializers
-void serialize(const bool& b, TextOutput& to);
-void serialize(const int& b, TextOutput& to);
-void serialize(const uint8& b, TextOutput& to);
-void serialize(const double& b, TextOutput& to);
-void serialize(const float& b, TextOutput& to);
-void serialize(const std::string& b, TextOutput& to);
-void serialize(const char* b, TextOutput& to);
+    void serialize(const bool &b, TextOutput &to);
+
+    void serialize(const int &b, TextOutput &to);
+
+    void serialize(const uint8 &b, TextOutput &to);
+
+    void serialize(const double &b, TextOutput &to);
+
+    void serialize(const float &b, TextOutput &to);
+
+    void serialize(const std::string &b, TextOutput &to);
+
+    void serialize(const char *b, TextOutput &to);
 
 }
 

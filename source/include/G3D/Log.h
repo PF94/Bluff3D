@@ -15,7 +15,7 @@
 #include "platform.h"
 
 #ifndef G3D_WIN32
-    #include <stdarg.h>
+#include <stdarg.h>
 #endif
 
 namespace G3D {
@@ -26,67 +26,67 @@ namespace G3D {
  method common().  If you access common() and a common log
  does not yet exist, one is created for you.
  */
-class Log {
-private:
+    class Log {
+    private:
 
-    /**
-     Log messages go here.
-     */
-    FILE*                   logFile;
+        /**
+         Log messages go here.
+         */
+        FILE *logFile;
 
-    std::string             filename;
+        std::string filename;
 
-    static Log*             commonLog;
+        static Log *commonLog;
 
-    int                     stripFromStackBottom;
+        int stripFromStackBottom;
 
-    /**
-     Prints the time & stack trace.
-     */
-    void printHeader();
+        /**
+         Prints the time & stack trace.
+         */
+        void printHeader();
 
-public:
+    public:
 
-    /**
-     @param stripFromStackBottom Number of call stacks to strip from the
-     bottom of the stack when printing a trace.  Useful for hiding
-     routines like "main" and "WinMain".  If the specified file cannot
-     be opened for some reason, tries to open "c:/tmp/log.txt" or
-     "c:/temp/log.txt" instead.
-     */
-    Log(const std::string& filename = "log.txt",
-        int stripFromStackBottom    = 0);
+        /**
+         @param stripFromStackBottom Number of call stacks to strip from the
+         bottom of the stack when printing a trace.  Useful for hiding
+         routines like "main" and "WinMain".  If the specified file cannot
+         be opened for some reason, tries to open "c:/tmp/log.txt" or
+         "c:/temp/log.txt" instead.
+         */
+        Log(const std::string &filename = "log.txt",
+            int stripFromStackBottom = 0);
 
-    virtual ~Log();
+        virtual ~Log();
 
-    /**
-     Returns the handle to the file log.
-     */
-    FILE* getFile() const;
+        /**
+         Returns the handle to the file log.
+         */
+        FILE *getFile() const;
 
-    /**
-     Marks the beginning of a logfile section.
-     */
-    void section(const std::string& s);
+        /**
+         Marks the beginning of a logfile section.
+         */
+        void section(const std::string &s);
 
-    /**
-     Given arguments like printf, writes characters to the debug text overlay.
-     */
-    // We want G3D_CHECK_PRINTF_ARGS here, but that conflicts with the
-    // overload.
-    void __cdecl printf(const char* fmt, ...) G3D_CHECK_PRINTF_METHOD_ARGS;
+        /**
+         Given arguments like printf, writes characters to the debug text overlay.
+         */
+        // We want G3D_CHECK_PRINTF_ARGS here, but that conflicts with the
+        // overload.
+        void __cdecl printf(const char *fmt, ...) G3D_CHECK_PRINTF_METHOD_ARGS;
 
-    void __cdecl vprintf(const char*, va_list argPtr) G3D_CHECK_VPRINTF_METHOD_ARGS;
+        void __cdecl vprintf(const char *, va_list argPtr) G3D_CHECK_VPRINTF_METHOD_ARGS;
 
-    static Log* common();
+        static Log *common();
 
-    static std::string getCommonLogFilename();
+        static std::string getCommonLogFilename();
 
-    void print(const std::string& s);
+        void print(const std::string &s);
 
 
-    void println(const std::string& s);
-};
+        void println(const std::string &s);
+    };
 
 }
 

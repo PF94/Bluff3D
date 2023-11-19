@@ -18,76 +18,76 @@ namespace G3D {
 
 /////////////////////////////////////////////////////////////////////////////
 
-Renderbuffer::Renderbuffer (	
-    const std::string&			_name, 
-    const GLuint				_imageID,
-    const G3D::TextureFormat*	_format, 
-    const int					_width, 
-    const int					_height) : 
-    mName(_name),
-    mImageID(_imageID),
-    mFormat(_format),
-    mWidth(_width),
-    mHeight(_height) {
+    Renderbuffer::Renderbuffer(
+            const std::string &_name,
+            const GLuint _imageID,
+            const G3D::TextureFormat *_format,
+            const int _width,
+            const int _height) :
+            mName(_name),
+            mImageID(_imageID),
+            mFormat(_format),
+            mWidth(_width),
+            mHeight(_height) {
 
-    // Intentionally empty
-}
-
-
-Renderbuffer::~Renderbuffer () {
-    glDeleteRenderbuffersEXT(1, &mImageID);
-}
+        // Intentionally empty
+    }
 
 
-RenderbufferRef Renderbuffer::fromGLRenderbuffer(
-    const std::string&			_name, 
-    const GLuint				_imageID,
-    const G3D::TextureFormat	*_format) {
-
-    GLint w, h;
-
-    // Extract the width and height
-    glGetRenderbufferParameterivEXT (GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT, &w);
-    glGetRenderbufferParameterivEXT (GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT, &h);
-    debugAssertGLOk();
-
-    // Create new renderbuffer
-    return new Renderbuffer(_name, _imageID, _format, w, h);
-}
+    Renderbuffer::~Renderbuffer() {
+        glDeleteRenderbuffersEXT(1, &mImageID);
+    }
 
 
-RenderbufferRef Renderbuffer::createEmpty(
-    const std::string&			_name, 
-    const G3D::TextureFormat*   _format, 
-    const int					_width, 
-    const int					_height) {
-    // New Renderbuffer ID
-    GLuint _imageID;
+    RenderbufferRef Renderbuffer::fromGLRenderbuffer(
+            const std::string &_name,
+            const GLuint _imageID,
+            const G3D::TextureFormat *_format) {
 
-    // Save old renderbuffer state
-    GLint origBuffer;
-    glGetIntegerv(GL_RENDERBUFFER_BINDING_EXT, &origBuffer);
+        GLint w, h;
 
-    // Generate buffer
-    glGenRenderbuffersEXT (1, &_imageID);
-    debugAssertGLOk();
+        // Extract the width and height
+        glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT, &w);
+        glGetRenderbufferParameterivEXT(GL_RENDERBUFFER_EXT, GL_RENDERBUFFER_WIDTH_EXT, &h);
+        debugAssertGLOk();
 
-    // Bind the buffer
-    glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, _imageID);
-    debugAssertGLOk();
+        // Create new renderbuffer
+        return new Renderbuffer(_name, _imageID, _format, w, h);
+    }
 
-    // Allocate storage for it
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, _format->OpenGLFormat, _width, _height);
 
-    // Check for successful generation (ie, no INVALID_OPERATION)
-    debugAssertGLOk();
+    RenderbufferRef Renderbuffer::createEmpty(
+            const std::string &_name,
+            const G3D::TextureFormat *_format,
+            const int _width,
+            const int _height) {
+        // New Renderbuffer ID
+        GLuint _imageID;
 
-    // Restore renderbuffer state
-    glBindRenderbufferEXT (GL_RENDERBUFFER_EXT, origBuffer);
-    debugAssertGLOk();
+        // Save old renderbuffer state
+        GLint origBuffer;
+        glGetIntegerv(GL_RENDERBUFFER_BINDING_EXT, &origBuffer);
 
-    // Create new renderbuffer
-    return new Renderbuffer(_name, _imageID, _format, _width, _height);
-}
+        // Generate buffer
+        glGenRenderbuffersEXT(1, &_imageID);
+        debugAssertGLOk();
+
+        // Bind the buffer
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, _imageID);
+        debugAssertGLOk();
+
+        // Allocate storage for it
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, _format->OpenGLFormat, _width, _height);
+
+        // Check for successful generation (ie, no INVALID_OPERATION)
+        debugAssertGLOk();
+
+        // Restore renderbuffer state
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, origBuffer);
+        debugAssertGLOk();
+
+        // Create new renderbuffer
+        return new Renderbuffer(_name, _imageID, _format, _width, _height);
+    }
 
 } // End Namespace G3D

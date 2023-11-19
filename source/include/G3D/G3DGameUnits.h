@@ -15,17 +15,29 @@ namespace G3D {
 /**
  Time, in seconds.
  */
-typedef double GameTime;
-typedef double SimTime;
+    typedef double GameTime;
+    typedef double SimTime;
 
 /**
  Actual wall clock time in seconds.
  */
-typedef double RealTime;
+    typedef double RealTime;
 
-enum AMPM {AM, PM};
+    enum AMPM {
+        AM, PM
+    };
 
-enum {SECOND=1, MINUTE=60, HOUR = 60*60, DAY=24*60*60, SUNRISE=24*60*60/4, SUNSET=24*60*60*3/4, MIDNIGHT=0, METER=1, KILOMETER=1000};
+    enum {
+        SECOND = 1,
+        MINUTE = 60,
+        HOUR = 60 * 60,
+        DAY = 24 * 60 * 60,
+        SUNRISE = 24 * 60 * 60 / 4,
+        SUNSET = 24 * 60 * 60 * 3 / 4,
+        MIDNIGHT = 0,
+        METER = 1,
+        KILOMETER = 1000
+    };
 
 #define CENTIMETER          (0.01)
 #define DECIMETER           (0.1)
@@ -36,8 +48,9 @@ enum {SECOND=1, MINUTE=60, HOUR = 60*60, DAY=24*60*60, SUNRISE=24*60*60/4, SUNSE
 
  Example: <CODE>toSeconds(10, 00, AM)</CODE>
  */
-SimTime toSeconds(int hour, int minute, double seconds, AMPM ap);
-SimTime toSeconds(int hour, int minute, AMPM ap);
+    SimTime toSeconds(int hour, int minute, double seconds, AMPM ap);
+
+    SimTime toSeconds(int hour, int minute, AMPM ap);
 
 }
 

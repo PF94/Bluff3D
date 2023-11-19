@@ -44,7 +44,7 @@ namespace G3D {
         va_list argList;
         va_start(argList, fmt);
 
-        #ifdef G3D_WIN32
+#ifdef G3D_WIN32
             const int MAX_STRING_LEN = 1024;
             std::string s = G3D::vformat(fmt, argList);
             // Windows can't handle really long strings sent to
@@ -57,9 +57,9 @@ namespace G3D {
                     OutputDebugStringA(sub.c_str());
                 }
             }
-        #else
+#else
             vfprintf(stderr, fmt, argList);
-        #endif
+#endif
 
         va_end(argList);
     }
@@ -68,8 +68,8 @@ namespace G3D {
 
     // The compiler should optimize away this empty call, unless the
     // arguments are function calls.
-    inline void __cdecl debugPrintf(const char* fmt ...) {
-        (void)fmt;
+    inline void __cdecl debugPrintf(const char *fmt ...) {
+        (void) fmt;
     };
 
 #endif

@@ -7,21 +7,21 @@
 
   @created 2002-04-04
   @edited  2002-04-04
- */ 
+ */
 
 #include <G3DAll.h>
 
 bool hasWildcard(
-    std::string str) {
+        std::string str) {
 
     return
-        (str.find('*') != std::string::npos) ||
-        (str.find('?') != std::string::npos);
+            (str.find('*') != std::string::npos) ||
+            (str.find('?') != std::string::npos);
 }
 
 
 std::string getFilename(
-    const std::string& filename) {
+        const std::string &filename) {
 
     // Find the last slash
     int slIndex = filename.rfind("\\");
@@ -43,7 +43,7 @@ std::string getFilename(
 
 
 std::string getPath(
-    const std::string& filename) {
+        const std::string &filename) {
 
     // Find the last slash
     int slIndex = filename.rfind("\\");
@@ -64,15 +64,15 @@ std::string getPath(
 
 
 std::string getExtension(
-    const std::string &x) {
+        const std::string &x) {
 
-	// Search backwards for the period
-	int i = x.length() - 1;
-	while ((i > 0) && (x.at(i) != '.')) {
-		i--;
-	}
+    // Search backwards for the period
+    int i = x.length() - 1;
+    while ((i > 0) && (x.at(i) != '.')) {
+        i--;
+    }
 
-	// Return everything to the right of the period.
-	return (std::string)(x.c_str() + (i + 1));
+    // Return everything to the right of the period.
+    return (std::string) (x.c_str() + (i + 1));
 }
 

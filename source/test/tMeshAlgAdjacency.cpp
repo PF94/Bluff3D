@@ -14,24 +14,24 @@ void testAdjacency() {
         //
 
 
-        MeshAlg::Geometry       geometry;
-        Array<int>              index;
-        Array<MeshAlg::Face>    faceArray;
-        Array<MeshAlg::Edge>    edgeArray;
-        Array<MeshAlg::Vertex>  vertexArray;
+        MeshAlg::Geometry geometry;
+        Array<int> index;
+        Array<MeshAlg::Face> faceArray;
+        Array<MeshAlg::Edge> edgeArray;
+        Array<MeshAlg::Vertex> vertexArray;
 
-        geometry.vertexArray.append(Vector3(0,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
-        geometry.vertexArray.append(Vector3(1,1,0));
+        geometry.vertexArray.append(Vector3(0, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 1, 0));
 
         index.append(0, 1, 2);
 
         MeshAlg::computeAdjacency(
-            geometry.vertexArray,
-            index,
-            faceArray,
-            edgeArray,
-            vertexArray);
+                geometry.vertexArray,
+                index,
+                faceArray,
+                edgeArray,
+                vertexArray);
 
         debugAssert(faceArray.size() == 1);
         debugAssert(edgeArray.size() == 3);
@@ -54,7 +54,7 @@ void testAdjacency() {
         MeshAlg::weldAdjacency(geometry.vertexArray, faceArray, edgeArray, vertexArray, 1.1);
 
         MeshAlg::debugCheckConsistency(faceArray, edgeArray, vertexArray);
-        debugAssert(! faceArray[0].containsVertex(0));
+        debugAssert(!faceArray[0].containsVertex(0));
 
     }
 
@@ -64,23 +64,23 @@ void testAdjacency() {
         //  (degenerate face)
         //
 
-        MeshAlg::Geometry       geometry;
-        Array<int>              index;
-        Array<MeshAlg::Face>    faceArray;
-        Array<MeshAlg::Edge>    edgeArray;
-        Array<MeshAlg::Vertex>  vertexArray;
+        MeshAlg::Geometry geometry;
+        Array<int> index;
+        Array<MeshAlg::Face> faceArray;
+        Array<MeshAlg::Edge> edgeArray;
+        Array<MeshAlg::Vertex> vertexArray;
 
-        geometry.vertexArray.append(Vector3(0,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
+        geometry.vertexArray.append(Vector3(0, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
 
         index.append(0, 1, 0);
 
         MeshAlg::computeAdjacency(
-            geometry.vertexArray,
-            index,
-            faceArray,
-            edgeArray,
-            vertexArray);
+                geometry.vertexArray,
+                index,
+                faceArray,
+                edgeArray,
+                vertexArray);
 
         debugAssert(faceArray.size() == 1);
         debugAssert(edgeArray.size() == 2);
@@ -107,26 +107,26 @@ void testAdjacency() {
         //
 
 
-        MeshAlg::Geometry       geometry;
-        Array<int>              index;
-        Array<MeshAlg::Face>    faceArray;
-        Array<MeshAlg::Edge>    edgeArray;
-        Array<MeshAlg::Vertex>  vertexArray;
+        MeshAlg::Geometry geometry;
+        Array<int> index;
+        Array<MeshAlg::Face> faceArray;
+        Array<MeshAlg::Edge> edgeArray;
+        Array<MeshAlg::Vertex> vertexArray;
 
-        geometry.vertexArray.append(Vector3(0,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
-        geometry.vertexArray.append(Vector3(1,1,0));
-        geometry.vertexArray.append(Vector3(2,0,0));
+        geometry.vertexArray.append(Vector3(0, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 1, 0));
+        geometry.vertexArray.append(Vector3(2, 0, 0));
 
         index.append(0, 1, 2);
         index.append(1, 3, 2);
 
         MeshAlg::computeAdjacency(
-            geometry.vertexArray,
-            index,
-            faceArray,
-            edgeArray,
-            vertexArray);
+                geometry.vertexArray,
+                index,
+                faceArray,
+                edgeArray,
+                vertexArray);
 
         debugAssert(faceArray.size() == 2);
         debugAssert(edgeArray.size() == 5);
@@ -141,7 +141,7 @@ void testAdjacency() {
         debugAssert(faceArray[1].containsVertex(2));
 
         // The non-boundary edge must be first
-        debugAssert(! edgeArray[0].boundary());
+        debugAssert(!edgeArray[0].boundary());
         debugAssert(edgeArray[1].boundary());
         debugAssert(edgeArray[2].boundary());
         debugAssert(edgeArray[3].boundary());
@@ -172,27 +172,27 @@ void testAdjacency() {
         //
 
 
-        MeshAlg::Geometry       geometry;
-        Array<int>              index;
-        Array<MeshAlg::Face>    faceArray;
-        Array<MeshAlg::Edge>    edgeArray;
-        Array<MeshAlg::Vertex>  vertexArray;
+        MeshAlg::Geometry geometry;
+        Array<int> index;
+        Array<MeshAlg::Face> faceArray;
+        Array<MeshAlg::Edge> edgeArray;
+        Array<MeshAlg::Vertex> vertexArray;
 
-        geometry.vertexArray.append(Vector3(0,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
-        geometry.vertexArray.append(Vector3(1,1,0));
-        geometry.vertexArray.append(Vector3(2,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
+        geometry.vertexArray.append(Vector3(0, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 1, 0));
+        geometry.vertexArray.append(Vector3(2, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
 
         index.append(0, 1, 2);
         index.append(2, 4, 3);
 
         MeshAlg::computeAdjacency(
-            geometry.vertexArray,
-            index,
-            faceArray,
-            edgeArray,
-            vertexArray);
+                geometry.vertexArray,
+                index,
+                faceArray,
+                edgeArray,
+                vertexArray);
 
         debugAssert(faceArray.size() == 2);
         debugAssert(edgeArray.size() == 6);
@@ -223,7 +223,7 @@ void testAdjacency() {
         debugAssert(edgeArray.size() == 5);
         debugAssert(vertexArray.size() == 5);
 
-        debugAssert(! edgeArray[0].boundary());
+        debugAssert(!edgeArray[0].boundary());
         debugAssert(edgeArray[1].boundary());
         debugAssert(edgeArray[2].boundary());
         debugAssert(edgeArray[3].boundary());
@@ -242,28 +242,28 @@ void testAdjacency() {
         //
 
 
-        MeshAlg::Geometry       geometry;
-        Array<int>              index;
-        Array<MeshAlg::Face>    faceArray;
-        Array<MeshAlg::Edge>    edgeArray;
-        Array<MeshAlg::Vertex>  vertexArray;
+        MeshAlg::Geometry geometry;
+        Array<int> index;
+        Array<MeshAlg::Face> faceArray;
+        Array<MeshAlg::Edge> edgeArray;
+        Array<MeshAlg::Vertex> vertexArray;
 
-        geometry.vertexArray.append(Vector3(0,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
-        geometry.vertexArray.append(Vector3(1,1,0));
-        geometry.vertexArray.append(Vector3(2,0,0));
-        geometry.vertexArray.append(Vector3(1,0,0));
-        geometry.vertexArray.append(Vector3(1,1,0));
+        geometry.vertexArray.append(Vector3(0, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 1, 0));
+        geometry.vertexArray.append(Vector3(2, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 0, 0));
+        geometry.vertexArray.append(Vector3(1, 1, 0));
 
         index.append(0, 1, 2);
         index.append(5, 4, 3);
 
         MeshAlg::computeAdjacency(
-            geometry.vertexArray,
-            index,
-            faceArray,
-            edgeArray,
-            vertexArray);
+                geometry.vertexArray,
+                index,
+                faceArray,
+                edgeArray,
+                vertexArray);
 
         debugAssert(faceArray.size() == 2);
         debugAssert(edgeArray.size() == 6);
@@ -294,12 +294,12 @@ void testAdjacency() {
         debugAssert(edgeArray.size() == 5);
         debugAssert(vertexArray.size() == 6);
 
-        debugAssert(! edgeArray[0].boundary());
+        debugAssert(!edgeArray[0].boundary());
         debugAssert(edgeArray[1].boundary());
         debugAssert(edgeArray[2].boundary());
         debugAssert(edgeArray[3].boundary());
         debugAssert(edgeArray[4].boundary());
 
     }
-    
+
 }

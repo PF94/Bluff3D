@@ -17,14 +17,13 @@ extern GCamera* camera;
 extern ManualCameraController* controller;
 */
 
-RenderWindow::RenderWindow( const QGLFormat & format, QWidget* parent, const char* name, const QGLWidget* shareWidget, WFlags f)
-:QGLWidget(format, parent, name, shareWidget, f)
-{
-	//setup paint timer with 0-wait somewhere
+RenderWindow::RenderWindow(const QGLFormat &format, QWidget *parent, const char *name, const QGLWidget *shareWidget,
+                           WFlags f)
+        : QGLWidget(format, parent, name, shareWidget, f) {
+    //setup paint timer with 0-wait somewhere
 }
 
-void RenderWindow::repaintGL()
-{
+void RenderWindow::repaintGL() {
 /* test sample
     LightingParameters lighting(G3D::toSeconds(11, 00, 00, AM));
     renderDevice->beginFrame();

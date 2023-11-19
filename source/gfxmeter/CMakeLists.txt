@@ -12,7 +12,7 @@ add_executable(gfxmeter
 
 include_directories(${PROJECT_SOURCE_DIR}/source/include)
 
-target_include_directories( ${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}
         PUBLIC ${PROJECT_SOURCE_DIR}/source/include ${SDL_INCLUDE_DIR}
 )
 

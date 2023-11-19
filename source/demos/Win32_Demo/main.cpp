@@ -27,10 +27,10 @@
 using namespace G3D;
 
 int WINAPI WinMain(
-    HINSTANCE,
-    HINSTANCE,
-    char*       command_line,
-    int         show_command) {
+        HINSTANCE,
+        HINSTANCE,
+        char *command_line,
+        int show_command) {
 
 
     Window app;
@@ -40,7 +40,7 @@ int WINAPI WinMain(
         G3D::GImage im("Win32_Demo/Cirrus.jpg");
 
         app.create("Win32 Sample Program", im.width, im.height);
-        G3D::RGBtoBGRA(im.byte(), (unsigned char*)app.buffer, im.width * im.height);
+        G3D::RGBtoBGRA(im.byte(), (unsigned char *) app.buffer, im.width * im.height);
 
     } catch (G3D::GImage::Error e) {
 

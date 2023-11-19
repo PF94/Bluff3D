@@ -54,7 +54,7 @@
 #endif
 
 #ifdef _WIN32
-#if defined(GLH_EXT_SINGLE_FILE) || defined(GLH_EXTENSIONS_SINGLE_FILE) 
+#if defined(GLH_EXT_SINGLE_FILE) || defined(GLH_EXTENSIONS_SINGLE_FILE)
 #include "NVEBGlutAPI.c"
 #endif
 #endif

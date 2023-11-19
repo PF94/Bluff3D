@@ -21,121 +21,129 @@
 
 namespace G3D {
 
-namespace _internal {
-    class GThreadPrivate;
-}
-        
+    namespace _internal {
+        class GThreadPrivate;
+    }
+
 
 /**
     GThread's documentation
 */
-class GThread {
-private:
+    class GThread {
+    private:
 
-    _internal::GThreadPrivate*          pthread;
+        _internal::GThreadPrivate *pthread;
 
-    // Thread handle to hold HANDLE and pthread_t
-    void*                               handle;
+        // Thread handle to hold HANDLE and pthread_t
+        void *handle;
 
-    std::string                         _name;
+        std::string _name;
 
-    // Not implemented on purpose, don't use
-    GThread(const GThread &);
-    GThread& operator=(const GThread&);
-    bool operator==(const GThread&);
+        // Not implemented on purpose, don't use
+        GThread(const GThread &);
 
-public:
-    GThread(const std::string& name);
-    virtual ~GThread();
+        GThread &operator=(const GThread &);
 
-    /** Constructs a basic GThread without requiring a subclass.
+        bool operator==(const GThread &);
 
-        @param proc The global or static function for the threadMain() */
-    static GThread* create(const std::string& name, void (*proc)());
+    public:
+        GThread(const std::string &name);
 
-    /** Starts the thread and executes main() */
-    bool start();
+        virtual ~GThread();
 
-    /** Terminates the thread without notifying or
-        waiting for a cancelation point. */
-    void terminate();
+        /** Constructs a basic GThread without requiring a subclass.
 
-    /**
-        Returns true if threadMain is currently executing. */
-    bool running();
+            @param proc The global or static function for the threadMain() */
+        static GThread *create(const std::string &name, void (*proc)());
 
-    /** Returns completed status of thread. */
-    bool completed();
+        /** Starts the thread and executes main() */
+        bool start();
 
-    /** 
-        Waits for the thread to finish executing. 
-        
-        TODO: Does this need a timeout? */
-    void waitForCompletion();
+        /** Terminates the thread without notifying or
+            waiting for a cancelation point. */
+        void terminate();
 
-    /** Returns thread name */
-    const std::string& name() {
-        return _name;
-    }
+        /**
+            Returns true if threadMain is currently executing. */
+        bool running();
 
-protected:
-    friend class _internal::GThreadPrivate;
+        /** Returns completed status of thread. */
+        bool completed();
 
-    virtual void threadMain() = 0;
-};
+        /**
+            Waits for the thread to finish executing.
+
+            TODO: Does this need a timeout? */
+        void waitForCompletion();
+
+        /** Returns thread name */
+        const std::string &name() {
+            return _name;
+        }
+
+    protected:
+        friend class _internal::GThreadPrivate;
+
+        virtual void threadMain() = 0;
+    };
 
 
 /**
     GMutex's documentation
 */
-class GMutex {
-private:
+    class GMutex {
+    private:
 #   ifdef G3D_WIN32
-    CRITICAL_SECTION                    handle;
+        CRITICAL_SECTION handle;
 #   else
-    pthread_mutex_t                     handle;
+        pthread_mutex_t                     handle;
 #   endif
 
-    // Not implemented on purpose, don't use
-    GMutex(const GMutex &mlock);
-    GMutex &operator=(const GMutex &);
-    bool operator==(const GMutex&);
+        // Not implemented on purpose, don't use
+        GMutex(const GMutex &mlock);
 
-public:
-    GMutex();
-    ~GMutex();
+        GMutex &operator=(const GMutex &);
 
-    /** Locks the mutex or blocks until available. */
-    void lock();
+        bool operator==(const GMutex &);
 
-    /** Unlocks the mutex. */
-    void unlock();
-};
+    public:
+        GMutex();
+
+        ~GMutex();
+
+        /** Locks the mutex or blocks until available. */
+        void lock();
+
+        /** Unlocks the mutex. */
+        void unlock();
+    };
 
 
 /**
     GMutexLock's documentation.
     Automatically locks while in scope.
 */
-class GMutexLock {
-private:
-    GMutex* m;
+    class GMutexLock {
+    private:
+        GMutex *m;
 
-    // Not implemented on purpose, don't use
-    GMutexLock(const GMutexLock &mlock);
-    GMutexLock &operator=(const GMutexLock &);
-    bool operator==(const GMutexLock&);
+        // Not implemented on purpose, don't use
+        GMutexLock(const GMutexLock &mlock);
 
-public:
-    GMutexLock(GMutex* mutex) {
-        m = mutex;
-        m->lock();
-    }
+        GMutexLock &operator=(const GMutexLock &);
 
-    ~GMutexLock() {
-        m->unlock();
-    }
-};
+        bool operator==(const GMutexLock &);
+
+    public:
+        GMutexLock(GMutex *mutex) {
+            m = mutex;
+            m->lock();
+        }
+
+        ~GMutexLock() {
+            m->unlock();
+        }
+    };
 
 
 } // namespace G3D

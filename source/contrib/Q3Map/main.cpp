@@ -26,39 +26,39 @@
 
   @created 2003-05-22
   @edited  2003-12-30
- */ 
+ */
 
 #include <G3DAll.h>
 #include "BSPMAP.h"
 
 #if G3D_VER < 60900
-    #error Requires G3D 6.09
+#error Requires G3D 6.09
 #endif
 
 
 class DepthBlur {
 private:
 
-    ShaderRef           shader;
+    ShaderRef shader;
 
-    TextureRef          depth;
-    TextureRef          color;
+    TextureRef depth;
+    TextureRef color;
 
-    void allocateTextures(const Rect2D& screenRect) {
-        if (depth.isNull() || 
+    void allocateTextures(const Rect2D &screenRect) {
+        if (depth.isNull() ||
             (depth->vector2Bounds() != screenRect.wh())) {
-        /*
-            Texture::Parameters depthParameters;
-            depthParameters.autoMipMap = false;
-            depthParameters.maxAnisotropy = 1;
-            depthParameters.wrapMode = Texture::CLAMP;
-            depthParameters.interpolateMode = Texture::NO_INTERPOLATION;
-*/
+            /*
+                Texture::Parameters depthParameters;
+                depthParameters.autoMipMap = false;
+                depthParameters.maxAnisotropy = 1;
+                depthParameters.wrapMode = Texture::CLAMP;
+                depthParameters.interpolateMode = Texture::NO_INTERPOLATION;
+    */
             depth = Texture::createEmpty("Depth Buffer", screenRect.width(), screenRect.height(),
-                TextureFormat::depth(), Texture::DIM_2D_NPOT, Texture::Parameters::video());
+                                         TextureFormat::depth(), Texture::DIM_2D_NPOT, Texture::Parameters::video());
 
             color = Texture::createEmpty("Color Buffer", screenRect.width(), screenRect.height(),
-                TextureFormat::RGB8, Texture::DIM_2D_NPOT, Texture::Parameters::video());
+                                         TextureFormat::RGB8, Texture::DIM_2D_NPOT, Texture::Parameters::video());
 
             shader->args.set("depth", depth);
             shader->args.set("color", color);
@@ -71,17 +71,17 @@ public:
         shader = Shader::fromFiles("", "depthblur.frg");
     }
 
-    void apply(RenderDevice* rd) {
+    void apply(RenderDevice *rd) {
         rd->push2D();
-            Rect2D screenRect = rd->getViewport();
-            allocateTextures(screenRect);
-            
-            // Read back the depth buffer
-            depth->copyFromScreen(screenRect, true);
-            color->copyFromScreen(screenRect, true);
+        Rect2D screenRect = rd->getViewport();
+        allocateTextures(screenRect);
 
-            rd->setShader(shader);
-            Draw::rect2D(screenRect, rd);
+        // Read back the depth buffer
+        depth->copyFromScreen(screenRect, true);
+        color->copyFromScreen(screenRect, true);
+
+        rd->setShader(shader);
+        Draw::rect2D(screenRect, rd);
         rd->pop2D();
     }
 
@@ -98,11 +98,11 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*          app;
+    class App *app;
 
-    DepthBlur           depthBlur;
+    DepthBlur depthBlur;
 
-    Demo(App* app);
+    Demo(App *app);
 
     virtual ~Demo() {}
 
@@ -110,7 +110,7 @@ public:
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 
@@ -121,10 +121,10 @@ public:
 };
 
 
-
 class App : public GApp {
 protected:
     void main();
+
 public:
     /**
      Set this directory to the root path of your quake install.
@@ -132,33 +132,33 @@ public:
      subdirectories. */
     static const std::string QUAKE_DIR;
 
-    bool                clipMovement;
+    bool clipMovement;
 
-    SkyRef              sky;
+    SkyRef sky;
 
-    Demo*               applet;
+    Demo *applet;
 
 
-    BSPMAP::Map*        map;
+    BSPMAP::Map *map;
 
     /**
      When true, the visible set of polygons is saved
      to a file.
      */
-    bool                dumpPolygons;
+    bool dumpPolygons;
 
 
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 
     ~App();
 };
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
 }
 
 
-void Demo::init()  {
+void Demo::init() {
 }
 
 
@@ -168,14 +168,13 @@ void Demo::cleanup() {
 
 
 void Demo::doNetwork() {
-	// Poll net messages here
+    // Poll net messages here
 }
-
 
 
 void Demo::doGraphics() {
 
-    LightingParameters lighting(G3D::toSeconds(6,00,00,PM));
+    LightingParameters lighting(G3D::toSeconds(6, 00, 00, PM));
     app->renderDevice->setProjectionAndCameraMatrix(app->debugCamera);
 
     app->renderDevice->clear(app->sky.isNull(), true, true);
@@ -185,10 +184,10 @@ void Demo::doGraphics() {
 
     // Setup lighting
     app->renderDevice->enableLighting();
-		app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
-		app->renderDevice->setAmbientLightColor(lighting.ambient);
+    app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
+    app->renderDevice->setAmbientLightColor(lighting.ambient);
 
-        app->map->render(app->renderDevice, app->debugCamera);
+    app->map->render(app->renderDevice, app->debugCamera);
 
     app->renderDevice->disableLighting();
 
@@ -204,8 +203,8 @@ void App::main() {
 
     window()->setCaption("Q3 Renderer");
 
-	setDebugMode(true);
-	debugController.setActive(true);
+    setDebugMode(true);
+    debugController.setActive(true);
 
     dumpPolygons = false;
     clipMovement = true;
@@ -216,23 +215,24 @@ void App::main() {
     debugController.init(renderDevice, userInput);
     debugController.setMoveRate(500 * BSPMAP::LOAD_SCALE);
     debugController.setActive(true);
-	renderDevice->setColorClearValue(Color3(0.1f, 0.5f, 1.0f));
+    renderDevice->setColorClearValue(Color3(0.1f, 0.5f, 1.0f));
     // Load the map
     map = new BSPMAP::Map();
     bool ret = map->load("D:/games/dojo/scratch/data-files/q3/", "ut_ricochet.bsp");
 //    bool ret = map->load("D:/media/models/q3/maps/urbanterror/", "ut_ricochet.bsp");
-      
-    debugAssert(ret); (void)ret;
+
+    debugAssert(ret);
+    (void) ret;
 
     debugController.setPosition(map->getStartingPosition());
     debugController.lookAt(map->getStartingPosition() - Vector3::unitZ());
     debugCamera.setCoordinateFrame(debugController.getCoordinateFrame());
-    
+
     applet->run();
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
     applet = new Demo(this);
 }
 
@@ -241,13 +241,12 @@ App::~App() {
     delete applet;
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
     App(settings).run();
     return 0;
 }
 
- 
 
 void Demo::doSimulation(GameTime timeStep) {
     // Simulation
@@ -263,7 +262,8 @@ void Demo::doSimulation(GameTime timeStep) {
         Vector3 extent(14, 14, 14);
         extent *= BSPMAP::LOAD_SCALE;
         Vector3 pos(originalTrans.x, originalTrans.y, originalTrans.z);
-        Vector3 vel(newCframe.translation.x - originalTrans.x, newCframe.translation.y - originalTrans.y, newCframe.translation.z - originalTrans.z);
+        Vector3 vel(newCframe.translation.x - originalTrans.x, newCframe.translation.y - originalTrans.y,
+                    newCframe.translation.z - originalTrans.z);
 
         app->map->slideCollision(pos, vel, extent);
 
@@ -286,7 +286,7 @@ void Demo::doLogic() {
     }
 
     if (app->userInput->keyPressed(' ')) {
-        app->clipMovement = ! app->clipMovement;
+        app->clipMovement = !app->clipMovement;
     }
 
     if (app->userInput->keyPressed('p')) {

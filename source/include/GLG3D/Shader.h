@@ -22,17 +22,19 @@
 
 namespace G3D {
 
-typedef ReferenceCountedPointer<class VertexAndPixelShader>  VertexAndPixelShaderRef;
-typedef ReferenceCountedPointer<class ObjectShader> ObjectShaderRef;
+    typedef ReferenceCountedPointer<class VertexAndPixelShader> VertexAndPixelShaderRef;
+    typedef ReferenceCountedPointer<class ObjectShader> ObjectShaderRef;
 
 #ifdef _DEBUG
-    #define DEBUG_SHADER true
+#define DEBUG_SHADER true
 #else
-    #define DEBUG_SHADER false
+#define DEBUG_SHADER false
 #endif
 
 /** Argument to G3D::VertexAndPixelShader and G3D::Shader create methods */
-enum UseG3DUniforms {DEFINE_G3D_UNIFORMS, DO_NOT_DEFINE_G3D_UNIFORMS};
+    enum UseG3DUniforms {
+        DEFINE_G3D_UNIFORMS, DO_NOT_DEFINE_G3D_UNIFORMS
+    };
 
 
 /**
@@ -91,31 +93,31 @@ enum UseG3DUniforms {DEFINE_G3D_UNIFORMS, DO_NOT_DEFINE_G3D_UNIFORMS};
 
   </PRE>
  */
-class ObjectShader : public ReferenceCountedObject {
-private:
-    std::string     _messages;
+    class ObjectShader : public ReferenceCountedObject {
+    private:
+        std::string _messages;
 
-protected:
+    protected:
 
-	inline ObjectShader() {}
+        inline ObjectShader() {}
 
-public:
+    public:
 
-    bool ok() const {
-        return true;
-    }
+        bool ok() const {
+            return true;
+        }
 
-	/**
-	 Invoked by RenderDevice immediately before a primitive group.
-	 Use this to set state on the render device.  Do not call
-	 pushState from inside this method.
-	 */
-	virtual void run(class RenderDevice* renderDevice) = 0;
+        /**
+         Invoked by RenderDevice immediately before a primitive group.
+         Use this to set state on the render device.  Do not call
+         pushState from inside this method.
+         */
+        virtual void run(class RenderDevice *renderDevice) = 0;
 
-    const std::string& messages() const {
-        return _messages;
-    }
-};
+        const std::string &messages() const {
+            return _messages;
+        }
+    };
 
 
 /**
@@ -149,354 +151,365 @@ public:
   <B>BETA API</B>
   This API is subject to change.
  */
-class VertexAndPixelShader : public ReferenceCountedObject {
-public:
-    friend class Shader;
-
-    class UniformDeclaration {
+    class VertexAndPixelShader : public ReferenceCountedObject {
     public:
-        /** If true, this variable is declared but unused */
-        bool                dummy;
+        friend class Shader;
 
-        /** Register location */
-        int                 location;
-
-        /** Name of the variable.  May include [] and . (e.g.
-            "foo[1].normal")*/
-        std::string         name;
-
-        /** OpenGL type of the variable (e.g. GL_INT) */
-        GLenum              type;
-
-        /** Unknown... appears to always be 1 */
-        int                 size;
-
-        /**
-         Index of the texture unit in which this value
-         is stored.  -1 for uniforms that are not textures. */  
-        int                 textureUnit;
-    };
-
-protected:
-
-	class GPUShader {
-	protected:
-
-		/** argument for output on subclasses */
-		static std::string          ignore;
-
-		std::string                 _name;
-		std::string                 _code;
-		bool                        fromFile;
-
-		GLhandleARB                 _glShaderObject;
-
-		bool                        _ok;
-		std::string                 _messages;
-
-		/** Returns true on success.  Called from init. */
-		void compile();
-
-		/** Initialize a shader object and returns object.  
-			Called from subclass create methods. */
-		static GPUShader*           init(GPUShader* shader, bool debug);
-
-		/** Set to true when name and code both == "" */
-		bool						_fixedFunction;
-
-		GLenum						_glShaderType;
-
-		std::string					_shaderType;
-
-        /**
-         Replaces all instances of 
-           <code>"g3d_sampler2DSize(name)"</code> with 
-           <code>"     (g3d_sz2D_name.xy)"</code> and
-
-           <code>"g3d_sampler2DInvSize(name)"</code> with
-           <code>"        (g3d_sz2D_name.zw)"</code> 
-           
-          Note that both replacements will leave column numbers the same in error messages.  The
-          <code>()</code> wrapper ensures that <code>.xy</code> fields are accessible using
-          normal syntax off the result; it is the same as the standard practice of wrapping macros
-          in parentheses.
-
-          and adds "uniform vec4 g3d_sz2D_name;" to the uniform string.
-
-          Called from init.
-         */
-        void replaceG3DSize(std::string& code, std::string& uniformString);
-	public:
-
-		void init(
-			const std::string& name,
-			const std::string& code,
-			bool			   fromFile,
-			bool			   debug,
-			GLenum		       glType,
-			const std::string& type,
-            UseG3DUniforms     u);
-
-		/** Deletes the underlying glShaderObject.  Between GL's reference
-			counting and G3D's reference counting, an underlying object
-			can never be deleted while in use. */
-		~GPUShader();
-
-		/** Shader type, e.g. GL_VERTEX_SHADER_ARB */
-		inline GLenum glShaderType() const {
-			return _glShaderType;
-		}
-
-		inline const std::string& shaderType() const {
-			return _shaderType;
-		}
-
-		/** Why compilation failed, or any compiler warnings if it succeeded.*/
-		inline const std::string& messages() const {
-			return _messages;
-		}
-
-		/** Returns true if compilation and loading succeeded.  If they failed,
-			check the message string.*/
-		inline bool ok() const {
-			return _ok;
-		}
-
-		/** Returns the underlying OpenGL shader object for this shader */
-		inline GLhandleARB glShaderObject() const {
-			return _glShaderObject;
-		}
-
-		inline bool fixedFunction() const {
-			return _fixedFunction;
-		}
-	};
-
-    static std::string      ignore;
-
-    GPUShader				vertexShader;
-    GPUShader				pixelShader;
-
-    GLhandleARB             _glProgramObject;
-
-    bool                    _ok;
-    std::string             _messages;
-
-    std::string             _fragCompileMessages;
-    std::string             _vertCompileMessages;
-    std::string             _linkMessages;
-
-    int                     lastTextureUnit;
-
-    /** Converts from int and bool types to float types (e.g. GL_INT_VEC2_ARB -> GL_FLOAT_VEC2_ARB).
-        Other types are left unmodified.*/
-    static GLenum canonicalType(GLenum e);
-
-    /** Computes the uniformArray from the current
-        program object.  Called from the constructor */
-    void computeUniformArray();
-
-    /** Finds any uniform variables in the code that are not already in 
-        the uniform array that OpenGL returned and adds them to that array.
-        This causes VertexAndPixelShader to surpress warnings about 
-        setting variables that have been compiled away--those warnings
-        are annoying when temporarily commenting out code. */
-    void addUniformsFromCode(const std::string& code);
-
-    /** Does not contain g3d_ uniforms if they were compiled away */
-    Array<UniformDeclaration>   uniformArray;
-
-    /** Does not contain g3d_ uniforms if they were compiled away */
-    Set<std::string>            uniformNames;
-
-    /** Returns true for types that are textures (e.g., GL_TEXTURE_2D) */
-    static bool isSamplerType(GLenum e);
-
-	VertexAndPixelShader(
-		const std::string&  vsCode,
-		const std::string&  vsFilename,
-		bool                vsFromFile,
-		const std::string&  psCode,
-		const std::string&  psFilename,
-		bool                psFromFile,
-        bool                debug,
-        UseG3DUniforms      u);
-
-public:
-
-    /** Thrown by validateArgList */
-    class ArgumentError {
-    public:
-        std::string             message;
-
-        ArgumentError(const std::string& m) : message(m) {}
-    };
-
-	/**
-	 To use the fixed function pipeline for part of the
-	 shader, pass an empty string.
-	 */
-	static VertexAndPixelShaderRef fromStrings(
-		const std::string& vertexShader,
-		const std::string& pixelShader,       
-        UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
-        bool debugErrors = DEBUG_SHADER);
-
-	static VertexAndPixelShaderRef fromStrings(
-        const std::string& vertexShaderName,
-		const std::string& vertexShader,
-        const std::string& pixelShaderName,
-		const std::string& pixelShader,       
-        UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
-        bool debugErrors = DEBUG_SHADER);
-
-	/**
-	 To use the fixed function pipeline for part of the
-	 shader, pass an empty string.
-
-     @param debugErrors If true, a debugging dialog will
-        appear when there are syntax errors in the shaders.
-        If false, failures will occur silently; check
-        VertexAndPixelShader::ok() to see if the files
-        compiled correctly.
-	 */
-	static VertexAndPixelShaderRef fromFiles(
-		const std::string& vertexShader,
-		const std::string& pixelShader,
-        UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
-        bool debugErrors = DEBUG_SHADER);
-
-    /**
-     Bindings of values to uniform variables for a VertexAndPixelShader.
-     Be aware that 
-     the uniform namespace is global across the pixel and vertex shader.
-
-     GL_BOOL_ARB and GL_INT_ARB-based values are coerced to floats
-     automatically by the arg list.
-     */
-    class ArgList {
-    private:
-        friend class VertexAndPixelShader;
-
-        class Arg {
+        class UniformDeclaration {
         public:
+            /** If true, this variable is declared but unused */
+            bool dummy;
 
-            /** Row-major */ 
-            Vector4                    vector[4];
+            /** Register location */
+            int location;
 
-			TextureRef				   texture;
+            /** Name of the variable.  May include [] and . (e.g.
+                "foo[1].normal")*/
+            std::string name;
 
-            GLenum                     type;
+            /** OpenGL type of the variable (e.g. GL_INT) */
+            GLenum type;
+
+            /** Unknown... appears to always be 1 */
+            int size;
+
+            /**
+             Index of the texture unit in which this value
+             is stored.  -1 for uniforms that are not textures. */
+            int textureUnit;
         };
 
-        Table<std::string, Arg>        argTable;
+    protected:
+
+        class GPUShader {
+        protected:
+
+            /** argument for output on subclasses */
+            static std::string ignore;
+
+            std::string _name;
+            std::string _code;
+            bool fromFile;
+
+            GLhandleARB _glShaderObject;
+
+            bool _ok;
+            std::string _messages;
+
+            /** Returns true on success.  Called from init. */
+            void compile();
+
+            /** Initialize a shader object and returns object.
+                Called from subclass create methods. */
+            static GPUShader *init(GPUShader *shader, bool debug);
+
+            /** Set to true when name and code both == "" */
+            bool _fixedFunction;
+
+            GLenum _glShaderType;
+
+            std::string _shaderType;
+
+            /**
+             Replaces all instances of
+               <code>"g3d_sampler2DSize(name)"</code> with
+               <code>"     (g3d_sz2D_name.xy)"</code> and
+
+               <code>"g3d_sampler2DInvSize(name)"</code> with
+               <code>"        (g3d_sz2D_name.zw)"</code>
+
+              Note that both replacements will leave column numbers the same in error messages.  The
+              <code>()</code> wrapper ensures that <code>.xy</code> fields are accessible using
+              normal syntax off the result; it is the same as the standard practice of wrapping macros
+              in parentheses.
+
+              and adds "uniform vec4 g3d_sz2D_name;" to the uniform string.
+
+              Called from init.
+             */
+            void replaceG3DSize(std::string &code, std::string &uniformString);
+
+        public:
+
+            void init(
+                    const std::string &name,
+                    const std::string &code,
+                    bool fromFile,
+                    bool debug,
+                    GLenum glType,
+                    const std::string &type,
+                    UseG3DUniforms u);
+
+            /** Deletes the underlying glShaderObject.  Between GL's reference
+                counting and G3D's reference counting, an underlying object
+                can never be deleted while in use. */
+            ~GPUShader();
+
+            /** Shader type, e.g. GL_VERTEX_SHADER_ARB */
+            inline GLenum glShaderType() const {
+                return _glShaderType;
+            }
+
+            inline const std::string &shaderType() const {
+                return _shaderType;
+            }
+
+            /** Why compilation failed, or any compiler warnings if it succeeded.*/
+            inline const std::string &messages() const {
+                return _messages;
+            }
+
+            /** Returns true if compilation and loading succeeded.  If they failed,
+                check the message string.*/
+            inline bool ok() const {
+                return _ok;
+            }
+
+            /** Returns the underlying OpenGL shader object for this shader */
+            inline GLhandleARB glShaderObject() const {
+                return _glShaderObject;
+            }
+
+            inline bool fixedFunction() const {
+                return _fixedFunction;
+            }
+        };
+
+        static std::string ignore;
+
+        GPUShader vertexShader;
+        GPUShader pixelShader;
+
+        GLhandleARB _glProgramObject;
+
+        bool _ok;
+        std::string _messages;
+
+        std::string _fragCompileMessages;
+        std::string _vertCompileMessages;
+        std::string _linkMessages;
+
+        int lastTextureUnit;
+
+        /** Converts from int and bool types to float types (e.g. GL_INT_VEC2_ARB -> GL_FLOAT_VEC2_ARB).
+            Other types are left unmodified.*/
+        static GLenum canonicalType(GLenum e);
+
+        /** Computes the uniformArray from the current
+            program object.  Called from the constructor */
+        void computeUniformArray();
+
+        /** Finds any uniform variables in the code that are not already in
+            the uniform array that OpenGL returned and adds them to that array.
+            This causes VertexAndPixelShader to surpress warnings about
+            setting variables that have been compiled away--those warnings
+            are annoying when temporarily commenting out code. */
+        void addUniformsFromCode(const std::string &code);
+
+        /** Does not contain g3d_ uniforms if they were compiled away */
+        Array<UniformDeclaration> uniformArray;
+
+        /** Does not contain g3d_ uniforms if they were compiled away */
+        Set<std::string> uniformNames;
+
+        /** Returns true for types that are textures (e.g., GL_TEXTURE_2D) */
+        static bool isSamplerType(GLenum e);
+
+        VertexAndPixelShader(
+                const std::string &vsCode,
+                const std::string &vsFilename,
+                bool vsFromFile,
+                const std::string &psCode,
+                const std::string &psFilename,
+                bool psFromFile,
+                bool debug,
+                UseG3DUniforms u);
 
     public:
 
-		void set(const std::string& var, const TextureRef& val);
-        void set(const std::string& var, const CoordinateFrame& val);
-        void set(const std::string& var, const Matrix4& val);
-        void set(const std::string& var, const Color4& val);
-        void set(const std::string& var, const Color3& val);
-        void set(const std::string& var, const Vector4& val);
-        void set(const std::string& var, const Vector3& val);
-        void set(const std::string& var, const Vector2& val);
-        void set(const std::string& var, float          val);
+        /** Thrown by validateArgList */
+        class ArgumentError {
+        public:
+            std::string message;
+
+            ArgumentError(const std::string &m) : message(m) {}
+        };
 
         /**
-         GLSL does not natively support arrays and structs in the uniform binding API.  Instead, each
-         element of an array is treated as a separate element.  This method expands out to setting
-         each element of an array.  You can instead set them using <CODE>args.set("arry[3]", myVal)</CODE>.
-         Likewise for structs, <CODE>args.set("str.foo.bar", myVal)</CODE>.
+         To use the fixed function pipeline for part of the
+         shader, pass an empty string.
          */
-        template<class T> void set(const std::string& arrayName, const G3D::Array<T>& arrayVal) {
-            for (int i = 0; i < arrayVal.size(); ++i) {
-                set(format("%s[%d]", arrayName.c_str(), i), arrayVal[i]);
+        static VertexAndPixelShaderRef fromStrings(
+                const std::string &vertexShader,
+                const std::string &pixelShader,
+                UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
+                bool debugErrors = DEBUG_SHADER);
+
+        static VertexAndPixelShaderRef fromStrings(
+                const std::string &vertexShaderName,
+                const std::string &vertexShader,
+                const std::string &pixelShaderName,
+                const std::string &pixelShader,
+                UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
+                bool debugErrors = DEBUG_SHADER);
+
+        /**
+         To use the fixed function pipeline for part of the
+         shader, pass an empty string.
+
+         @param debugErrors If true, a debugging dialog will
+            appear when there are syntax errors in the shaders.
+            If false, failures will occur silently; check
+            VertexAndPixelShader::ok() to see if the files
+            compiled correctly.
+         */
+        static VertexAndPixelShaderRef fromFiles(
+                const std::string &vertexShader,
+                const std::string &pixelShader,
+                UseG3DUniforms u = DO_NOT_DEFINE_G3D_UNIFORMS,
+                bool debugErrors = DEBUG_SHADER);
+
+        /**
+         Bindings of values to uniform variables for a VertexAndPixelShader.
+         Be aware that
+         the uniform namespace is global across the pixel and vertex shader.
+
+         GL_BOOL_ARB and GL_INT_ARB-based values are coerced to floats
+         automatically by the arg list.
+         */
+        class ArgList {
+        private:
+            friend class VertexAndPixelShader;
+
+            class Arg {
+            public:
+
+                /** Row-major */
+                Vector4 vector[4];
+
+                TextureRef texture;
+
+                GLenum type;
+            };
+
+            Table<std::string, Arg> argTable;
+
+        public:
+
+            void set(const std::string &var, const TextureRef &val);
+
+            void set(const std::string &var, const CoordinateFrame &val);
+
+            void set(const std::string &var, const Matrix4 &val);
+
+            void set(const std::string &var, const Color4 &val);
+
+            void set(const std::string &var, const Color3 &val);
+
+            void set(const std::string &var, const Vector4 &val);
+
+            void set(const std::string &var, const Vector3 &val);
+
+            void set(const std::string &var, const Vector2 &val);
+
+            void set(const std::string &var, float val);
+
+            /**
+             GLSL does not natively support arrays and structs in the uniform binding API.  Instead, each
+             element of an array is treated as a separate element.  This method expands out to setting
+             each element of an array.  You can instead set them using <CODE>args.set("arry[3]", myVal)</CODE>.
+             Likewise for structs, <CODE>args.set("str.foo.bar", myVal)</CODE>.
+             */
+            template<class T>
+            void set(const std::string &arrayName, const G3D::Array<T> &arrayVal) {
+                for (int i = 0; i < arrayVal.size(); ++i) {
+                        set(format("%s[%d]", arrayName.c_str(), i), arrayVal[i]);
+                    }
             }
+
+            template<class T>
+            void set(const std::string &arrayName, const std::vector<T> &arrayVal) {
+                for (int i = 0; i < arrayVal.size(); ++i) {
+                        set(format("%s[%d]", arrayName.c_str(), i), arrayVal[i]);
+                    }
+            }
+
+            void clear();
+        };
+
+        ~VertexAndPixelShader();
+
+        /**
+         Returns GLCaps::supports_GL_ARB_shader_objects() &&
+            GLCaps::supports_GL_ARB_shading_language_100() &&
+            GLCaps::supports_GL_ARB_fragment_shader() &&
+            GLCaps::supports_GL_ARB_vertex_shader()
+        */
+        static bool fullySupported();
+
+        inline bool ok() const {
+            return _ok;
         }
 
-        template<class T> void set(const std::string& arrayName, const std::vector<T>& arrayVal) {
-            for (int i = 0; i < arrayVal.size(); ++i) {
-                set(format("%s[%d]", arrayName.c_str(), i), arrayVal[i]);
-            }
+        /**
+         All compilation and linking messages, with additional formatting.
+         For details about a specific part of the process, see
+         vertexErrors, pixelErrors, and linkErrors.
+         */
+        inline const std::string &messages() const {
+            return _messages;
         }
-        
-        void clear();
+
+        inline const std::string &vertexErrors() const {
+            return _vertCompileMessages;
+        }
+
+        inline const std::string &pixelErrors() const {
+            return _fragCompileMessages;
+        }
+
+        inline const std::string &linkErrors() const {
+            return _linkMessages;
+        }
+
+        /** The underlying OpenGL object for the vertex/pixel shader pair.
+
+            To bind a shader with RenderDevice, call renderDevice->setShader(s);
+            To bind a shader <B>without</B> RenderDevice, call
+            glUseProgramObjectARB(s->glProgramObject());
+
+        */
+        GLhandleARB glProgramObject() const {
+            return _glProgramObject;
+        }
+
+        int numArgs() const {
+            return uniformArray.size();
+        }
+
+        /** Checks the actual values of uniform variables against those
+            expected by the program.
+            If one of the arguments does not match, an ArgumentError
+            exception is thrown.
+        */
+        void validateArgList(const ArgList &args) const;
+
+        /**
+           Makes renderDevice calls to bind this argument list.
+           Calls validateArgList.
+         */
+        void bindArgList(class RenderDevice *rd, const ArgList &args) const;
+
+        /** Returns information about one of the arguments expected
+            by this VertexAndPixelShader.  There are VertexAndPixelShader::numArgs()
+            total.*/
+        const UniformDeclaration &arg(int i) const {
+            return uniformArray[i];
+        }
     };
 
-    ~VertexAndPixelShader();
 
-    /**
-     Returns GLCaps::supports_GL_ARB_shader_objects() && 
-        GLCaps::supports_GL_ARB_shading_language_100() &&
-        GLCaps::supports_GL_ARB_fragment_shader() &&
-        GLCaps::supports_GL_ARB_vertex_shader()
-    */
-    static bool fullySupported();
-
-    inline bool ok() const {
-        return _ok;
-    }
-
-    /**
-     All compilation and linking messages, with additional formatting.
-     For details about a specific part of the process, see 
-     vertexErrors, pixelErrors, and linkErrors.
-     */
-    inline const std::string& messages() const {
-        return _messages;
-    }
-
-    inline const std::string& vertexErrors() const {
-        return _vertCompileMessages;
-    }
-
-    inline const std::string& pixelErrors() const {
-        return _fragCompileMessages;
-    }
-
-    inline const std::string& linkErrors() const {
-        return _linkMessages;
-    }
-
-    /** The underlying OpenGL object for the vertex/pixel shader pair.
-
-        To bind a shader with RenderDevice, call renderDevice->setShader(s);
-        To bind a shader <B>without</B> RenderDevice, call
-        glUseProgramObjectARB(s->glProgramObject());
-
-    */
-    GLhandleARB glProgramObject() const {
-        return _glProgramObject;
-    }
-
-    int numArgs() const {
-        return uniformArray.size();
-    }
-
-    /** Checks the actual values of uniform variables against those 
-        expected by the program.
-        If one of the arguments does not match, an ArgumentError
-        exception is thrown.
-    */
-    void validateArgList(const ArgList& args) const;
-
-    /**
-       Makes renderDevice calls to bind this argument list.
-       Calls validateArgList.
-     */
-    void bindArgList(class RenderDevice* rd, const ArgList& args) const;
-
-    /** Returns information about one of the arguments expected
-        by this VertexAndPixelShader.  There are VertexAndPixelShader::numArgs()
-        total.*/
-    const UniformDeclaration& arg(int i) const {
-        return uniformArray[i];
-    }
-};
-
-
-typedef ReferenceCountedPointer<class Shader>  ShaderRef;
+    typedef ReferenceCountedPointer<class Shader> ShaderRef;
 
 /**
   Abstraction of the programmable hardware pipeline.  
@@ -590,96 +603,98 @@ typedef ReferenceCountedPointer<class Shader>  ShaderRef;
   <B>BETA API</B>
   This API is subject to change.
  */
-class Shader  : public ReferenceCountedObject {
-protected:
+    class Shader : public ReferenceCountedObject {
+    protected:
 
-    VertexAndPixelShaderRef         _vertexAndPixelShader;
-    UseG3DUniforms                  _useUniforms;
-    bool                            _preserveState;
+        VertexAndPixelShaderRef _vertexAndPixelShader;
+        UseG3DUniforms _useUniforms;
+        bool _preserveState;
 
-    inline Shader(VertexAndPixelShaderRef v, UseG3DUniforms u) : 
-        _vertexAndPixelShader(v), _useUniforms(u), _preserveState(true) {}
+        inline Shader(VertexAndPixelShaderRef v, UseG3DUniforms u) :
+                _vertexAndPixelShader(v), _useUniforms(u), _preserveState(true) {}
 
-    /** For subclasses to invoke */
-    inline Shader() {}
+        /** For subclasses to invoke */
+        inline Shader() {}
 
-public:
+    public:
 
-    /** Arguments to the vertex and pixel shader.  You may change these either
-        before or after the shader is set on G3D::RenderDevice-- either way
-        they will take effect immediately.*/
-    VertexAndPixelShader::ArgList   args;
+        /** Arguments to the vertex and pixel shader.  You may change these either
+            before or after the shader is set on G3D::RenderDevice-- either way
+            they will take effect immediately.*/
+        VertexAndPixelShader::ArgList args;
 
-    /** Returns true if this shader is declared to accept the specified argument. */
-    bool hasArgument(const std::string& argname) const;
+        /** Returns true if this shader is declared to accept the specified argument. */
+        bool hasArgument(const std::string &argname) const;
 
-    static ShaderRef fromFiles(
-        const std::string& vertexFile, 
-        const std::string& pixelFile,
-        UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
-        return new Shader(VertexAndPixelShader::fromFiles(vertexFile, pixelFile, u, DEBUG_SHADER), u);
-    }
+        static ShaderRef fromFiles(
+                const std::string &vertexFile,
+                const std::string &pixelFile,
+                UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
+            return new Shader(VertexAndPixelShader::fromFiles(vertexFile, pixelFile, u, DEBUG_SHADER), u);
+        }
 
-    static ShaderRef fromStrings(
-        const std::string& vertexCode,
-        const std::string& pixelCode,
-        UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
-        return new Shader(VertexAndPixelShader::fromStrings(vertexCode, pixelCode, u, DEBUG_SHADER), u);
-    }
+        static ShaderRef fromStrings(
+                const std::string &vertexCode,
+                const std::string &pixelCode,
+                UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
+            return new Shader(VertexAndPixelShader::fromStrings(vertexCode, pixelCode, u, DEBUG_SHADER), u);
+        }
 
-    /** Names are purely for debugging purposes */
-    static ShaderRef fromStrings(
-        const std::string& vertexName,
-        const std::string& vertexCode,
-        const std::string& pixelName,
-        const std::string& pixelCode,
-        UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
-        return new Shader(VertexAndPixelShader::fromStrings(vertexName, vertexCode, pixelName, pixelCode, u, DEBUG_SHADER), u);
-    }
+        /** Names are purely for debugging purposes */
+        static ShaderRef fromStrings(
+                const std::string &vertexName,
+                const std::string &vertexCode,
+                const std::string &pixelName,
+                const std::string &pixelCode,
+                UseG3DUniforms u = DEFINE_G3D_UNIFORMS) {
+            return new Shader(
+                    VertexAndPixelShader::fromStrings(vertexName, vertexCode, pixelName, pixelCode, u, DEBUG_SHADER),
+                    u);
+        }
 
-    /** When true, any RenderDevice state that the shader configured before a primitive it restores at
-        the end of the primitive.  When false, the shader is allowed to corrupt state.  Corruption is fast and is
-        useful
-        when you know that the next primitive will also be rendered with a shader, since shaders tend
-        to set all of the state that they need.
+        /** When true, any RenderDevice state that the shader configured before a primitive it restores at
+            the end of the primitive.  When false, the shader is allowed to corrupt state.  Corruption is fast and is
+            useful
+            when you know that the next primitive will also be rendered with a shader, since shaders tend
+            to set all of the state that they need.
 
-        Defaults to true */
-    virtual void setPreserveState(bool s) {
-        _preserveState = s;
-    }
+            Defaults to true */
+        virtual void setPreserveState(bool s) {
+            _preserveState = s;
+        }
 
-    virtual bool preserveState() const {
-        return _preserveState;
-    }
+        virtual bool preserveState() const {
+            return _preserveState;
+        }
 
-    virtual bool ok() const;
+        virtual bool ok() const;
 
-    /** Returns true if this card supports vertex shaders */
-    static bool supportsVertexShaders();
+        /** Returns true if this card supports vertex shaders */
+        static bool supportsVertexShaders();
 
-    /** Returns true if this card supports pixel shaders.  If vertex but not pixel
-        shaders are supported you can pass an empty string as the pixel shader. */
-    static bool supportsPixelShaders();
+        /** Returns true if this card supports pixel shaders.  If vertex but not pixel
+            shaders are supported you can pass an empty string as the pixel shader. */
+        static bool supportsPixelShaders();
 
-	/**
-	 Invoked by RenderDevice immediately before a primitive group.
-	 Override to set state on the RenderDevice (including the underlying
-     vertex and pixel shader).
+        /**
+         Invoked by RenderDevice immediately before a primitive group.
+         Override to set state on the RenderDevice (including the underlying
+         vertex and pixel shader).
 
-     If overriding, do not call RenderDevice::setShader from this routine.
+         If overriding, do not call RenderDevice::setShader from this routine.
 
-     Default implementation pushes state, sets the g3d_ uniforms,
-     and loads the vertex and pixel shader.
-	 */
-    virtual void beforePrimitive(class RenderDevice* renderDevice);
+         Default implementation pushes state, sets the g3d_ uniforms,
+         and loads the vertex and pixel shader.
+         */
+        virtual void beforePrimitive(class RenderDevice *renderDevice);
 
-    /**
-     Default implementation pops state.
-     */
-    virtual void afterPrimitive(class RenderDevice* renderDevice);
+        /**
+         Default implementation pops state.
+         */
+        virtual void afterPrimitive(class RenderDevice *renderDevice);
 
-    virtual const std::string& messages() const;
-};
+        virtual const std::string &messages() const;
+    };
 
 
 }

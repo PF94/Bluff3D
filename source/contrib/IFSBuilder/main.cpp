@@ -17,44 +17,47 @@
 
   @created 2002-02-27
   @edited  2004-09-09
- */ 
+ */
 
 #include <G3DAll.h>
 #include "IFSModel.h"
 
-std::string             DATA_DIR        = "data/";
+std::string DATA_DIR = "data/";
 
-Log*                    debugLog        = NULL;
-RenderDevice*           renderDevice    = NULL;
-CFontRef                font            = NULL;
-UserInput*              userInput       = NULL;
-GCamera                 camera;
-ManualCameraController* controller      = NULL;
-bool                    endProgram      = false;
+Log *debugLog = NULL;
+RenderDevice *renderDevice = NULL;
+CFontRef font = NULL;
+UserInput *userInput = NULL;
+GCamera camera;
+ManualCameraController *controller = NULL;
+bool endProgram = false;
 
-XIFSModel*              model           = NULL;
+XIFSModel *model = NULL;
 
-double                  closeDistance  = 0;  
-bool                    pauseBetweenModels = true;
+double closeDistance = 0;
+bool pauseBetweenModels = true;
 
 void doSimulation(GameTime timeStep);
+
 void doGraphics();
+
 void doUserInput();
 
 /**
  Returns the base name (between the last slash and the extension).
  */
-std::string getFilename(const std::string& filename);
-IFSModel* makeDinosaur();
+std::string getFilename(const std::string &filename);
+
+IFSModel *makeDinosaur();
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     // Search for the data
     DATA_DIR = demoFindData();
 
     // Initialize
-    debugLog     = new Log();
+    debugLog = new Log();
     renderDevice = new RenderDevice();
     RenderDeviceSettings settings;
     settings.width = 800;
@@ -62,16 +65,16 @@ int main(int argc, char** argv) {
     settings.fsaaSamples = 4;
     renderDevice->init(settings, debugLog);
 
-    font         = GFont::fromFile(renderDevice, DATA_DIR + "font/dominant.fnt");
+    font = GFont::fromFile(renderDevice, DATA_DIR + "font/dominant.fnt");
 
-    userInput    = new UserInput();
+    userInput = new UserInput();
 
-    controller   = new ManualCameraController(renderDevice, userInput);
+    controller = new ManualCameraController(renderDevice, userInput);
 
     controller->setMoveRate(.1);
 
     controller->setPosition(Vector3(2, 2, 2));
-    controller->lookAt(Vector3(0,-.25,0));
+    controller->lookAt(Vector3(0, -.25, 0));
 
     renderDevice->resetState();
     renderDevice->setColorClearValue(Color3(.5, .7, .8));
@@ -93,42 +96,42 @@ int main(int argc, char** argv) {
     //renderDevice->setCullFace(RenderDevice::CULL_NONE);
 
     for (int i = 0; i < filename.size(); ++i) {
-        std::string base = getFilename(filename[i]);
-        
-        /*
-        // Code to prevent recreation of models
-        if (fileExists(outDir + base + ".ifs")) {
-            // Skip this model
-            continue;
-        }
-        */
+            std::string base = getFilename(filename[i]);
 
-	    controller->setActive(false);
-        model = new XIFSModel(filename[i], false);
-        model->name = filename[i];
-	    controller->setActive(true);
-
-        //if (! pauseBetweenModels) {
-        //    model->save("d:/games/data/ifs/cylinder.ifs");//outDir + base + ".ifs");
-        //    exit(0);
-        //}
-
-        // Main loop (display 3D object)
-        do {
-            lastTime = now;
-            now = System::getTick();
-            RealTime timeStep = now - lastTime;
-
-            if (pauseBetweenModels) {
-                doUserInput();
-                doSimulation(timeStep);
+            /*
+            // Code to prevent recreation of models
+            if (fileExists(outDir + base + ".ifs")) {
+                // Skip this model
+                continue;
             }
+            */
 
-            doGraphics();
-   
-        } while (! endProgram && pauseBetweenModels);
-        
-    }
+            controller->setActive(false);
+            model = new XIFSModel(filename[i], false);
+            model->name = filename[i];
+            controller->setActive(true);
+
+            //if (! pauseBetweenModels) {
+            //    model->save("d:/games/data/ifs/cylinder.ifs");//outDir + base + ".ifs");
+            //    exit(0);
+            //}
+
+            // Main loop (display 3D object)
+            do {
+                lastTime = now;
+                now = System::getTick();
+                RealTime timeStep = now - lastTime;
+
+                if (pauseBetweenModels) {
+                    doUserInput();
+                    doSimulation(timeStep);
+                }
+
+                doGraphics();
+
+            } while (!endProgram && pauseBetweenModels);
+
+        }
 
 
     // Cleanup
@@ -155,38 +158,44 @@ void doSimulation(GameTime timeStep) {
 void doGraphics() {
     renderDevice->beginFrame();
     renderDevice->setColorClearValue(Color3::WHITE);
-        renderDevice->clear(true, true, true);
-        renderDevice->pushState();
-                
-            renderDevice->setProjectionAndCameraMatrix(camera);
+    renderDevice->clear(true, true, true);
+    renderDevice->pushState();
 
-            if (model != NULL) {
+    renderDevice->setProjectionAndCameraMatrix(camera);
 
-                renderDevice->enableLighting();
-                renderDevice->setLight(0, GLight::directional(Vector3(-1,1,1), Color3::WHITE * .7));
-                renderDevice->setLight(1, GLight::directional(-Vector3(-1,1,1), -Color3::YELLOW * 0.25, false));
-                renderDevice->setAmbientLightColor(Color3::WHITE * 0.5);
+    if (model != NULL) {
 
-                model->render();
+        renderDevice->enableLighting();
+        renderDevice->setLight(0, GLight::directional(Vector3(-1, 1, 1), Color3::WHITE * .7));
+        renderDevice->setLight(1, GLight::directional(-Vector3(-1, 1, 1), -Color3::YELLOW * 0.25, false));
+        renderDevice->setAmbientLightColor(Color3::WHITE * 0.5);
 
-                
-                renderDevice->push2D();
-                    double y = 10;
-                    font->draw2D(model->name, Vector2(10, y), 20, Color3::WHITE, Color3::BLACK); y += 30;
-                    font->draw2D(format("%d verts", model->numVertices()), Vector2(15, y), 15, Color3::YELLOW, Color3::BLACK); y += 20;
-                    font->draw2D(format("%d faces", model->numFaces()), Vector2(15, y), 15, Color3::WHITE, Color3::BLACK); y += 20;
-                    if (model->numBrokenEdges() > 0) {
-                        font->draw2D(format("%d broken edges", model->numBrokenEdges()), Vector2(15, y), 15, Color3::RED, Color3::BLACK); y += 20;
-                    }
+        model->render();
 
-                    y = renderDevice->getHeight();
-                    font->draw2D(format("Vertices within radius %g collapsed", closeDistance), Vector2(10, y - 15), 10, Color3::BLACK);
-                renderDevice->pop2D();
-                
-            }
-            
-        renderDevice->popState();
-        
+
+        renderDevice->push2D();
+        double y = 10;
+        font->draw2D(model->name, Vector2(10, y), 20, Color3::WHITE, Color3::BLACK);
+        y += 30;
+        font->draw2D(format("%d verts", model->numVertices()), Vector2(15, y), 15, Color3::YELLOW, Color3::BLACK);
+        y += 20;
+        font->draw2D(format("%d faces", model->numFaces()), Vector2(15, y), 15, Color3::WHITE, Color3::BLACK);
+        y += 20;
+        if (model->numBrokenEdges() > 0) {
+            font->draw2D(format("%d broken edges", model->numBrokenEdges()), Vector2(15, y), 15, Color3::RED,
+                         Color3::BLACK);
+            y += 20;
+        }
+
+        y = renderDevice->getHeight();
+        font->draw2D(format("Vertices within radius %g collapsed", closeDistance), Vector2(10, y - 15), 10,
+                     Color3::BLACK);
+        renderDevice->pop2D();
+
+    }
+
+    renderDevice->popState();
+
     renderDevice->endFrame();
 }
 
@@ -198,24 +207,24 @@ void doUserInput() {
     // Event handling
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
-        switch(event.type) {
-        case SDL_QUIT:
-        endProgram = true;
-        break;
-
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE:
+        switch (event.type) {
+            case SDL_QUIT:
                 endProgram = true;
                 break;
 
-            // Add other key handlers here
-            default:;
-            }
-            break;
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE:
+                        endProgram = true;
+                        break;
 
-        default:;
-            // Add other event handlers here
+                        // Add other key handlers here
+                    default:;
+                }
+                break;
+
+            default:;
+                // Add other event handlers here
         }
 
         userInput->processEvent(event);

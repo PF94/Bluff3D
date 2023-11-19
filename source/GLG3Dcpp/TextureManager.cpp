@@ -12,174 +12,172 @@
 
 namespace G3D {
 
-TextureManager::TextureManager(size_t _sizeHint) : size(0), sizeHint(_sizeHint) {}
+    TextureManager::TextureManager(size_t _sizeHint) : size(0), sizeHint(_sizeHint) {}
 
-unsigned int TextureManager::TextureArgs::hashCode() const {
-    return
-        (int)(size_t)format +
-        (int)wrap +
-        (int)interpolate * 1027 +
-        (int)dimension +
-        ::hashCode(filename) +
-        (int)brighten;
-}
-
-
-bool TextureManager::TextureArgs::operator==(const TextureArgs& other) const {
-    return 
-        (format         == other.format)        &&
-        (wrap           == other.wrap)          &&
-        (interpolate    == other.interpolate)   &&
-        (filename       == other.filename)      &&
-        (dimension      == other.dimension )    && 
-        (brighten       == other.brighten);
-}
+    unsigned int TextureManager::TextureArgs::hashCode() const {
+        return
+                (int) (size_t) format +
+                (int) wrap +
+                (int) interpolate * 1027 +
+                (int) dimension +
+                ::hashCode(filename) +
+                (int) brighten;
+    }
 
 
-void TextureManager::setMemorySizeHint(size_t _sizeHint){
-    debugAssert(_sizeHint > 0 && _sizeHint < 1000*1024*1024);
-    sizeHint = _sizeHint;
-}
-
-    
-size_t TextureManager::memorySizeHint() const {
-    return sizeHint;
-}
-    
-
-size_t TextureManager::sizeInMemory() const {
-    return size;
-}
-
-TextureRef TextureManager::findTexture(
-									   const std::string&          filename, 
-									   const TextureFormat*        desiredFormat,    
-									   Texture::WrapMode           wrap,  
-									   Texture::InterpolateMode    interpolate ,  
-									   Texture::Dimension          dimension,  
-									   double                      brighten)
-{
-	TextureArgs args(desiredFormat);
-
-	args.filename       = filename;
-	args.wrap           = wrap;
-	args.interpolate    = interpolate;
-	args.dimension      = dimension;
-	args.brighten       = brighten;
-
-	TextureRef texture;
-	cache.get(args, texture);
-	return texture;
-}
+    bool TextureManager::TextureArgs::operator==(const TextureArgs &other) const {
+        return
+                (format == other.format) &&
+                (wrap == other.wrap) &&
+                (interpolate == other.interpolate) &&
+                (filename == other.filename) &&
+                (dimension == other.dimension) &&
+                (brighten == other.brighten);
+    }
 
 
-bool TextureManager::cacheTexture(
-					 TextureRef					texture,
-					 const std::string&          filename, 
-					 const TextureFormat*        desiredFormat,    
-					 Texture::WrapMode           wrap,  
-					 Texture::InterpolateMode    interpolate ,  
-					 Texture::Dimension          dimension,  
-					 double                      brighten)
-{
-	TextureArgs args(desiredFormat);
+    void TextureManager::setMemorySizeHint(size_t _sizeHint) {
+        debugAssert(_sizeHint > 0 && _sizeHint < 1000 * 1024 * 1024);
+        sizeHint = _sizeHint;
+    }
 
-	args.filename       = filename;
-	args.wrap           = wrap;
-	args.interpolate    = interpolate;
-	args.dimension      = dimension;
-	args.brighten       = brighten;
 
-	if (cache.containsKey(args))
-		return false;
-	cache.set(args, texture);
-	size += texture->sizeInMemory();
-	checkCacheSize();
-	return true;
-}
+    size_t TextureManager::memorySizeHint() const {
+        return sizeHint;
+    }
 
-TextureRef TextureManager::loadTexture(
-    const std::string&          filename, 
-    const TextureFormat*        desiredFormat,    
-    Texture::WrapMode           wrap,  
-    Texture::InterpolateMode    interpolate ,  
-    Texture::Dimension          dimension,  
-    double                      brighten) {
 
-    TextureArgs args(desiredFormat);
+    size_t TextureManager::sizeInMemory() const {
+        return size;
+    }
 
-    args.filename       = filename;
-    args.wrap           = wrap;
-    args.interpolate    = interpolate;
-    args.dimension      = dimension;
-    args.brighten       = brighten;
+    TextureRef TextureManager::findTexture(
+            const std::string &filename,
+            const TextureFormat *desiredFormat,
+            Texture::WrapMode wrap,
+            Texture::InterpolateMode interpolate,
+            Texture::Dimension dimension,
+            double brighten) {
+        TextureArgs args(desiredFormat);
 
-    if (! cache.containsKey(args)) {
-        // Not in the cache, so we must load it        
-        TextureRef texture = NULL;
+        args.filename = filename;
+        args.wrap = wrap;
+        args.interpolate = interpolate;
+        args.dimension = dimension;
+        args.brighten = brighten;
 
-        texture = Texture::fromFile(
-            filename,
-            desiredFormat,  
-            wrap,
-            interpolate,
-            dimension,
-            brighten);
+        TextureRef texture;
+        cache.get(args, texture);
+        return texture;
+    }
 
-        alwaysAssertM(texture != NULL, std::string("Texture not found ") + filename); 
+
+    bool TextureManager::cacheTexture(
+            TextureRef texture,
+            const std::string &filename,
+            const TextureFormat *desiredFormat,
+            Texture::WrapMode wrap,
+            Texture::InterpolateMode interpolate,
+            Texture::Dimension dimension,
+            double brighten) {
+        TextureArgs args(desiredFormat);
+
+        args.filename = filename;
+        args.wrap = wrap;
+        args.interpolate = interpolate;
+        args.dimension = dimension;
+        args.brighten = brighten;
+
+        if (cache.containsKey(args))
+            return false;
         cache.set(args, texture);
         size += texture->sizeInMemory();
         checkCacheSize();
-    }
-    return cache[args];
-}
-
-void TextureManager::checkCacheSize() {
-    if (size <= sizeHint) {
-        return;
+        return true;
     }
 
-    Array <TextureArgs> staleEntry;
-    getStaleEntries(staleEntry);
-    
-    //To avoid thrashing we we remove entries in a random order
-    staleEntry.randomize();
+    TextureRef TextureManager::loadTexture(
+            const std::string &filename,
+            const TextureFormat *desiredFormat,
+            Texture::WrapMode wrap,
+            Texture::InterpolateMode interpolate,
+            Texture::Dimension dimension,
+            double brighten) {
 
-    while ((size > sizeHint) && (staleEntry.size() > 0)) {
-        size -= cache[staleEntry.last()]->sizeInMemory();
-        debugPrintf(" CheckCacheSize is removing %s   \n" , staleEntry.last().filename.c_str());
-        cache.remove(staleEntry.pop());
-    }
-}
+        TextureArgs args(desiredFormat);
 
-void TextureManager::emptyCache() {
-    cache.clear();
-    size = 0;
-}
+        args.filename = filename;
+        args.wrap = wrap;
+        args.interpolate = interpolate;
+        args.dimension = dimension;
+        args.brighten = brighten;
 
+        if (!cache.containsKey(args)) {
+            // Not in the cache, so we must load it
+            TextureRef texture = NULL;
 
-void TextureManager::trimCache() {
-    Array <TextureArgs> staleEntry;
-    getStaleEntries(staleEntry);
-    for (int i = 0; i < staleEntry.length(); ++i) {
-        size -= cache[staleEntry[i]]->sizeInMemory();
-            debugPrintf("TrimCache is removing %s   \n" , staleEntry.last().filename.c_str());
-        cache.remove(staleEntry[i]);
-    }
-}
+            texture = Texture::fromFile(
+                    filename,
+                    desiredFormat,
+                    wrap,
+                    interpolate,
+                    dimension,
+                    brighten);
 
-
-void TextureManager::getStaleEntries(Array <TextureArgs>& staleEntry) {
-    Table <TextureArgs, TextureRef>::Iterator current   = cache.begin();
-    Table <TextureArgs, TextureRef>::Iterator end       = cache.end();
-    // We cannot modify the hash table while we iterate over it. 
-    // So we create a list of entries to be removed.
-    while (current != end) {
-        if (current->value.isLastReference()) {
-            staleEntry.append(current->key);
+            alwaysAssertM(texture != NULL, std::string("Texture not found ") + filename);
+            cache.set(args, texture);
+            size += texture->sizeInMemory();
+            checkCacheSize();
         }
-        ++current;
+        return cache[args];
     }
-}
+
+    void TextureManager::checkCacheSize() {
+        if (size <= sizeHint) {
+            return;
+        }
+
+        Array<TextureArgs> staleEntry;
+        getStaleEntries(staleEntry);
+
+        //To avoid thrashing we we remove entries in a random order
+        staleEntry.randomize();
+
+        while ((size > sizeHint) && (staleEntry.size() > 0)) {
+            size -= cache[staleEntry.last()]->sizeInMemory();
+            debugPrintf(" CheckCacheSize is removing %s   \n", staleEntry.last().filename.c_str());
+            cache.remove(staleEntry.pop());
+        }
+    }
+
+    void TextureManager::emptyCache() {
+        cache.clear();
+        size = 0;
+    }
+
+
+    void TextureManager::trimCache() {
+        Array<TextureArgs> staleEntry;
+        getStaleEntries(staleEntry);
+        for (int i = 0; i < staleEntry.length(); ++i) {
+                size -= cache[staleEntry[i]]->sizeInMemory();
+                debugPrintf("TrimCache is removing %s   \n", staleEntry.last().filename.c_str());
+                cache.remove(staleEntry[i]);
+            }
+    }
+
+
+    void TextureManager::getStaleEntries(Array<TextureArgs> &staleEntry) {
+        Table<TextureArgs, TextureRef>::Iterator current = cache.begin();
+        Table<TextureArgs, TextureRef>::Iterator end = cache.end();
+        // We cannot modify the hash table while we iterate over it.
+        // So we create a list of entries to be removed.
+        while (current != end) {
+            if (current->value.isLastReference()) {
+                staleEntry.append(current->key);
+            }
+            ++current;
+        }
+    }
 
 }

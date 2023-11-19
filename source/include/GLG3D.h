@@ -20,22 +20,22 @@
 
 // Set up the linker on Windows
 #ifdef G3D_WIN32
-    #ifndef GLG3D_BUILDING_LIBRARY_DLL
-        #ifdef _DEBUG
-            #pragma comment(lib, "GLG3D-debug.lib")        
-        #else
-            #pragma comment(lib, "GLG3D.lib")
-        #endif
-    #endif
+#ifndef GLG3D_BUILDING_LIBRARY_DLL
+#ifdef _DEBUG
+#pragma comment(lib, "GLG3D-debug.lib")
+#else
+#pragma comment(lib, "GLG3D.lib")
+#endif
+#endif
 
-    #pragma comment(lib, "opengl32.lib")
-    #pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "glu32.lib")
 
-    #pragma comment(lib, "sdl.lib")
+#pragma comment(lib, "sdl.lib")
 
-    #if !defined(NO_SDL_MAIN) && !defined(_CONSOLE)
-        #pragma comment(lib, "sdlmain.lib")
-    #endif
+#if !defined(NO_SDL_MAIN) && !defined(_CONSOLE)
+#pragma comment(lib, "sdlmain.lib")
+#endif
 #endif
 
 #include "GLG3D/glheaders.h"
@@ -73,8 +73,10 @@
 #include "GLG3D/GModule.h"
 
 #ifdef G3D_WIN32
+
 #include "GLG3D/Win32Window.h"
 #include "GLG3D/DXCaps.h"
+
 #endif
 
 #ifdef G3D_LINUX

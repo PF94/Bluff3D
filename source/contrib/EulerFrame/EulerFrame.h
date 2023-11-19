@@ -8,28 +8,28 @@
 class EulerFrame {
 public:
 
-    double              yaw;
-    double              roll;
-    double              pitch;
-    Vector3             translation;
+    double yaw;
+    double roll;
+    double pitch;
+    Vector3 translation;
 
     EulerFrame();
 
-    EulerFrame(double r, double y, double p, const Vector3& t);
+    EulerFrame(double r, double y, double p, const Vector3 &t);
 
-    EulerFrame operator-(const EulerFrame& other) const;
+    EulerFrame operator-(const EulerFrame &other) const;
 
-    EulerFrame operator+(const EulerFrame& other) const;
+    EulerFrame operator+(const EulerFrame &other) const;
 
     EulerFrame operator*(double s) const;
 
     CoordinateFrame toCoordinateFrame() const;
 
-    EulerFrame lerp(const EulerFrame& other, double alpha) const;
+    EulerFrame lerp(const EulerFrame &other, double alpha) const;
 
-    void serialize(BinaryOutput&) const;
+    void serialize(BinaryOutput &) const;
 
-    void deserialize(BinaryInput&);
+    void deserialize(BinaryInput &);
 };
 
 
@@ -37,12 +37,12 @@ EulerFrame::EulerFrame() : yaw(0), roll(0), pitch(0), translation(Vector3::ZERO)
 }
 
 
-EulerFrame::EulerFrame(double r, double y, double p, const Vector3& t) :
-    yaw(y), roll(r), pitch(p), translation(t) {
+EulerFrame::EulerFrame(double r, double y, double p, const Vector3 &t) :
+        yaw(y), roll(r), pitch(p), translation(t) {
 }
 
 
-void EulerFrame::serialize(BinaryOutput& b) const {
+void EulerFrame::serialize(BinaryOutput &b) const {
     b.writeFloat32(roll);
     b.writeFloat32(yaw);
     b.writeFloat32(pitch);
@@ -50,38 +50,38 @@ void EulerFrame::serialize(BinaryOutput& b) const {
 }
 
 
-void EulerFrame::deserialize(BinaryInput& b) {
+void EulerFrame::deserialize(BinaryInput &b) {
     roll = b.readFloat32();
-    yaw  = b.readFloat32();
+    yaw = b.readFloat32();
     pitch = b.readFloat32();
     translation.deserialize(b);
 }
 
 
-EulerFrame EulerFrame::lerp(const EulerFrame& other, double alpha) const {
+EulerFrame EulerFrame::lerp(const EulerFrame &other, double alpha) const {
     return EulerFrame(
-        G3D::lerp(roll, other.roll, alpha),
-        G3D::lerp(yaw, other.yaw, alpha),
-        G3D::lerp(pitch, other.pitch, alpha),
-        translation.lerp(other.translation, alpha));
+            G3D::lerp(roll, other.roll, alpha),
+            G3D::lerp(yaw, other.yaw, alpha),
+            G3D::lerp(pitch, other.pitch, alpha),
+            translation.lerp(other.translation, alpha));
 }
 
 
 CoordinateFrame EulerFrame::toCoordinateFrame() const {
     return CoordinateFrame(
-        Matrix3::fromEulerAnglesYXZ(yaw, pitch, roll), translation);
+            Matrix3::fromEulerAnglesYXZ(yaw, pitch, roll), translation);
 }
 
 
-EulerFrame EulerFrame::operator-(const EulerFrame& other) const {
+EulerFrame EulerFrame::operator-(const EulerFrame &other) const {
     return EulerFrame(roll - other.roll, yaw - other.yaw,
-        pitch - other.pitch, translation - other.translation);
+                      pitch - other.pitch, translation - other.translation);
 }
 
 
-EulerFrame EulerFrame::operator+(const EulerFrame& other) const {
+EulerFrame EulerFrame::operator+(const EulerFrame &other) const {
     return EulerFrame(roll + other.roll, yaw + other.yaw,
-        pitch + other.pitch, translation + other.translation);
+                      pitch + other.pitch, translation + other.translation);
 }
 
 

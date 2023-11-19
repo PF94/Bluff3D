@@ -1,15 +1,15 @@
 #include "../include/G3DAll.h"
 
 void shaderVersions(
-    std::string& regStr,
-    std::string& asmStr,
-    std::string& glslStr) {
+        std::string &regStr,
+        std::string &asmStr,
+        std::string &glslStr) {
 
     Array<std::string> reg, xasm;
 
     glslStr = "None";
 
-    if (GLCaps::supports("GL_NV_register_combiners")){
+    if (GLCaps::supports("GL_NV_register_combiners")) {
         if (GLCaps::supports("GL_NV_register_combiners2")) {
             reg.append("NV rc2");
         } else {
@@ -70,7 +70,7 @@ void shaderVersions(
     }
 
 
-    if (GLCaps::supports_GL_ARB_shader_objects() && 
+    if (GLCaps::supports_GL_ARB_shader_objects() &&
         GLCaps::supports_GL_ARB_shading_language_100() &&
         GLCaps::supports_GL_ARB_fragment_shader() &&
         GLCaps::supports_GL_ARB_vertex_shader()) {

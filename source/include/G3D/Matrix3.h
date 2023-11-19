@@ -24,287 +24,327 @@ namespace G3D {
 /**
   3x3 matrix.  Do not subclass.
  */
-class Matrix3 {
-private:
+    class Matrix3 {
+    private:
 
-    float elt[3][3];
+        float elt[3][3];
 
-    // Hidden operators
-    bool operator<(const Matrix3&) const;
-    bool operator>(const Matrix3&) const;
-    bool operator<=(const Matrix3&) const;
-    bool operator>=(const Matrix3&) const;
+        // Hidden operators
+        bool operator<(const Matrix3 &) const;
 
-public:
+        bool operator>(const Matrix3 &) const;
 
-    /** Initial values are undefined for performance.  See also 
-        Matrix3::zero(), Matrix3::identity(), Matrix3::fromAxisAngle, etc.*/
-    inline Matrix3() {}
+        bool operator<=(const Matrix3 &) const;
 
-    Matrix3 (class BinaryInput& b);
-    Matrix3 (const float aafEntry[3][3]);
-    Matrix3 (const Matrix3& rkMatrix);
-    Matrix3 (float fEntry00, float fEntry01, float fEntry02,
-             float fEntry10, float fEntry11, float fEntry12,
-             float fEntry20, float fEntry21, float fEntry22);
+        bool operator>=(const Matrix3 &) const;
 
-	bool fuzzyEq(const Matrix3& b) const;
+    public:
 
-    /** Constructs a matrix from a quaternion.
-        @cite Graphics Gems II, p. 351--354
- 	    @cite Implementation from Watt and Watt, pg 362*/
-    Matrix3(const class Quat& q);
+        /** Initial values are undefined for performance.  See also
+            Matrix3::zero(), Matrix3::identity(), Matrix3::fromAxisAngle, etc.*/
+        inline Matrix3() {}
 
-    void serialize(class BinaryOutput& b) const;
-    void deserialize(class BinaryInput& b);
+        Matrix3(class BinaryInput &b);
 
-    /**
-     Sets all elements.
-     */
-    void set(float fEntry00, float fEntry01, float fEntry02,
-             float fEntry10, float fEntry11, float fEntry12,
-             float fEntry20, float fEntry21, float fEntry22);
+        Matrix3(const float aafEntry[3][3]);
 
-    /**
-     * member access, allows use of construct mat[r][c]
-     */
-    inline float* operator[] (int iRow) {
-        debugAssert(iRow >= 0);
-        debugAssert(iRow < 3);
-        return (float*)&elt[iRow][0];
-    }
+        Matrix3(const Matrix3 &rkMatrix);
 
-    inline const float* operator[] (int iRow) const {
-        debugAssert(iRow >= 0);
-        debugAssert(iRow < 3);
-        return (const float*)&elt[iRow][0];
-    }
+        Matrix3(float fEntry00, float fEntry01, float fEntry02,
+                float fEntry10, float fEntry11, float fEntry12,
+                float fEntry20, float fEntry21, float fEntry22);
 
-    inline operator float* () {
-        return (float*)&elt[0][0];
-    }
+        bool fuzzyEq(const Matrix3 &b) const;
 
-    inline operator const float* () const{
-        return (const float*)&elt[0][0];
-    }
+        /** Constructs a matrix from a quaternion.
+            @cite Graphics Gems II, p. 351--354
+             @cite Implementation from Watt and Watt, pg 362*/
+        Matrix3(const class Quat &q);
 
-    Vector3 getColumn (int iCol) const;
-    Vector3 getRow (int iRow) const;
-    void setColumn(int iCol, const Vector3 &vector);
-    void setRow(int iRow, const Vector3 &vector);
+        void serialize(class BinaryOutput &b) const;
 
-    // assignment and comparison
-    inline Matrix3& operator= (const Matrix3& rkMatrix) {
-        memcpy(elt, rkMatrix.elt, 9 * sizeof(float));
-        return *this;
-    }
+        void deserialize(class BinaryInput &b);
 
-    bool operator== (const Matrix3& rkMatrix) const;
-    bool operator!= (const Matrix3& rkMatrix) const;
+        /**
+         Sets all elements.
+         */
+        void set(float fEntry00, float fEntry01, float fEntry02,
+                 float fEntry10, float fEntry11, float fEntry12,
+                 float fEntry20, float fEntry21, float fEntry22);
 
-    // arithmetic operations
-    Matrix3 operator+ (const Matrix3& rkMatrix) const;
-    Matrix3 operator- (const Matrix3& rkMatrix) const;
-    /** Matrix-matrix multiply */
-    Matrix3 operator* (const Matrix3& rkMatrix) const;
-    Matrix3 operator- () const;
-
-    Matrix3& operator+= (const Matrix3& rkMatrix);
-    Matrix3& operator-= (const Matrix3& rkMatrix);
-    Matrix3& operator*= (const Matrix3& rkMatrix);
-
-    /**
-     * matrix * vector [3x3 * 3x1 = 3x1]
-     */
-    inline Vector3 operator* (const Vector3& v) const {
-        Vector3 kProd;
-
-        for (int r = 0; r < 3; ++r) {
-            kProd[r] =
-                elt[r][0] * v[0] +
-                elt[r][1] * v[1] +
-                elt[r][2] * v[2];
+        /**
+         * member access, allows use of construct mat[r][c]
+         */
+        inline float *operator[](int iRow) {
+            debugAssert(iRow >= 0);
+            debugAssert(iRow < 3);
+            return (float *) &elt[iRow][0];
         }
 
-        return kProd;
-    }
-
-
-    /**
-     * vector * matrix [1x3 * 3x3 = 1x3]
-     */
-    friend Vector3 operator* (const Vector3& rkVector,
-                              const Matrix3& rkMatrix);
-
-    /**
-     * matrix * scalar
-     */
-    Matrix3 operator* (float fScalar) const;
-
-    /** scalar * matrix */
-    friend Matrix3 operator* (double fScalar, const Matrix3& rkMatrix);
-    friend Matrix3 operator* (float fScalar, const Matrix3& rkMatrix);
-    friend Matrix3 operator* (int fScalar, const Matrix3& rkMatrix);
-
-private:
-    /** Multiplication where out != A and out != B */
-    static void _mul(const Matrix3& A, const Matrix3& B, Matrix3& out);
-public:
-
-    /** Optimized implementation of out = A * B.  It is safe (but slow) to call 
-        with A, B, and out possibly pointer equal to one another.*/
-    // This is a static method so that it is not ambiguous whether "this"
-    // is an input or output argument.
-    inline static void mul(const Matrix3& A, const Matrix3& B, Matrix3& out) {
-        if ((&out == &A) || (&out == &B)) {
-            // We need a temporary anyway, so revert to the stack method.
-            out = A * B;
-        } else {
-            // Optimized in-place multiplication.
-            _mul(A, B, out);
+        inline const float *operator[](int iRow) const {
+            debugAssert(iRow >= 0);
+            debugAssert(iRow < 3);
+            return (const float *) &elt[iRow][0];
         }
-    }
 
-private:
-    static void _transpose(const Matrix3& A, Matrix3& out);
-public:
-
-    /** Optimized implementation of out = A.transpose().  It is safe (but slow) to call 
-        with A and out possibly pointer equal to one another.
-    
-        Note that <CODE>A.transpose() * v</CODE> can be computed 
-        more efficiently as <CODE>v * A</CODE>.
-    */
-    inline static void transpose(const Matrix3& A, Matrix3& out) {
-        if (&A == &out) {
-            out = A.transpose();
-        } else {
-            _transpose(A, out);
+        inline operator float *() {
+            return (float *) &elt[0][0];
         }
-    }
 
-    /** Returns true if the rows and column L2 norms are 1.0 and the rows are orthogonal. */
-    bool isOrthonormal() const;
+        inline operator const float *() const {
+            return (const float *) &elt[0][0];
+        }
 
-    Matrix3 transpose () const;
-    bool inverse (Matrix3& rkInverse, float fTolerance = 1e-06) const;
-    Matrix3 inverse (float fTolerance = 1e-06) const;
-    float determinant () const;
+        Vector3 getColumn(int iCol) const;
 
-    /** singular value decomposition */
-    void singularValueDecomposition (Matrix3& rkL, Vector3& rkS,
-                                     Matrix3& rkR) const;
-    /** singular value decomposition */
-    void singularValueComposition (const Matrix3& rkL,
-                                   const Vector3& rkS, const Matrix3& rkR);
+        Vector3 getRow(int iRow) const;
 
-    /** Gram-Schmidt orthonormalization (applied to columns of rotation matrix) */
-    void orthonormalize();
+        void setColumn(int iCol, const Vector3 &vector);
 
-    /** orthogonal Q, diagonal D, upper triangular U stored as (u01,u02,u12) */
-    void qDUDecomposition (Matrix3& rkQ, Vector3& rkD,
-                           Vector3& rkU) const;
+        void setRow(int iRow, const Vector3 &vector);
 
-    float spectralNorm () const;
+        // assignment and comparison
+        inline Matrix3 &operator=(const Matrix3 &rkMatrix) {
+            memcpy(elt, rkMatrix.elt, 9 * sizeof(float));
+            return *this;
+        }
 
-    /** matrix must be orthonormal */
-    void toAxisAngle(Vector3& rkAxis, float& rfRadians) const;
+        bool operator==(const Matrix3 &rkMatrix) const;
 
-    static Matrix3 fromAxisAngle(const Vector3& rkAxis, float fRadians);
+        bool operator!=(const Matrix3 &rkMatrix) const;
 
-    /**
-     * The matrix must be orthonormal.  The decomposition is yaw*pitch*roll
-     * where yaw is rotation about the Up vector, pitch is rotation about the
-     * right axis, and roll is rotation about the Direction axis.
-     */
-    bool toEulerAnglesXYZ (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    bool toEulerAnglesXZY (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    bool toEulerAnglesYXZ (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    bool toEulerAnglesYZX (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    bool toEulerAnglesZXY (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    bool toEulerAnglesZYX (float& rfYAngle, float& rfPAngle,
-                           float& rfRAngle) const;
-    static Matrix3 fromEulerAnglesXYZ (float fYAngle, float fPAngle, float fRAngle);
-    static Matrix3 fromEulerAnglesXZY (float fYAngle, float fPAngle, float fRAngle);
-    static Matrix3 fromEulerAnglesYXZ (float fYAngle, float fPAngle, float fRAngle);
-    static Matrix3 fromEulerAnglesYZX (float fYAngle, float fPAngle, float fRAngle);
-    static Matrix3 fromEulerAnglesZXY (float fYAngle, float fPAngle, float fRAngle);
-    static Matrix3 fromEulerAnglesZYX (float fYAngle, float fPAngle, float fRAngle);
+        // arithmetic operations
+        Matrix3 operator+(const Matrix3 &rkMatrix) const;
 
-    /** eigensolver, matrix must be symmetric */
-    void eigenSolveSymmetric (float afEigenvalue[3],
-                              Vector3 akEigenvector[3]) const;
+        Matrix3 operator-(const Matrix3 &rkMatrix) const;
 
-    static void tensorProduct (const Vector3& rkU, const Vector3& rkV,
-                               Matrix3& rkProduct);
-	std::string toString() const;
+        /** Matrix-matrix multiply */
+        Matrix3 operator*(const Matrix3 &rkMatrix) const;
 
-    static const float EPSILON; 
+        Matrix3 operator-() const;
 
-    // Special values.
-    // The unguaranteed order of initialization of static variables across 
-    // translation units can be a source of annoying bugs, so now the static
-    // special values (like Vector3::ZERO, Color3::WHITE, ...) are wrapped
-    // inside static functions that return references to them. 
-    // These functions are intentionally not inlined, because: 
-    // "You might be tempted to write [...] them as inline functions 
-    // inside their respective header files, but this is something you 
-    // must definitely not do. An inline function can be duplicated 
-    // in every file in which it appears � and this duplication 
-    // includes the static object definition. Because inline functions 
-    // automatically default to internal linkage, this would result in 
-    // having multiple static objects across the various translation 
-    // units, which would certainly cause problems. So you must 
-    // ensure that there is only one definition of each wrapping 
-    // function, and this means not making the wrapping functions inline",
-    // according to Chapter 10 of "Thinking in C++, 2nd ed. Volume 1" by Bruce Eckel, 
-    // http://www.mindview.net/
-    static const Matrix3& zero();
-    static const Matrix3& identity(); 
+        Matrix3 &operator+=(const Matrix3 &rkMatrix);
 
-    // Deprecated. 
-    /** @deprecated Use Matrix3::zero() */
-    static const Matrix3 ZERO;
-    /** @deprecated Use Matrix3::identity() */
-    static const Matrix3 IDENTITY;
+        Matrix3 &operator-=(const Matrix3 &rkMatrix);
 
-protected:
-    // support for eigensolver
-    void tridiagonal (float afDiag[3], float afSubDiag[3]);
-    bool qLAlgorithm (float afDiag[3], float afSubDiag[3]);
+        Matrix3 &operator*=(const Matrix3 &rkMatrix);
 
-    // support for singular value decomposition
-    static const float ms_fSvdEpsilon;
-    static const int ms_iSvdMaxIterations;
-    static void bidiagonalize (Matrix3& kA, Matrix3& kL,
-                               Matrix3& kR);
-    static void golubKahanStep (Matrix3& kA, Matrix3& kL,
-                                Matrix3& kR);
+        /**
+         * matrix * vector [3x3 * 3x1 = 3x1]
+         */
+        inline Vector3 operator*(const Vector3 &v) const {
+            Vector3 kProd;
 
-    // support for spectral norm
-    static float maxCubicRoot (float afCoeff[3]);
+            for (int r = 0; r < 3; ++r) {
+                    kProd[r] =
+                            elt[r][0] * v[0] +
+                            elt[r][1] * v[1] +
+                            elt[r][2] * v[2];
+                }
 
-};
+            return kProd;
+        }
+
+
+        /**
+         * vector * matrix [1x3 * 3x3 = 1x3]
+         */
+        friend Vector3 operator*(const Vector3 &rkVector,
+                                 const Matrix3 &rkMatrix);
+
+        /**
+         * matrix * scalar
+         */
+        Matrix3 operator*(float fScalar) const;
+
+        /** scalar * matrix */
+        friend Matrix3 operator*(double fScalar, const Matrix3 &rkMatrix);
+
+        friend Matrix3 operator*(float fScalar, const Matrix3 &rkMatrix);
+
+        friend Matrix3 operator*(int fScalar, const Matrix3 &rkMatrix);
+
+    private:
+        /** Multiplication where out != A and out != B */
+        static void _mul(const Matrix3 &A, const Matrix3 &B, Matrix3 &out);
+
+    public:
+
+        /** Optimized implementation of out = A * B.  It is safe (but slow) to call
+            with A, B, and out possibly pointer equal to one another.*/
+        // This is a static method so that it is not ambiguous whether "this"
+        // is an input or output argument.
+        inline static void mul(const Matrix3 &A, const Matrix3 &B, Matrix3 &out) {
+            if ((&out == &A) || (&out == &B)) {
+                // We need a temporary anyway, so revert to the stack method.
+                out = A * B;
+            } else {
+                // Optimized in-place multiplication.
+                _mul(A, B, out);
+            }
+        }
+
+    private:
+        static void _transpose(const Matrix3 &A, Matrix3 &out);
+
+    public:
+
+        /** Optimized implementation of out = A.transpose().  It is safe (but slow) to call
+            with A and out possibly pointer equal to one another.
+
+            Note that <CODE>A.transpose() * v</CODE> can be computed
+            more efficiently as <CODE>v * A</CODE>.
+        */
+        inline static void transpose(const Matrix3 &A, Matrix3 &out) {
+            if (&A == &out) {
+                out = A.transpose();
+            } else {
+                _transpose(A, out);
+            }
+        }
+
+        /** Returns true if the rows and column L2 norms are 1.0 and the rows are orthogonal. */
+        bool isOrthonormal() const;
+
+        Matrix3 transpose() const;
+
+        bool inverse(Matrix3 &rkInverse, float fTolerance = 1e-06) const;
+
+        Matrix3 inverse(float fTolerance = 1e-06) const;
+
+        float determinant() const;
+
+        /** singular value decomposition */
+        void singularValueDecomposition(Matrix3 &rkL, Vector3 &rkS,
+                                        Matrix3 &rkR) const;
+
+        /** singular value decomposition */
+        void singularValueComposition(const Matrix3 &rkL,
+                                      const Vector3 &rkS, const Matrix3 &rkR);
+
+        /** Gram-Schmidt orthonormalization (applied to columns of rotation matrix) */
+        void orthonormalize();
+
+        /** orthogonal Q, diagonal D, upper triangular U stored as (u01,u02,u12) */
+        void qDUDecomposition(Matrix3 &rkQ, Vector3 &rkD,
+                              Vector3 &rkU) const;
+
+        float spectralNorm() const;
+
+        /** matrix must be orthonormal */
+        void toAxisAngle(Vector3 &rkAxis, float &rfRadians) const;
+
+        static Matrix3 fromAxisAngle(const Vector3 &rkAxis, float fRadians);
+
+        /**
+         * The matrix must be orthonormal.  The decomposition is yaw*pitch*roll
+         * where yaw is rotation about the Up vector, pitch is rotation about the
+         * right axis, and roll is rotation about the Direction axis.
+         */
+        bool toEulerAnglesXYZ(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        bool toEulerAnglesXZY(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        bool toEulerAnglesYXZ(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        bool toEulerAnglesYZX(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        bool toEulerAnglesZXY(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        bool toEulerAnglesZYX(float &rfYAngle, float &rfPAngle,
+                              float &rfRAngle) const;
+
+        static Matrix3 fromEulerAnglesXYZ(float fYAngle, float fPAngle, float fRAngle);
+
+        static Matrix3 fromEulerAnglesXZY(float fYAngle, float fPAngle, float fRAngle);
+
+        static Matrix3 fromEulerAnglesYXZ(float fYAngle, float fPAngle, float fRAngle);
+
+        static Matrix3 fromEulerAnglesYZX(float fYAngle, float fPAngle, float fRAngle);
+
+        static Matrix3 fromEulerAnglesZXY(float fYAngle, float fPAngle, float fRAngle);
+
+        static Matrix3 fromEulerAnglesZYX(float fYAngle, float fPAngle, float fRAngle);
+
+        /** eigensolver, matrix must be symmetric */
+        void eigenSolveSymmetric(float afEigenvalue[3],
+                                 Vector3 akEigenvector[3]) const;
+
+        static void tensorProduct(const Vector3 &rkU, const Vector3 &rkV,
+                                  Matrix3 &rkProduct);
+
+        std::string toString() const;
+
+        static const float EPSILON;
+
+        // Special values.
+        // The unguaranteed order of initialization of static variables across
+        // translation units can be a source of annoying bugs, so now the static
+        // special values (like Vector3::ZERO, Color3::WHITE, ...) are wrapped
+        // inside static functions that return references to them.
+        // These functions are intentionally not inlined, because:
+        // "You might be tempted to write [...] them as inline functions
+        // inside their respective header files, but this is something you
+        // must definitely not do. An inline function can be duplicated
+        // in every file in which it appears � and this duplication
+        // includes the static object definition. Because inline functions
+        // automatically default to internal linkage, this would result in
+        // having multiple static objects across the various translation
+        // units, which would certainly cause problems. So you must
+        // ensure that there is only one definition of each wrapping
+        // function, and this means not making the wrapping functions inline",
+        // according to Chapter 10 of "Thinking in C++, 2nd ed. Volume 1" by Bruce Eckel,
+        // http://www.mindview.net/
+        static const Matrix3 &zero();
+
+        static const Matrix3 &identity();
+
+        // Deprecated.
+        /** @deprecated Use Matrix3::zero() */
+        static const Matrix3 ZERO;
+        /** @deprecated Use Matrix3::identity() */
+        static const Matrix3 IDENTITY;
+
+    protected:
+        // support for eigensolver
+        void tridiagonal(float afDiag[3], float afSubDiag[3]);
+
+        bool qLAlgorithm(float afDiag[3], float afSubDiag[3]);
+
+        // support for singular value decomposition
+        static const float ms_fSvdEpsilon;
+        static const int ms_iSvdMaxIterations;
+
+        static void bidiagonalize(Matrix3 &kA, Matrix3 &kL,
+                                  Matrix3 &kR);
+
+        static void golubKahanStep(Matrix3 &kA, Matrix3 &kL,
+                                   Matrix3 &kR);
+
+        // support for spectral norm
+        static float maxCubicRoot(float afCoeff[3]);
+
+    };
 
 
 //----------------------------------------------------------------------------
-inline Vector3 operator* (const Vector3& rkPoint, const Matrix3& rkMatrix) {
-    Vector3 kProd;
+    inline Vector3 operator*(const Vector3 &rkPoint, const Matrix3 &rkMatrix) {
+        Vector3 kProd;
 
-    for (int r = 0; r < 3; ++r) {
-        kProd[r] =
-            rkPoint[0] * rkMatrix.elt[0][r] +
-            rkPoint[1] * rkMatrix.elt[1][r] +
-            rkPoint[2] * rkMatrix.elt[2][r];
+        for (int r = 0; r < 3; ++r) {
+                kProd[r] =
+                        rkPoint[0] * rkMatrix.elt[0][r] +
+                        rkPoint[1] * rkMatrix.elt[1][r] +
+                        rkPoint[2] * rkMatrix.elt[2][r];
+            }
+
+        return kProd;
     }
-
-    return kProd;
-}
 
 
 } // namespace

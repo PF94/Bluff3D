@@ -67,72 +67,73 @@ typedef struct __GLXFBConfigRec *GLXFBConfig;
 
 /************************************************************************/
 
-extern XVisualInfo* glXChooseVisual (Display *dpy, int screen, int *attribList);
-extern void glXCopyContext (Display *dpy, GLXContext src, GLXContext dst, unsigned long mask);
-extern GLXContext glXCreateContext (Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct);
-extern GLXPixmap glXCreateGLXPixmap (Display *dpy, XVisualInfo *vis, Pixmap pixmap);
-extern void glXDestroyContext (Display *dpy, GLXContext ctx);
-extern void glXDestroyGLXPixmap (Display *dpy, GLXPixmap pix);
-extern int glXGetConfig (Display *dpy, XVisualInfo *vis, int attrib, int *value);
-extern GLXContext glXGetCurrentContext (void);
-extern GLXDrawable glXGetCurrentDrawable (void);
-extern Bool glXIsDirect (Display *dpy, GLXContext ctx);
-extern Bool glXMakeCurrent (Display *dpy, GLXDrawable drawable, GLXContext ctx);
-extern Bool glXQueryExtension (Display *dpy, int *errorBase, int *eventBase);
-extern Bool glXQueryVersion (Display *dpy, int *major, int *minor);
-extern void glXSwapBuffers (Display *dpy, GLXDrawable drawable);
-extern void glXUseXFont (Font font, int first, int count, int listBase);
-extern void glXWaitGL (void);
-extern void glXWaitX (void);
-extern const char * glXGetClientString (Display *dpy, int name );
-extern const char * glXQueryServerString (Display *dpy, int screen, int name );
-extern const char * glXQueryExtensionsString (Display *dpy, int screen );
+extern XVisualInfo *glXChooseVisual(Display *dpy, int screen, int *attribList);
+extern void glXCopyContext(Display *dpy, GLXContext src, GLXContext dst, unsigned long mask);
+extern GLXContext glXCreateContext(Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct);
+extern GLXPixmap glXCreateGLXPixmap(Display *dpy, XVisualInfo *vis, Pixmap pixmap);
+extern void glXDestroyContext(Display *dpy, GLXContext ctx);
+extern void glXDestroyGLXPixmap(Display *dpy, GLXPixmap pix);
+extern int glXGetConfig(Display *dpy, XVisualInfo *vis, int attrib, int *value);
+extern GLXContext glXGetCurrentContext(void);
+extern GLXDrawable glXGetCurrentDrawable(void);
+extern Bool glXIsDirect(Display *dpy, GLXContext ctx);
+extern Bool glXMakeCurrent(Display *dpy, GLXDrawable drawable, GLXContext ctx);
+extern Bool glXQueryExtension(Display *dpy, int *errorBase, int *eventBase);
+extern Bool glXQueryVersion(Display *dpy, int *major, int *minor);
+extern void glXSwapBuffers(Display *dpy, GLXDrawable drawable);
+extern void glXUseXFont(Font font, int first, int count, int listBase);
+extern void glXWaitGL(void);
+extern void glXWaitX(void);
+extern const char *glXGetClientString(Display *dpy, int name);
+extern const char *glXQueryServerString(Display *dpy, int screen, int name);
+extern const char *glXQueryExtensionsString(Display *dpy, int screen);
 
 /* New for GLX 1.3 */
-extern GLXFBConfig * glXGetFBConfigs (Display *dpy, int screen, int *nelements);
-extern GLXFBConfig * glXChooseFBConfig (Display *dpy, int screen, const int *attrib_list, int *nelements);
-extern int glXGetFBConfigAttrib (Display *dpy, GLXFBConfig config, int attribute, int *value);
-extern XVisualInfo * glXGetVisualFromFBConfig (Display *dpy, GLXFBConfig config);
-extern GLXWindow glXCreateWindow (Display *dpy, GLXFBConfig config, Window win, const int *attrib_list);
-extern void glXDestroyWindow (Display *dpy, GLXWindow win);
-extern GLXPixmap glXCreatePixmap (Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attrib_list);
-extern void glXDestroyPixmap (Display *dpy, GLXPixmap pixmap);
-extern GLXPbuffer glXCreatePbuffer (Display *dpy, GLXFBConfig config, const int *attrib_list);
-extern void glXDestroyPbuffer (Display *dpy, GLXPbuffer pbuf);
-extern void glXQueryDrawable (Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
-extern GLXContext glXCreateNewContext (Display *dpy, GLXFBConfig config, int render_type, GLXContext share_list, Bool direct);
-extern Bool glXMakeContextCurrent (Display *display, GLXDrawable draw, GLXDrawable read, GLXContext ctx);
-extern GLXDrawable glXGetCurrentReadDrawable (void);
-extern Display * glXGetCurrentDisplay (void);
-extern int glXQueryContext (Display *dpy, GLXContext ctx, int attribute, int *value);
-extern void glXSelectEvent (Display *dpy, GLXDrawable draw, unsigned long event_mask);
-extern void glXGetSelectedEvent (Display *dpy, GLXDrawable draw, unsigned long *event_mask);
+extern GLXFBConfig *glXGetFBConfigs(Display *dpy, int screen, int *nelements);
+extern GLXFBConfig *glXChooseFBConfig(Display *dpy, int screen, const int *attrib_list, int *nelements);
+extern int glXGetFBConfigAttrib(Display *dpy, GLXFBConfig config, int attribute, int *value);
+extern XVisualInfo *glXGetVisualFromFBConfig(Display *dpy, GLXFBConfig config);
+extern GLXWindow glXCreateWindow(Display *dpy, GLXFBConfig config, Window win, const int *attrib_list);
+extern void glXDestroyWindow(Display *dpy, GLXWindow win);
+extern GLXPixmap glXCreatePixmap(Display *dpy, GLXFBConfig config, Pixmap pixmap, const int *attrib_list);
+extern void glXDestroyPixmap(Display *dpy, GLXPixmap pixmap);
+extern GLXPbuffer glXCreatePbuffer(Display *dpy, GLXFBConfig config, const int *attrib_list);
+extern void glXDestroyPbuffer(Display *dpy, GLXPbuffer pbuf);
+extern void glXQueryDrawable(Display *dpy, GLXDrawable draw, int attribute, unsigned int *value);
+extern GLXContext
+glXCreateNewContext(Display *dpy, GLXFBConfig config, int render_type, GLXContext share_list, Bool direct);
+extern Bool glXMakeContextCurrent(Display *display, GLXDrawable draw, GLXDrawable read, GLXContext ctx);
+extern GLXDrawable glXGetCurrentReadDrawable(void);
+extern Display *glXGetCurrentDisplay(void);
+extern int glXQueryContext(Display *dpy, GLXContext ctx, int attribute, int *value);
+extern void glXSelectEvent(Display *dpy, GLXDrawable draw, unsigned long event_mask);
+extern void glXGetSelectedEvent(Display *dpy, GLXDrawable draw, unsigned long *event_mask);
 
 /*** SGI GLX extensions */
-extern GLXContextID glXGetContextIDEXT (const GLXContext ctx);
-extern GLXDrawable glXGetCurrentDrawableEXT (void);
-extern GLXContext glXImportContextEXT (Display *dpy, GLXContextID contextID);
-extern void glXFreeContextEXT (Display *dpy, GLXContext ctx);
-extern int glXQueryContextInfoEXT (Display *dpy, GLXContext ctx, int attribute, int *value);
+extern GLXContextID glXGetContextIDEXT(const GLXContext ctx);
+extern GLXDrawable glXGetCurrentDrawableEXT(void);
+extern GLXContext glXImportContextEXT(Display *dpy, GLXContextID contextID);
+extern void glXFreeContextEXT(Display *dpy, GLXContext ctx);
+extern int glXQueryContextInfoEXT(Display *dpy, GLXContext ctx, int attribute, int *value);
 
-extern void (*glXGetProcAddressARB(const GLubyte *procName))( void );
+extern void (*glXGetProcAddressARB(const GLubyte *procName))(void);
 
 /*** Should these go here, or in another header? */
 /*
 ** GLX Events
 */
 typedef struct {
-    int event_type;		/* GLX_DAMAGED or GLX_SAVED */
-    int draw_type;		/* GLX_WINDOW or GLX_PBUFFER */
-    unsigned long serial;	/* # of last request processed by server */
-    Bool send_event;		/* true if this came for SendEvent request */
-    Display *display;		/* display the event was read from */
-    GLXDrawable drawable;	/* XID of Drawable */
-    unsigned int buffer_mask;	/* mask indicating which buffers are affected */
-    unsigned int aux_buffer;	/* which aux buffer was affected */
+    int event_type;        /* GLX_DAMAGED or GLX_SAVED */
+    int draw_type;        /* GLX_WINDOW or GLX_PBUFFER */
+    unsigned long serial;    /* # of last request processed by server */
+    Bool send_event;        /* true if this came for SendEvent request */
+    Display *display;        /* display the event was read from */
+    GLXDrawable drawable;    /* XID of Drawable */
+    unsigned int buffer_mask;    /* mask indicating which buffers are affected */
+    unsigned int aux_buffer;    /* which aux buffer was affected */
     int x, y;
     int width, height;
-    int count;			/* if nonzero, at least this many more */
+    int count;            /* if nonzero, at least this many more */
 } GLXPbufferClobberEvent;
 
 typedef union __GLXEvent {

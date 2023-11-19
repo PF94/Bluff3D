@@ -15,33 +15,33 @@
 
 namespace G3D {
 
-Color4uint8::Color4uint8(const class Color4& c) {
-    r = iMin(255, iRound(c.r * 256));
-    g = iMin(255, iRound(c.g * 256));
-    b = iMin(255, iRound(c.b * 256));
-    a = iMin(255, iRound(c.a * 256));
-}
+    Color4uint8::Color4uint8(const class Color4 &c) {
+        r = iMin(255, iRound(c.r * 256));
+        g = iMin(255, iRound(c.g * 256));
+        b = iMin(255, iRound(c.b * 256));
+        a = iMin(255, iRound(c.a * 256));
+    }
 
 
-Color4uint8::Color4uint8(class BinaryInput& bi) {
-    deserialize(bi);
-}
+    Color4uint8::Color4uint8(class BinaryInput &bi) {
+        deserialize(bi);
+    }
 
 
-void Color4uint8::serialize(class BinaryOutput& bo) const {
-    bo.writeUInt8(r);
-    bo.writeUInt8(g);
-    bo.writeUInt8(b);
-    bo.writeUInt8(a);
-}
+    void Color4uint8::serialize(class BinaryOutput &bo) const {
+        bo.writeUInt8(r);
+        bo.writeUInt8(g);
+        bo.writeUInt8(b);
+        bo.writeUInt8(a);
+    }
 
 
-void Color4uint8::deserialize(class BinaryInput& bi) {
-    r = bi.readUInt8();
-    g = bi.readUInt8();
-    b = bi.readUInt8();
-    a = bi.readUInt8();
-}
+    void Color4uint8::deserialize(class BinaryInput &bi) {
+        r = bi.readUInt8();
+        g = bi.readUInt8();
+        b = bi.readUInt8();
+        a = bi.readUInt8();
+    }
 
 
 }

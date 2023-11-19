@@ -11,24 +11,30 @@
  @edited  2004-07-19
  */
 #include <G3DAll.h>
+
 #ifdef G3D_WIN32
+
 #include "../contrib/Win32Window/Win32Window.h"
 #include "../contrib/Win32Window/Win32Window.cpp"
+
 #endif
 
-enum Mode {VERTEX, FRAGMENT, BOTH};
+enum Mode {
+    VERTEX, FRAGMENT, BOTH
+};
 
 void printHelp();
+
 void printVersion();
 
 /** Compiles the .frag or .vert source file.  If compilation is successful, returns 0.
     Otherwise returns -1 and prints formatted errors.  Linking is *not* checked.*/
-int check(Mode, const std::string&, const std::string&);
+int check(Mode, const std::string &, const std::string &);
 
-int main(int argc, char** argv);
+int main(int argc, char **argv);
 
 
-int check(Mode mode, const std::string& srcFile) {
+int check(Mode mode, const std::string &srcFile) {
     std::string v, f;
     if (mode == VERTEX) {
         v = srcFile;
@@ -62,7 +68,7 @@ int check(Mode mode, const std::string& srcFile) {
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
     // Argument parsing
 
@@ -84,7 +90,7 @@ int main(int argc, char** argv) {
     if (argc >= 4) {
         if (std::string("-o") != argv[1]) {
             printf("Invalid command line to GLSLCheck.  Expected '-o' or"
-                " filename as 1st argument, found: '%s'\n", argv[1]);
+                   " filename as 1st argument, found: '%s'\n", argv[1]);
             return -1;
         }
         dst = argv[2];
@@ -93,13 +99,13 @@ int main(int argc, char** argv) {
         src = argv[1];
     }
 
-    if (! fileExists(src)) {
+    if (!fileExists(src)) {
         printf("GLSLCheck error : input file '%s' not found\n", src.c_str());
         return -4;
     }
 
     if (endsWith(dst, "/") || endsWith(dst, "\\")) {
-        if (! fileExists(dst.substr(0, dst.size() - 1))) {
+        if (!fileExists(dst.substr(0, dst.size() - 1))) {
             printf("GLSLCheck error : output directory '%s' not found\n", dst.c_str());
             return -5;
         }
@@ -125,15 +131,15 @@ int main(int argc, char** argv) {
     settings.width = 200;
     settings.height = 200;
 
-    GWindow* window;
-    #ifdef G3D_WIN32
-        window = new Win32Window(settings);
-    #else
-        window = new SDLWindow(settings);
-    #endif
+    GWindow *window;
+#ifdef G3D_WIN32
+    window = new Win32Window(settings);
+#else
+    window = new SDLWindow(settings);
+#endif
     GLCaps::loadExtensions();
 
-    if (! VertexAndPixelShader::fullySupported()) {
+    if (!VertexAndPixelShader::fullySupported()) {
         printf("GLSL not supported by your graphics card and driver.\n");
         return -3;
     }
@@ -157,18 +163,18 @@ void printVersion() {
 
 void printHelp() {
     printf(
-        "glslc [--help] [--version] [-o destfilename] sourcefilename \n"
-        "\n"
-        "Checks OpenGL GLSL vertex and fragment programs for syntax errors and copies\n"
-        "them to a distribution directory.  Can be used with a MSVC Custom Build rule\n"
-        "or Makefile to perform compile-time checking of run-time loaded shaders.\n"
-        "\n"
-        "sourcefilename  A .frag or .vert file to check for errors.\n"
-        "destfilename    The output directory (ends with /) or filename to copy\n"
-        "                the source to, if it has no errors."
-        "\n"
-        "GLSLCheck is distributed with the G3D library\n"
-        "http://g3d-cpp.sf.net\n\n");
+            "glslc [--help] [--version] [-o destfilename] sourcefilename \n"
+            "\n"
+            "Checks OpenGL GLSL vertex and fragment programs for syntax errors and copies\n"
+            "them to a distribution directory.  Can be used with a MSVC Custom Build rule\n"
+            "or Makefile to perform compile-time checking of run-time loaded shaders.\n"
+            "\n"
+            "sourcefilename  A .frag or .vert file to check for errors.\n"
+            "destfilename    The output directory (ends with /) or filename to copy\n"
+            "                the source to, if it has no errors."
+            "\n"
+            "GLSLCheck is distributed with the G3D library\n"
+            "http://g3d-cpp.sf.net\n\n");
 
     printVersion();
 }

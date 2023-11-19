@@ -17,17 +17,18 @@
 #define glFormatOf(T) (G3D::_internal::_GLFormat<T>::x())
 
 namespace G3D {
-namespace _internal {
+    namespace _internal {
 
 
-template<class T> class _GLFormat {
-public:
-    static GLenum x() {
-        return GL_NONE;
+        template<class T>
+        class _GLFormat {
+        public:
+            static GLenum x() {
+                return GL_NONE;
+            }
+        };
+
     }
-};
-
-}
 }
 
 /**
@@ -53,22 +54,22 @@ namespace G3D {                                      \
     }                                                \
 }
 
-DECLARE_GLFORMATOF( Vector2,       GL_FLOAT)
-DECLARE_GLFORMATOF( Vector3,       GL_FLOAT)
-DECLARE_GLFORMATOF( Vector4,       GL_FLOAT)
-DECLARE_GLFORMATOF( Vector3int16,  GL_SHORT)
-DECLARE_GLFORMATOF( Vector2int16,  GL_SHORT)
-DECLARE_GLFORMATOF( Color3uint8,   GL_UNSIGNED_BYTE)
-DECLARE_GLFORMATOF( Color3,        GL_FLOAT)
-DECLARE_GLFORMATOF( Color4,        GL_FLOAT)
-DECLARE_GLFORMATOF( Color4uint8,   GL_UNSIGNED_BYTE)
-DECLARE_GLFORMATOF( uint8,         GL_UNSIGNED_BYTE)
-DECLARE_GLFORMATOF( uint16,        GL_UNSIGNED_SHORT)
-DECLARE_GLFORMATOF( uint32,        GL_UNSIGNED_INT)
-DECLARE_GLFORMATOF( int8,          GL_BYTE)
-DECLARE_GLFORMATOF( int16,         GL_SHORT)
-DECLARE_GLFORMATOF( int32,         GL_INT)
-DECLARE_GLFORMATOF( float,         GL_FLOAT)
-DECLARE_GLFORMATOF( double,        GL_DOUBLE)
+DECLARE_GLFORMATOF(Vector2, GL_FLOAT)
+DECLARE_GLFORMATOF(Vector3, GL_FLOAT)
+DECLARE_GLFORMATOF(Vector4, GL_FLOAT)
+DECLARE_GLFORMATOF(Vector3int16, GL_SHORT)
+DECLARE_GLFORMATOF(Vector2int16, GL_SHORT)
+DECLARE_GLFORMATOF(Color3uint8, GL_UNSIGNED_BYTE)
+DECLARE_GLFORMATOF(Color3, GL_FLOAT)
+DECLARE_GLFORMATOF(Color4, GL_FLOAT)
+DECLARE_GLFORMATOF(Color4uint8, GL_UNSIGNED_BYTE)
+DECLARE_GLFORMATOF(uint8, GL_UNSIGNED_BYTE)
+DECLARE_GLFORMATOF(uint16, GL_UNSIGNED_SHORT)
+DECLARE_GLFORMATOF(uint32, GL_UNSIGNED_INT)
+DECLARE_GLFORMATOF(int8, GL_BYTE)
+DECLARE_GLFORMATOF(int16, GL_SHORT)
+DECLARE_GLFORMATOF(int32, GL_INT)
+DECLARE_GLFORMATOF(float, GL_FLOAT)
+DECLARE_GLFORMATOF(double, GL_DOUBLE)
 
 #endif

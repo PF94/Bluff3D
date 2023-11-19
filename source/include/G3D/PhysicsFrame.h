@@ -27,63 +27,64 @@ namespace G3D {
 
   This interface is in "Beta" and will change in the next release.
  */
-class PhysicsFrame {
-public:
+    class PhysicsFrame {
+    public:
 
-    Quat    rotation;
+        Quat rotation;
 
-    /**
-     Takes object space points to world space.
-     */
-    Vector3 translation;
+        /**
+         Takes object space points to world space.
+         */
+        Vector3 translation;
 
-    /**
-     Initializes to the identity frame.
-     */
-    PhysicsFrame();
+        /**
+         Initializes to the identity frame.
+         */
+        PhysicsFrame();
 
-    /**
-     Purely translational force
-     */
-    PhysicsFrame(const Vector3& translation) : translation(translation) {}
+        /**
+         Purely translational force
+         */
+        PhysicsFrame(const Vector3 &translation) : translation(translation) {}
 
-    PhysicsFrame(const CoordinateFrame& coordinateFrame);
+        PhysicsFrame(const CoordinateFrame &coordinateFrame);
 
-    /** Compose: create the transformation that is <I>other</I> followed by <I>this</I>.*/
-    PhysicsFrame operator*(const PhysicsFrame& other) const;
+        /** Compose: create the transformation that is <I>other</I> followed by <I>this</I>.*/
+        PhysicsFrame operator*(const PhysicsFrame &other) const;
 
-    virtual ~PhysicsFrame() {}
+        virtual ~PhysicsFrame() {}
 
-    CoordinateFrame toCoordinateFrame() const;
+        CoordinateFrame toCoordinateFrame() const;
 
-    /**
-     Linear interpolation (spherical linear for the rotations).
-     */
-    PhysicsFrame lerp(
-        const PhysicsFrame&     other,
-        float                   alpha) const;
+        /**
+         Linear interpolation (spherical linear for the rotations).
+         */
+        PhysicsFrame lerp(
+                const PhysicsFrame &other,
+                float alpha) const;
 
-    /** 
-     this + t * dx
-     @deprecated
-     */
-    PhysicsFrame integrate(
-        float                   t,
-        const PhysicsFrame&     dx);
+        /**
+         this + t * dx
+         @deprecated
+         */
+        PhysicsFrame integrate(
+                float t,
+                const PhysicsFrame &dx);
 
-    /** 
-     this + t * dx + t*t * ddx
-     @deprecated
-     */
-    PhysicsFrame integrate(
-        float                   t,
-        const PhysicsFrame&     dx,
-        const PhysicsFrame&     ddx);
+        /**
+         this + t * dx + t*t * ddx
+         @deprecated
+         */
+        PhysicsFrame integrate(
+                float t,
+                const PhysicsFrame &dx,
+                const PhysicsFrame &ddx);
 
 
-    void deserialize(class BinaryInput& b);
-    void serialize(class BinaryOutput& b) const;
-};
+        void deserialize(class BinaryInput &b);
+
+        void serialize(class BinaryOutput &b) const;
+    };
 
 } // namespace
 

@@ -9,9 +9,9 @@
 #ifdef HAS_HASH_MAP
 #   include <hash_map>
 #   if defined(_MSC_VER) && (_MSC_VER >= 1400)
-        using stdext::hash_map;
+using stdext::hash_map;
 #   else
-        using std::hash_map;
+using std::hash_map;
 #   endif
 #endif
 
@@ -23,12 +23,12 @@ hash_map<int, int> x;
 class TableKey : public Hashable {
 public:
     int value;
-    
-    inline bool operator==(const TableKey& other) const {
+
+    inline bool operator==(const TableKey &other) const {
         return value == other.value;
     }
-    
-    inline bool operator!=(const TableKey& other) const {
+
+    inline bool operator!=(const TableKey &other) const {
         return value != other.value;
     }
 
@@ -40,12 +40,12 @@ public:
 class TableKeyB : public Hashable {
 public:
     int value;
-    
-    inline bool operator==(const TableKey& other) const {
+
+    inline bool operator==(const TableKey &other) const {
         return value == other.value;
     }
-    
-    inline bool operator!=(const TableKey& other) const {
+
+    inline bool operator!=(const TableKey &other) const {
         return value != other.value;
     }
 
@@ -60,7 +60,7 @@ void testTable() {
     // Basic get/set
     {
         Table<int, int> table;
-    
+
         table.set(10, 20);
         table.set(3, 1);
         table.set(1, 4);
@@ -77,12 +77,12 @@ void testTable() {
 
     // Test overloaded pointer hashing
     {
-        TableKey        x[4];
+        TableKey x[4];
         x[0].value = 1;
         x[1].value = 2;
         x[2].value = 3;
         x[3].value = 4;
-        Table<TableKey*, int> table;
+        Table<TableKey *, int> table;
 
         table.set(x, 10);
         table.set(x + 1, 20);
@@ -98,12 +98,12 @@ void testTable() {
     }
 
     {
-        TableKeyB        x[6];
-        Table<TableKeyB*, int> table;
+        TableKeyB x[6];
+        Table<TableKeyB *, int> table;
         for (int i = 0; i < 6; ++i) {
-            x[i].value = i;
-            table.set(x + i, i);
-        }
+                x[i].value = i;
+                table.set(x + i, i);
+            }
 
         debugAssert(table.size() == 6);
         debugAssert(table.debugGetDeepestBucketSize() == 6);
@@ -115,7 +115,7 @@ void testTable() {
 
 
 template<class K, class V>
-void perfTest(const char* description, const K* keys, const V* vals, int M) {
+void perfTest(const char *description, const K *keys, const V *vals, int M) {
     uint64 tableSet, tableGet, tableRemove;
     uint64 mapSet, mapGet, mapRemove;
 #   ifdef HAS_HASH_MAP
@@ -127,84 +127,88 @@ void perfTest(const char* description, const K* keys, const V* vals, int M) {
     // Run many times to filter out startup behavior
     for (int j = 0; j < 3; ++j) {
 
-        // There's a little overhead just for the loop and reading 
-        // the values from the arrays.  Take this into account when
-        // counting cycles.
-        System::beginCycleCount(overhead);
-        {K k; V v;
-        for (int i = 0; i < M; ++i) {
-            k = keys[i];
-            v = vals[i];
-        }
-        System::endCycleCount(overhead);
-        }
+            // There's a little overhead just for the loop and reading
+            // the values from the arrays.  Take this into account when
+            // counting cycles.
+            System::beginCycleCount(overhead);
+            {
+                K k;
+                V v;
+                for (int i = 0; i < M; ++i) {
+                        k = keys[i];
+                        v = vals[i];
+                    }
+                System::endCycleCount(overhead);
+            }
 
-        {Table<K, V> t;
-        System::beginCycleCount(tableSet);
-        for (int i = 0; i < M; ++i) {
-            t.set(keys[i], vals[i]);
-        }
-        System::endCycleCount(tableSet);
-        
-        System::beginCycleCount(tableGet);
-        for (int i = 0; i < M; ++i) {
-            t[keys[i]];
-        }
-        System::endCycleCount(tableGet);
+            {
+                Table<K, V> t;
+                System::beginCycleCount(tableSet);
+                for (int i = 0; i < M; ++i) {
+                        t.set(keys[i], vals[i]);
+                    }
+                System::endCycleCount(tableSet);
 
-        System::beginCycleCount(tableRemove);
-        for (int i = 0; i < M; ++i) {
-            t.remove(keys[i]);
-        }
-        System::endCycleCount(tableRemove);
-        }
+                System::beginCycleCount(tableGet);
+                for (int i = 0; i < M; ++i) {
+                        t[keys[i]];
+                    }
+                System::endCycleCount(tableGet);
 
-        /////////////////////////////////
+                System::beginCycleCount(tableRemove);
+                for (int i = 0; i < M; ++i) {
+                        t.remove(keys[i]);
+                    }
+                System::endCycleCount(tableRemove);
+            }
 
-        {std::map<K, V> t;
-        System::beginCycleCount(mapSet);
-        for (int i = 0; i < M; ++i) {
-            t[keys[i]] = vals[i];
-        }
-        System::endCycleCount(mapSet);
-        
-        System::beginCycleCount(mapGet);
-        for (int i = 0; i < M; ++i) {
-            t[keys[i]];
-        }
-        System::endCycleCount(mapGet);
+            /////////////////////////////////
 
-        System::beginCycleCount(mapRemove);
-        for (int i = 0; i < M; ++i) {
-            t.erase(keys[i]);
-        }
-        System::endCycleCount(mapRemove);
-        }
+            {
+                std::map<K, V> t;
+                System::beginCycleCount(mapSet);
+                for (int i = 0; i < M; ++i) {
+                        t[keys[i]] = vals[i];
+                    }
+                System::endCycleCount(mapSet);
 
-        /////////////////////////////////
+                System::beginCycleCount(mapGet);
+                for (int i = 0; i < M; ++i) {
+                        t[keys[i]];
+                    }
+                System::endCycleCount(mapGet);
+
+                System::beginCycleCount(mapRemove);
+                for (int i = 0; i < M; ++i) {
+                        t.erase(keys[i]);
+                    }
+                System::endCycleCount(mapRemove);
+            }
+
+            /////////////////////////////////
 
 #       ifdef HAS_HASH_MAP
-        {hash_map<K, V> t;
-        System::beginCycleCount(hashMapSet);
-        for (int i = 0; i < M; ++i) {
-            t[keys[i]] = vals[i];
-        }
-        System::endCycleCount(hashMapSet);
-        
-        System::beginCycleCount(hashMapGet);
-        for (int i = 0; i < M; ++i) {
-            t[keys[i]];
-        }
-        System::endCycleCount(hashMapGet);
+            {hash_map<K, V> t;
+            System::beginCycleCount(hashMapSet);
+            for (int i = 0; i < M; ++i) {
+                t[keys[i]] = vals[i];
+            }
+            System::endCycleCount(hashMapSet);
 
-        System::beginCycleCount(hashMapRemove);
-        for (int i = 0; i < M; ++i) {
-            t.erase(keys[i]);
-        }
-        System::endCycleCount(hashMapRemove);
-        }
+            System::beginCycleCount(hashMapGet);
+            for (int i = 0; i < M; ++i) {
+                t[keys[i]];
+            }
+            System::endCycleCount(hashMapGet);
+
+            System::beginCycleCount(hashMapRemove);
+            for (int i = 0; i < M; ++i) {
+                t.erase(keys[i]);
+            }
+            System::endCycleCount(hashMapRemove);
+            }
 #       endif
-    }
+        }
 
     tableSet -= overhead;
     if (tableGet < overhead) {
@@ -220,17 +224,17 @@ void perfTest(const char* description, const K* keys, const V* vals, int M) {
 
     float N = M;
     printf("%s\n", description);
-    bool G3Dwin = 
-        (tableSet <= mapSet) &&
-        (tableGet <= mapGet) &&
-        (tableRemove <= mapRemove);
-    printf("Table         %9.1f  %9.1f  %9.1f   %s\n", 
-           (float)tableSet / N, (float)tableGet / N, (float)tableRemove / N,
-           G3Dwin ? " ok " : "FAIL"); 
+    bool G3Dwin =
+            (tableSet <= mapSet) &&
+            (tableGet <= mapGet) &&
+            (tableRemove <= mapRemove);
+    printf("Table         %9.1f  %9.1f  %9.1f   %s\n",
+           (float) tableSet / N, (float) tableGet / N, (float) tableRemove / N,
+           G3Dwin ? " ok " : "FAIL");
 #   ifdef HAS_HASH_MAP
-    printf("hash_map      %9.1f  %9.1f  %9.1f\n", (float)hashMapSet / N, (float)hashMapGet / N, (float)hashMapRemove / N); 
+    printf("hash_map      %9.1f  %9.1f  %9.1f\n", (float)hashMapSet / N, (float)hashMapGet / N, (float)hashMapRemove / N);
 #   endif
-    printf("std::map      %9.1f  %9.1f  %9.1f\n", (float)mapSet / N, (float)mapGet / N, (float)mapRemove / N); 
+    printf("std::map      %9.1f  %9.1f  %9.1f\n", (float) mapSet / N, (float) mapGet / N, (float) mapRemove / N);
     printf("\n");
 }
 
@@ -243,9 +247,9 @@ void perfTable() {
         int keys[M];
         int vals[M];
         for (int i = 0; i < M; ++i) {
-            keys[i] = i * 2;
-            vals[i] = i;
-        }
+                keys[i] = i * 2;
+                vals[i] = i;
+            }
         perfTest<int, int>("int,int", keys, vals, M);
     }
 
@@ -253,9 +257,9 @@ void perfTable() {
         std::string keys[M];
         int vals[M];
         for (int i = 0; i < M; ++i) {
-            keys[i] = format("%d", i * 2);
-            vals[i] = i;
-        }
+                keys[i] = format("%d", i * 2);
+                vals[i] = i;
+            }
         perfTest<std::string, int>("string, int", keys, vals, M);
     }
 
@@ -263,9 +267,9 @@ void perfTable() {
         int keys[M];
         std::string vals[M];
         for (int i = 0; i < M; ++i) {
-            keys[i] = i * 2;
-            vals[i] = format("%d", i);
-        }
+                keys[i] = i * 2;
+                vals[i] = format("%d", i);
+            }
         perfTest<int, std::string>("int, string", keys, vals, M);
     }
 
@@ -273,9 +277,9 @@ void perfTable() {
         std::string keys[M];
         std::string vals[M];
         for (int i = 0; i < M; ++i) {
-            keys[i] = format("%d", i * 2);
-            vals[i] = format("%d", i);
-        }
+                keys[i] = format("%d", i * 2);
+                vals[i] = format("%d", i);
+            }
         perfTest<std::string, std::string>("string, string", keys, vals, M);
     }
 }

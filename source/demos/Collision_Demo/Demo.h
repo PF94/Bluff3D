@@ -14,9 +14,13 @@ private:
     void buildScene();
 
     void insertRamps();
+
     void insertSpiralSlide();
+
     void insertRollingContactSpheres();
+
     void insertTray();
+
     void insertRestingContactSpheres();
 
 public:
@@ -25,17 +29,17 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*              app;
+    class App *app;
 
-    Scene                   scene;
+    Scene scene;
 
     /** World time */
-    GameTime                gameTime;
+    GameTime gameTime;
 
     /** Time at which the simulation started; used to reset when it gets boring.*/
-    RealTime                simStartTime;
+    RealTime simStartTime;
 
-    Demo(App* app);
+    Demo(App *app);
 
     virtual ~Demo();
 
@@ -43,7 +47,7 @@ public:
 
     virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 
-    virtual void onGraphics(RenderDevice*rd);
+    virtual void onGraphics(RenderDevice *rd);
 };
 
 #endif

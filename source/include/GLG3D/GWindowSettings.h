@@ -17,10 +17,10 @@ namespace G3D {
 
 
 /** @deprecated For backwards compatibility to 6.08 */
-typedef GWindow::Settings GWindowSettings;
+    typedef GWindow::Settings GWindowSettings;
 
 /** @deprecated For backwards compatibility to 6.00 */
-typedef GWindowSettings RenderDeviceSettings;
+    typedef GWindowSettings RenderDeviceSettings;
 
 } // namespace
 

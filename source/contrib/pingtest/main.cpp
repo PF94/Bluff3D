@@ -28,16 +28,22 @@ static const bool reliable = true;
 static const std::string clientGreeting = "hello, server";
 static const std::string serverResponse = "hello, client";
 
-enum {PING_PORT=1201};
+enum {
+    PING_PORT = 1201
+};
 NetworkDevice networkDevice;
 
 void lightweightServer();
-void lightweightClient(const std::string& address);
+
+void lightweightClient(const std::string &address);
+
 void reliableServer();
-void reliableClient(const std::string& address);
+
+void reliableClient(const std::string &address);
+
 void printHelp();
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     Log debugLog("log.txt");
     networkDevice.init(&debugLog);
     if ((argc == 2) && (std::string("--server") == argv[1])) {
@@ -46,7 +52,7 @@ int main(int argc, char** argv) {
         } else {
             lightweightServer();
         }
-    } else if ((argc == 2) && ! beginsWith(argv[1], "--")) {
+    } else if ((argc == 2) && !beginsWith(argv[1], "--")) {
         if (reliable) {
             reliableClient(argv[1]);
         } else {
@@ -60,21 +66,24 @@ int main(int argc, char** argv) {
 }
 
 // Arbitrary constant greater than 1000 to identify our messages
-enum {PingMessage_MSG = 1008};
+enum {
+    PingMessage_MSG = 1008
+};
 
 class PingMessage {
 public:
 
-    std::string      text;
+    std::string text;
 
     PingMessage() : text("") {}
-    PingMessage(const std::string& s) : text(s) {}
 
-    void serialize(BinaryOutput& b) const {
+    PingMessage(const std::string &s) : text(s) {}
+
+    void serialize(BinaryOutput &b) const {
         b.writeString(text);
     }
- 
-    void deserialize(BinaryInput& b) {
+
+    void deserialize(BinaryInput &b) {
         text = b.readString();
     }
 };
@@ -82,34 +91,33 @@ public:
 
 void lightweightServer() {
     // Print our network address
- 
-   	Array<NetAddress> localAddr;
+
+    Array<NetAddress> localAddr;
     networkDevice.localHostAddresses(localAddr);
 
-    printf("Running lightweight G3D pingtest server on %s (%s)\n", 
-           networkDevice.localHostName().c_str(), 
+    printf("Running lightweight G3D pingtest server on %s (%s)\n",
+           networkDevice.localHostName().c_str(),
            localAddr[0].ipString().c_str());
 
     printf(" Press any key to quit.\n\n");
- 
+
     LightweightConduitRef conduit =
-        networkDevice.createLightweightConduit(PING_PORT, true);
+            networkDevice.createLightweightConduit(PING_PORT, true);
 
     if (conduit.isNull()) {
         printf("Could not create conduit.  Shutting down server.\n");
         return;
     }
 
-    while (! System::consoleKeyPressed()) {
+    while (!System::consoleKeyPressed()) {
         NetAddress clientAddress;
         switch (conduit->waitingMessageType()) {
-        case 0:
-            // No message
-            System::sleep(0.05);
-            break;
+            case 0:
+                // No message
+                System::sleep(0.05);
+                break;
 
-        case PingMessage_MSG:
-            {
+            case PingMessage_MSG: {
                 PingMessage greeting;
                 conduit->receive(clientAddress, greeting);
                 debugAssert(conduit->ok());
@@ -126,13 +134,13 @@ void lightweightServer() {
                 printf("sent.\n\n");
                 debugAssert(conduit->ok());
             }
-            break;
+                break;
 
-        default:
-            // Ignore the message
-            conduit->receive(clientAddress);
-            printf("  Unknown message type received: %d\n",
-                   conduit->waitingMessageType());
+            default:
+                // Ignore the message
+                conduit->receive(clientAddress);
+                printf("  Unknown message type received: %d\n",
+                       conduit->waitingMessageType());
         }
     }
 }
@@ -144,28 +152,28 @@ void reliableServer() {
            networkDevice.localHostName().c_str());
 
     printf(" Press any key to quit.\n\n");
- 
-    NetListenerRef listener =
-        networkDevice.createListener(PING_PORT);
 
-    while (! System::consoleKeyPressed()) {
+    NetListenerRef listener =
+            networkDevice.createListener(PING_PORT);
+
+    while (!System::consoleKeyPressed()) {
         NetAddress clientAddress;
 
-        if (listener.isNull() || ! listener->ok()) {
+        if (listener.isNull() || !listener->ok()) {
             printf("Listener crashed.  Shutting down server.\n");
             return;
         }
 
         if (listener->clientWaiting()) {
             ReliableConduitRef conduit =
-                listener->waitForConnection();
+                    listener->waitForConnection();
 
             printf("  Received connection from %s\n",
                    conduit->address().toString().c_str());
 
             // Wait for the client to send its greeting
             printf("Waiting for client to send greeting");
-            while (! conduit->messageWaiting()) {
+            while (!conduit->messageWaiting()) {
                 System::sleep(0.1);
                 printf(".");
             }
@@ -175,7 +183,7 @@ void reliableServer() {
 
             PingMessage greeting;
             conduit->receive(greeting);
-            
+
             printf("Client sent \"%s\".\n", greeting.text.c_str());
             debugAssert(greeting.text == clientGreeting);
 
@@ -194,21 +202,21 @@ void reliableServer() {
 }
 
 
-void lightweightClient(const std::string& server) {
+void lightweightClient(const std::string &server) {
     LightweightConduitRef conduit =
-        networkDevice.createLightweightConduit();
+            networkDevice.createLightweightConduit();
 
     NetAddress serverAddress(server, PING_PORT);
 
-    printf("  Sending \"%s\" to %s...", 
+    printf("  Sending \"%s\" to %s...",
            clientGreeting.c_str(),
            serverAddress.toString().c_str());
     conduit->send(serverAddress, PingMessage_MSG, PingMessage(clientGreeting));
     printf("sent.\n");
     debugAssert(conduit->ok());
-    
+
     printf("  Waiting for server response");
-    while (! conduit->messageWaiting()) {
+    while (!conduit->messageWaiting()) {
         System::sleep(0.1);
         printf(".");
     }
@@ -226,16 +234,16 @@ void lightweightClient(const std::string& server) {
 }
 
 
-void reliableClient(const std::string& server) {
+void reliableClient(const std::string &server) {
 
     NetAddress serverAddress(server, PING_PORT);
 
     printf("  Trying to connect to %s\n", serverAddress.toString().c_str());
 
     ReliableConduitRef conduit =
-        networkDevice.createReliableConduit(serverAddress);
-    
-    if (conduit.isNull() || ! conduit->ok()) {
+            networkDevice.createReliableConduit(serverAddress);
+
+    if (conduit.isNull() || !conduit->ok()) {
         printf("  Unable to connect.\n");
         return;
     }
@@ -243,19 +251,19 @@ void reliableClient(const std::string& server) {
     printf("  Connected successfully.\n\n");
 
     // Send a hello message
-    printf("  Sending \"%s\"... ", clientGreeting.c_str()); 
+    printf("  Sending \"%s\"... ", clientGreeting.c_str());
     conduit->send(PingMessage_MSG, PingMessage(clientGreeting));
     debugAssert(conduit->ok());
     printf("sent.\n");
 
     // Wait for server response
     printf("  Waiting for server response");
-    while (! conduit->messageWaiting()) {
+    while (!conduit->messageWaiting()) {
         printf(".");
         System::sleep(0.1);
     }
     printf("got it.\n");
-    
+
     debugAssert(conduit->waitingMessageType() == PingMessage_MSG);
     PingMessage response;
     conduit->receive(response);

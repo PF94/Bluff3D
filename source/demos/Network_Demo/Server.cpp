@@ -10,7 +10,7 @@
 #include "App.h"
 #include "messages.h"
 
-Server::Server(App* app) : app(app) {
+Server::Server(App *app) : app(app) {
     app->debugLog->printf("Entering Server::Server\n");
     advertisement.name = app->networkDevice->localHostName();
     discoveryServer.init(app->networkDevice, &app->discoverySettings, &advertisement);
@@ -37,52 +37,51 @@ void Server::onNetwork() {
 
     // Check for messages from clients
     for (int c = 0; c < clientProxyArray.size(); ++c) {
-        ClientProxy& clientProxy = clientProxyArray[c];
-        ReliableConduitRef& net =  clientConduitArray[c];
+            ClientProxy &clientProxy = clientProxyArray[c];
+            ReliableConduitRef &net = clientConduitArray[c];
 
-        // TODO: check if client is ok, tell others if not
+            // TODO: check if client is ok, tell others if not
 
-        // TODO: don't stay in this loop for too long
-        while (net->messageWaiting() && net->ok()) {
-            switch (net->waitingMessageType()) {
-            case NO_MSG:
-                break;
+            // TODO: don't stay in this loop for too long
+            while (net->messageWaiting() && net->ok()) {
+                switch (net->waitingMessageType()) {
+                    case NO_MSG:
+                        break;
 
-            case EntityStateMessage_MSG:
-                {
-                    EntityStateMessage msg;
-                    net->receive(msg);
-                    if (msg.id == clientProxy.id) {
-                        Entity& entity = entityTable[msg.id];
+                    case EntityStateMessage_MSG: {
+                        EntityStateMessage msg;
+                        net->receive(msg);
+                        if (msg.id == clientProxy.id) {
+                            Entity &entity = entityTable[msg.id];
 
-                        // Update the controls of this entity
-                        entity.controls = msg.controls;
-                        app->debugPrintf("SERVER: receive from %s", entity.name.c_str());
-                    
-                        // Send to other clients, but don't trust the client's state
-                        // beyond the controls.
-                        entity.makeStateMessage(msg);
-                        ReliableConduit::multisend(clientConduitArray, EntityStateMessage_MSG, msg);
-                    } else {
-                        app->debugLog->printf("SERVER: Client sent EntityStateMessage with wrong ID\n\n");
+                            // Update the controls of this entity
+                            entity.controls = msg.controls;
+                            app->debugPrintf("SERVER: receive from %s", entity.name.c_str());
+
+                            // Send to other clients, but don't trust the client's state
+                            // beyond the controls.
+                            entity.makeStateMessage(msg);
+                            ReliableConduit::multisend(clientConduitArray, EntityStateMessage_MSG, msg);
+                        } else {
+                            app->debugLog->printf("SERVER: Client sent EntityStateMessage with wrong ID\n\n");
+                        }
                     }
-                }
-                break;
+                        break;
 
-            default: 
-                app->debugLog->printf("SERVER: Ignored unknown message type %d\n",
-                    net->waitingMessageType());
-                net->receive();
+                    default:
+                        app->debugLog->printf("SERVER: Ignored unknown message type %d\n",
+                                              net->waitingMessageType());
+                        net->receive();
+                }
             }
         }
-    }
 }
 
 
 static std::string randomName() {
     static const std::string nameArray[11] =
-    {"Red Baron", "Ace", "Maverick", "Goose", "Iceman", "Angel",
-     "Skywalker", "Darth Vader", "Han Solo", "Kirk", "Picard"};
+            {"Red Baron", "Ace", "Maverick", "Goose", "Iceman", "Angel",
+             "Skywalker", "Darth Vader", "Han Solo", "Kirk", "Picard"};
 
     return nameArray[iRandom(0, 10)];
 }
@@ -96,23 +95,23 @@ void Server::acceptIncomingClient() {
     ReliableConduitRef net;
 
     net = listener->waitForConnection();
-    if (! net.isNull()) {
+    if (!net.isNull()) {
         client.id = newID();
 
         // Create a new object for the client
         Entity entity;
-        entity.id                   = client.id;
+        entity.id = client.id;
         if (client.id == 1) {
             // Force the first object to black so a single 
             // player helicopter will look good.
-            entity.color            = Color3::black();
+            entity.color = Color3::black();
         } else {
-            entity.color            = Color3::wheelRandom();
+            entity.color = Color3::wheelRandom();
         }
-        entity.modelType            = Entity::HELICOPTER;
-        entity.frame.translation    = Vector3::random() * 10;
-        entity.frame.rotation       = Matrix3::fromAxisAngle(Vector3::unitY(), random(0, G3D_TWO_PI));
-        entity.name                 = randomName();
+        entity.modelType = Entity::HELICOPTER;
+        entity.frame.translation = Vector3::random() * 10;
+        entity.frame.rotation = Matrix3::fromAxisAngle(Vector3::unitY(), random(0, G3D_TWO_PI));
+        entity.name = randomName();
 
         entityTable.set(entity.id, entity);
 
@@ -129,8 +128,8 @@ void Server::acceptIncomingClient() {
         {
             EntityTable::Iterator end = entityTable.end();
             for (EntityTable::Iterator e = entityTable.begin(); e != end; ++e) {
-                net->send(CreateEntityMessage_MSG, e->value);
-            }
+                    net->send(CreateEntityMessage_MSG, e->value);
+                }
 
             // Tell the other clients about this new entity
             ReliableConduit::multisend(clientConduitArray, CreateEntityMessage_MSG, entity);
@@ -163,7 +162,7 @@ Server::~Server() {
 }
 
 
-void Server::addClient(ClientProxy& p, ReliableConduitRef& r) {
+void Server::addClient(ClientProxy &p, ReliableConduitRef &r) {
     clientProxyArray.append(p);
     clientConduitArray.append(r);
 }
@@ -175,7 +174,7 @@ void Server::fastRemoveClient(int i) {
 }
 
 
-void Server::onGraphics(RenderDevice* rd) {
+void Server::onGraphics(RenderDevice *rd) {
     /*
     app->renderDevice->push2D();
 

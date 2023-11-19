@@ -32,7 +32,8 @@ namespace G3D {
   
  <B>BETA API</B> -- subject to change.
  */
-void drawFeatureEdges(class RenderDevice* renderDevice, const PosedModelRef& model, float creaseAngle = toRadians(40));
+    void
+    drawFeatureEdges(class RenderDevice *renderDevice, const PosedModelRef &model, float creaseAngle = toRadians(40));
 
 }
 

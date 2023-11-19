@@ -19,79 +19,85 @@
 
 namespace G3D {
 
-class Line;
-class AABox;
+    class Line;
+
+    class AABox;
+
 /**
  A shape formed by extruding a sphere along a line segment.
  */
-class Capsule {
-private:
-	Vector3			p1;
-	Vector3			p2;
+    class Capsule {
+    private:
+        Vector3 p1;
+        Vector3 p2;
 
-public:
+    public:
 
-    /** @deprecated To be replaced with a (float) radius accessor of the same name.*/
-	double			radius;
+        /** @deprecated To be replaced with a (float) radius accessor of the same name.*/
+        double radius;
 
-    /** Uninitialized */
-    Capsule();
-    Capsule(class BinaryInput& b);
-	Capsule(const Vector3& _p1, const Vector3& _p2, double _r);
-	void serialize(class BinaryOutput& b) const;
-	void deserialize(class BinaryInput& b);
-	
-	/** The line down the center of the capsule */
-	Line getAxis() const;
+        /** Uninitialized */
+        Capsule();
 
-	Vector3 getPoint1() const;
+        Capsule(class BinaryInput &b);
 
-	Vector3 getPoint2() const;
+        Capsule(const Vector3 &_p1, const Vector3 &_p2, double _r);
 
-    /** Distance between the sphere centers.  The total extent of the cylinder is 
-        2r + h. */
-    inline float height() const {
-        return (p1 - p2).magnitude();
-    }
+        void serialize(class BinaryOutput &b) const;
 
-    inline Vector3 center() const {
-        return (p1 + p2) / 2.0;
-    }
+        void deserialize(class BinaryInput &b);
 
-    /** Get a reference frame in which the center of mass is the origin and Y is the axis of the capsule.*/
-    void getReferenceFrame(class CoordinateFrame& cframe) const;
+        /** The line down the center of the capsule */
+        Line getAxis() const;
 
-    /**
-     Returns true if the point is inside the capsule or on its surface.
-     */
-    bool contains(const Vector3& p) const;
+        Vector3 getPoint1() const;
 
-    /** @deprecated */
-	float getRadius() const;
+        Vector3 getPoint2() const;
 
-    /** @deprecated Use volume() */
-	float getVolume() const;
+        /** Distance between the sphere centers.  The total extent of the cylinder is
+            2r + h. */
+        inline float height() const {
+            return (p1 - p2).magnitude();
+        }
 
-    inline float volume() const {
-        return getVolume();
-    }
+        inline Vector3 center() const {
+            return (p1 + p2) / 2.0;
+        }
 
-    /** @deprecated */
-	float getSurfaceArea() const;
+        /** Get a reference frame in which the center of mass is the origin and Y is the axis of the capsule.*/
+        void getReferenceFrame(class CoordinateFrame &cframe) const;
 
-    inline float area() const {
-        return getSurfaceArea();
-    }
+        /**
+         Returns true if the point is inside the capsule or on its surface.
+         */
+        bool contains(const Vector3 &p) const;
 
-    /** Get axis aligned bounding box */
-    void getBounds(AABox& out) const;
+        /** @deprecated */
+        float getRadius() const;
 
-    /** Random world space point with outward facing normal. */
-    void getRandomSurfacePoint(Vector3& P, Vector3& N) const;
+        /** @deprecated Use volume() */
+        float getVolume() const;
 
-    /** Point selected uniformly at random over the volume. */
-    Vector3 randomInteriorPoint() const;
-};
+        inline float volume() const {
+            return getVolume();
+        }
+
+        /** @deprecated */
+        float getSurfaceArea() const;
+
+        inline float area() const {
+            return getSurfaceArea();
+        }
+
+        /** Get axis aligned bounding box */
+        void getBounds(AABox &out) const;
+
+        /** Random world space point with outward facing normal. */
+        void getRandomSurfacePoint(Vector3 &P, Vector3 &N) const;
+
+        /** Point selected uniformly at random over the volume. */
+        Vector3 randomInteriorPoint() const;
+    };
 
 } // namespace
 

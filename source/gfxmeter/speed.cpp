@@ -7,45 +7,45 @@
 /**
  Time is in milliseconds
  */
-typedef	void (*DELAY_FUNC)(uint32 time);
+typedef void (*DELAY_FUNC)(uint32 time);
 
 int64 GetCyclesDifference(DELAY_FUNC DelayFunction, uint32 uiParameter) {
 #if 0
     // Two successive readings of the RDTSC
-	unsigned int t0Hi, t0Lo;
-	unsigned int t1Hi, t1Lo;
+    unsigned int t0Hi, t0Lo;
+    unsigned int t1Hi, t1Lo;
 
 #   define rdtsc _asm _emit 0x0f _asm _emit 0x31
-	__try {
-		_asm {
+    __try {
+        _asm {
 
             // Get the count before calling the known delay function
-			rdtsc
-			mov         esi, eax
-			mov         edi, edx
+            rdtsc
+            mov         esi, eax
+            mov         edi, edx
 
             // call the delay function
             push        uiParameter
             call        DelayFunction
-			pop         ebx
+            pop         ebx
 
             // Get the count after the delay function
-			rdtsc
-			mov         t1Hi, edx
-			mov         t1Lo, eax
+            rdtsc
+            mov         t1Hi, edx
+            mov         t1Lo, eax
 
-			mov         t0Hi, edi
-			mov         t0Lo, esi
-		}
+            mov         t0Hi, edi
+            mov         t0Lo, esi
+        }
     } __except (1) {
 
         // Something horrible has happened.  Abort
-		return 0;
-	}
+        return 0;
+    }
 #   undef rdtsc
 
     // Compute the total cycle difference
-	return ((((int64)t1Hi) << 32) + t1Lo) - 
+    return ((((int64)t1Hi) << 32) + t1Lo) -
            ((((int64)t0Hi) << 32) + t0Lo);
 #else
     return 0;
@@ -54,67 +54,66 @@ int64 GetCyclesDifference(DELAY_FUNC DelayFunction, uint32 uiParameter) {
 
 
 void Delay(uint32 time) {
-	LARGE_INTEGER Frequency, StartCounter, EndCounter;
-	__int64 x;
+    LARGE_INTEGER Frequency, StartCounter, EndCounter;
+    __int64 x;
 
-	// Get the frequency of the high performance counter.
+    // Get the frequency of the high performance counter.
     if (!QueryPerformanceFrequency(&Frequency)) {
         return;
     }
-	x = Frequency.QuadPart / 1000 * time;
+    x = Frequency.QuadPart / 1000 * time;
 
-	// Get the starting position of the counter.
-	QueryPerformanceCounter(&StartCounter);
+    // Get the starting position of the counter.
+    QueryPerformanceCounter(&StartCounter);
 
-	do {
-		// Get the ending position of the counter.	
-		QueryPerformanceCounter (&EndCounter);
-	} while (EndCounter.QuadPart - StartCounter.QuadPart < x);
+    do {
+        // Get the ending position of the counter.
+        QueryPerformanceCounter(&EndCounter);
+    } while (EndCounter.QuadPart - StartCounter.QuadPart < x);
 }
 
 
 void DelayOverhead(uint32 time) {
-	LARGE_INTEGER Frequency, StartCounter, EndCounter;
-	__int64 x;
+    LARGE_INTEGER Frequency, StartCounter, EndCounter;
+    __int64 x;
 
-	// Get the frequency of the high performance counter.
+    // Get the frequency of the high performance counter.
     if (!QueryPerformanceFrequency(&Frequency)) {
         return;
     }
 
-	x = Frequency.QuadPart / 1000 * time;
+    x = Frequency.QuadPart / 1000 * time;
 
-	// Get the starting position of the counter.
-	QueryPerformanceCounter(&StartCounter);
-	
-	do {
-		// Get the ending position of the counter.	
-		QueryPerformanceCounter(&EndCounter);
-	} while (EndCounter.QuadPart - StartCounter.QuadPart == x);
+    // Get the starting position of the counter.
+    QueryPerformanceCounter(&StartCounter);
+
+    do {
+        // Get the ending position of the counter.
+        QueryPerformanceCounter(&EndCounter);
+    } while (EndCounter.QuadPart - StartCounter.QuadPart == x);
 }
 
 
-
 int CPU_speed_in_MHz() {
-	const int N = 2;
+    const int N = 2;
 
     // Execution time, in milliseconds
-	unsigned int time = 50;
-	int64 total = 0;
+    unsigned int time = 50;
+    int64 total = 0;
     int64 overhead = 0;
 
-	for (int i = 0; i < N; ++i) {
-		total += GetCyclesDifference(Delay, time);
-		overhead += GetCyclesDifference(DelayOverhead, time);
-	}
+    for (int i = 0; i < N; ++i) {
+            total += GetCyclesDifference(Delay, time);
+            overhead += GetCyclesDifference(DelayOverhead, time);
+        }
 
-	// Calculate the MHz speed.
-	total -= overhead;
-	total /= N;
-	total /= time;
-	total /= 1000;
+    // Calculate the MHz speed.
+    total -= overhead;
+    total /= N;
+    total /= time;
+    total /= 1000;
 
-	return (int)total;
+    return (int) total;
 }
 
 #else

@@ -27,114 +27,115 @@ namespace G3D {
 
  @deprecated This will be moved to contrib in release 7.00
  */
-class TextureManager {
-private:
+    class TextureManager {
+    private:
 
-    /**
-     Wrapper for the arguments to a texture constructor
-     */
-    class TextureArgs : public Hashable {
+        /**
+         Wrapper for the arguments to a texture constructor
+         */
+        class TextureArgs : public Hashable {
+        public:
+
+            std::string filename;
+            const TextureFormat *format;
+            Texture::WrapMode wrap;
+            Texture::InterpolateMode interpolate;
+            Texture::Dimension dimension;
+            double brighten;
+
+            TextureArgs() : format(NULL) {}
+
+            TextureArgs(const TextureFormat *_format) : format(_format) {}
+
+            virtual ~TextureArgs() {}
+
+            unsigned int hashCode() const;
+
+            bool operator==(const TextureArgs &) const;
+        };
+
+
+        Table<TextureArgs, TextureRef> cache;
+
+        size_t size;
+        size_t sizeHint;
+
+        /**
+         Checks to see if we have exceeded sizeHint, if so we will
+         remove as many old entries as needed.
+        */
+        void checkCacheSize();
+
+        /**
+          A stale entry is a texture with no external references to it.
+          This returns all of the stale entries in the cache.
+         */
+        void getStaleEntries(Array<TextureArgs> &staleEntry);
+
     public:
 
-        std::string                     filename;
-        const TextureFormat*            format;  
-        Texture::WrapMode               wrap;  
-        Texture::InterpolateMode        interpolate;
-        Texture::Dimension              dimension; 
-        double                          brighten;
-        
-        TextureArgs() : format(NULL) {}
-        
-        TextureArgs(const TextureFormat* _format) : format(_format) {}
-        virtual ~TextureArgs() {}
+        TextureManager(size_t _sizeHint = 10 * 1024 * 1024);
 
-        unsigned int hashCode() const;
 
-        bool operator==(const TextureArgs&) const;
+        /**
+         If the texture has recently been loaded with the same options, a
+         reference to the shared texture is returned.  Otherwise the
+         texture is loaded from disk.
+        */
+        TextureRef loadTexture(
+                const std::string &filename,
+                const TextureFormat *desiredFormat = TextureFormat::AUTO,
+                Texture::WrapMode wrap = Texture::TILE,
+                Texture::InterpolateMode interpolate = Texture::TRILINEAR_MIPMAP,
+                Texture::Dimension dimension = Texture::DIM_2D,
+                double brighten = 1.0);
+
+        /************************************************************************/
+        /* Caches a texture                                                                      */
+        /************************************************************************/
+        bool cacheTexture(
+                TextureRef texture,
+                const std::string &filename,
+                const TextureFormat *desiredFormat = TextureFormat::AUTO,
+                Texture::WrapMode wrap = Texture::TILE,
+                Texture::InterpolateMode interpolate = Texture::TRILINEAR_MIPMAP,
+                Texture::Dimension dimension = Texture::DIM_2D,
+                double brighten = 1.0);
+
+        /************************************************************************/
+        /* Finds - but does not load - a texture                                                                      */
+        /************************************************************************/
+        TextureRef findTexture(
+                const std::string &filename,
+                const TextureFormat *desiredFormat = TextureFormat::AUTO,
+                Texture::WrapMode wrap = Texture::TILE,
+                Texture::InterpolateMode interpolate = Texture::TRILINEAR_MIPMAP,
+                Texture::Dimension dimension = Texture::DIM_2D,
+                double brighten = 1.0);
+
+        /**
+         Sets the maxiumum amount of memory that the cache will use before it starts to purge old entries.
+         */
+        void setMemorySizeHint(size_t _size);
+
+        size_t memorySizeHint() const;
+
+        /**
+         Returns the sum of the sizes of the textures in the cache.
+         */
+        size_t sizeInMemory() const;
+
+        /**
+         Completely empties the contents of the cache.
+         If a client program has a textureRef, that texture will remain in memory, but be reloaded from disk when load is called.
+         */
+        void emptyCache();
+
+        /**
+         Removes any currently unreferenced textures from the cache.
+         */
+        void trimCache();
     };
-
-
-    Table<TextureArgs, TextureRef>      cache;
-    
-    size_t                              size;
-    size_t                              sizeHint;
-
-    /**
-     Checks to see if we have exceeded sizeHint, if so we will
-     remove as many old entries as needed.
-    */
-    void checkCacheSize();
-    
-    /**
-      A stale entry is a texture with no external references to it. 
-      This returns all of the stale entries in the cache.
-     */
-    void getStaleEntries(Array<TextureArgs>& staleEntry);
-
-public:
-
-    TextureManager(size_t _sizeHint = 10*1024*1024);
-
-
-    /**
-     If the texture has recently been loaded with the same options, a
-     reference to the shared texture is returned.  Otherwise the
-     texture is loaded from disk.
-    */
-    TextureRef loadTexture(
-        const std::string&          filename, 
-        const TextureFormat*        desiredFormat = TextureFormat::AUTO,  
-        Texture::WrapMode           wrap = Texture::TILE,  
-        Texture::InterpolateMode    interpolate = Texture::TRILINEAR_MIPMAP,  
-        Texture::Dimension          dimension = Texture::DIM_2D,  
-        double                      brighten = 1.0);
-
-	/************************************************************************/
-	/* Caches a texture                                                                      */
-	/************************************************************************/
-	bool cacheTexture(
-		TextureRef					texture,
-		const std::string&          filename, 
-		const TextureFormat*        desiredFormat = TextureFormat::AUTO,  
-		Texture::WrapMode           wrap = Texture::TILE,  
-		Texture::InterpolateMode    interpolate = Texture::TRILINEAR_MIPMAP,  
-		Texture::Dimension          dimension = Texture::DIM_2D,  
-		double                      brighten = 1.0);
-
-	/************************************************************************/
-	/* Finds - but does not load - a texture                                                                      */
-	/************************************************************************/
-	TextureRef findTexture(
-		const std::string&          filename, 
-		const TextureFormat*        desiredFormat = TextureFormat::AUTO,  
-		Texture::WrapMode           wrap = Texture::TILE,  
-		Texture::InterpolateMode    interpolate = Texture::TRILINEAR_MIPMAP,  
-		Texture::Dimension          dimension = Texture::DIM_2D,  
-		double                      brighten = 1.0);
-
-    /** 
-     Sets the maxiumum amount of memory that the cache will use before it starts to purge old entries.
-     */
-    void setMemorySizeHint(size_t _size);
-    
-    size_t memorySizeHint() const;
-
-    /**
-     Returns the sum of the sizes of the textures in the cache.
-     */
-    size_t sizeInMemory() const;
-
-    /**
-     Completely empties the contents of the cache.
-     If a client program has a textureRef, that texture will remain in memory, but be reloaded from disk when load is called.
-     */
-    void emptyCache();
-
-    /**
-     Removes any currently unreferenced textures from the cache.
-     */
-    void trimCache();
-};
 
 
 }

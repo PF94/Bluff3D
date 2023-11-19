@@ -14,16 +14,17 @@
 #include <G3DAll.h>
 
 #if G3D_VER <= 60400
-    #error Requires G3D 6.04
+#error Requires G3D 6.04
 #endif
 
 class App : public GApp {
 protected:
     void main();
-public:
-    SkyRef              sky;
 
-    App(const GAppSettings& settings);
+public:
+    SkyRef sky;
+
+    App(const GAppSettings &settings);
 };
 
 
@@ -38,15 +39,15 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*          app;
+    class App *app;
 
-    Demo(App* app);    
+    Demo(App *app);
 
     virtual void init();
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 
@@ -57,11 +58,11 @@ public:
 };
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
 }
 
 
-void Demo::init()  {
+void Demo::init() {
     // Called before Demo::run() beings
     app->debugCamera.setPosition(Vector3(0, 2, 10));
     app->debugCamera.lookAt(Vector3(0, 2, 0));
@@ -74,12 +75,12 @@ void Demo::cleanup() {
 
 
 void Demo::doNetwork() {
-	// Poll net messages here
+    // Poll net messages here
 }
 
 
 void Demo::doSimulation(SimTime dt) {
-	// Add physical simulation here
+    // Add physical simulation here
 }
 
 
@@ -90,7 +91,7 @@ void Demo::doLogic() {
         app->endProgram = true;
     }
 
-	// Add other key handling here
+    // Add other key handling here
 }
 
 
@@ -103,41 +104,41 @@ void Demo::doGraphics() {
     app->renderDevice->setColorClearValue(Color3(.1, .5, 1));
 
     app->renderDevice->clear(app->sky.isNull(), true, true);
-    if (! app->sky.isNull()) {
+    if (!app->sky.isNull()) {
         app->sky->render(lighting);
     }
 
     // Setup lighting
     app->renderDevice->enableLighting();
-		app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
-		app->renderDevice->setAmbientLightColor(lighting.ambient);
+    app->renderDevice->setLight(0, GLight::directional(lighting.lightDirection, lighting.lightColor));
+    app->renderDevice->setAmbientLightColor(lighting.ambient);
 
-		Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
+    Draw::axes(CoordinateFrame(Vector3(0, 4, 0)), app->renderDevice);
 
     app->renderDevice->disableLighting();
 
-    if (! app->sky.isNull()) {
+    if (!app->sky.isNull()) {
         app->sky->renderLensFlare(lighting);
     }
 }
 
 
 void App::main() {
-	setDebugMode(true);
-	debugController.setActive(true);
+    setDebugMode(true);
+    debugController.setActive(true);
 
     // Load objects here
     sky = Sky::create(renderDevice, dataDir + "sky/");
-    
+
     Demo(this).run();
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
     App(settings).run();
     return 0;

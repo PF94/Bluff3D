@@ -34,82 +34,87 @@ namespace G3D {
 
 #ifdef G3D_WIN32
     // Switch to tight alignment
-    #pragma pack(push, 1)
-#endif 
+#pragma pack(push, 1)
+#endif
 
-class Color4uint8 {
-private:
-    // Hidden operators
-    bool operator<(const Color4uint8&) const;
-    bool operator>(const Color4uint8&) const;
-    bool operator<=(const Color4uint8&) const;
-    bool operator>=(const Color4uint8&) const;
+    class Color4uint8 {
+    private:
+        // Hidden operators
+        bool operator<(const Color4uint8 &) const;
 
-public:
-    uint8       r;
-    uint8       g;
-    uint8       b;
-    uint8       a;
+        bool operator>(const Color4uint8 &) const;
 
-    Color4uint8() : r(0), g(0), b(0), a(0) {}
+        bool operator<=(const Color4uint8 &) const;
 
-    Color4uint8(const class Color4& c);
+        bool operator>=(const Color4uint8 &) const;
 
-    Color4uint8(const uint8 _r, const uint8 _g, const uint8 _b, const uint8 _a) : r(_r), g(_g), b(_b), a(_a) {}
+    public:
+        uint8 r;
+        uint8 g;
+        uint8 b;
+        uint8 a;
 
-    Color4uint8(const Color3uint8& c, const uint8 _a) : r(c.r), g(c.g), b(c.b), a(_a) {}
+        Color4uint8() : r(0), g(0), b(0), a(0) {}
 
-    Color4uint8(class BinaryInput& bi);
+        Color4uint8(const class Color4 &c);
 
-    inline static Color4uint8 fromARGB(uint32 i) {
-        Color4uint8 c;
-        c.a = (i >> 24) & 0xFF;
-        c.r = (i >> 16) & 0xFF;
-        c.g = (i >> 8) & 0xFF;
-        c.b = i & 0xFF;
-        return c;
+        Color4uint8(const uint8 _r, const uint8 _g, const uint8 _b, const uint8 _a) : r(_r), g(_g), b(_b), a(_a) {}
+
+        Color4uint8(const Color3uint8 &c, const uint8 _a) : r(c.r), g(c.g), b(c.b), a(_a) {}
+
+        Color4uint8(class BinaryInput &bi);
+
+        inline static Color4uint8 fromARGB(uint32 i) {
+            Color4uint8 c;
+            c.a = (i >> 24) & 0xFF;
+            c.r = (i >> 16) & 0xFF;
+            c.g = (i >> 8) & 0xFF;
+            c.b = i & 0xFF;
+            return c;
+        }
+
+        inline uint32 asUInt32() const {
+            return ((uint32) a << 24) + ((uint32) r << 16) + ((uint32) g << 8) + b;
+        }
+
+        // access vector V as V[0] = V.r, V[1] = V.g, V[2] = V.b
+        //
+        // WARNING.  These member functions rely on
+        // (1) Color4uint8 not having virtual functions
+        // (2) the data packed in a 3*sizeof(uint8) memory block
+        G3D::uint8 &operator[](int i) const;
+
+        operator G3D::uint8 *();
+
+        operator const G3D::uint8 *() const;
+
+        void serialize(class BinaryOutput &bo) const;
+
+        void deserialize(class BinaryInput &bi);
+
     }
-
-    inline uint32 asUInt32() const {
-        return ((uint32)a << 24) + ((uint32)r << 16) + ((uint32)g << 8) + b;
-    }
-
-    // access vector V as V[0] = V.r, V[1] = V.g, V[2] = V.b
-    //
-    // WARNING.  These member functions rely on
-    // (1) Color4uint8 not having virtual functions
-    // (2) the data packed in a 3*sizeof(uint8) memory block
-    G3D::uint8& operator[] (int i) const;
-    operator G3D::uint8* ();
-    operator const G3D::uint8* () const;
-
-    void serialize(class BinaryOutput& bo) const;
-
-    void deserialize(class BinaryInput& bi);
-
-}
 #if defined(G3D_LINUX) || defined(G3D_OSX)
     __attribute((aligned(1)))
 #endif
-;
+    ;
 
 #ifdef G3D_WIN32
-    #pragma pack(pop)
+#pragma pack(pop)
 #endif
 
 
-inline G3D::uint8& Color4uint8::operator[] (int i) const {
-    return ((G3D::uint8*)this)[i];
-}
+    inline G3D::uint8 &Color4uint8::operator[](int i) const {
+        return ((G3D::uint8 *) this)[i];
+    }
 
 //----------------------------------------------------------------------------
-inline Color4uint8::operator G3D::uint8* () {
-    return (G3D::uint8*)this;
-}
+    inline Color4uint8::operator G3D::uint8 *() {
+        return (G3D::uint8 *) this;
+    }
 
-inline Color4uint8::operator const G3D::uint8* () const {
-    return (G3D::uint8*)this;
-}
+    inline Color4uint8::operator const G3D::uint8 *() const {
+        return (G3D::uint8 *) this;
+    }
 
 }
 

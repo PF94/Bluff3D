@@ -20,19 +20,21 @@ public:
     ServerAd();
 
     /** Name of the hosting server */
-    std::string     name;
+    std::string name;
 
     // Can add other information here (e.g. current score,
     // number of players) to broadcast other information
     // about a server.
 
-    virtual void serialize(BinaryOutput& b) const;
+    virtual void serialize(BinaryOutput &b) const;
 
-    virtual void deserialize(BinaryInput& b);
+    virtual void deserialize(BinaryInput &b);
 
-    virtual uint32 type () const;
+    virtual uint32 type() const;
 };
 
-enum {GAME_PORT = 1424};
+enum {
+    GAME_PORT = 1424
+};
 
 #endif

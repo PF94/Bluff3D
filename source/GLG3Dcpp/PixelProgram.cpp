@@ -12,23 +12,23 @@
 namespace G3D {
 
 
-PixelProgram::PixelProgram(const std::string& name, const std::string& filename) : 
-    GPUProgram(name, filename) {
-}
+    PixelProgram::PixelProgram(const std::string &name, const std::string &filename) :
+            GPUProgram(name, filename) {
+    }
 
 
-PixelProgramRef PixelProgram::fromFile(const std::string& _filename) {
-    PixelProgram* v = new PixelProgram(_filename, _filename);
-    v->reload(std::string(""));
-    return v;
-}
+    PixelProgramRef PixelProgram::fromFile(const std::string &_filename) {
+        PixelProgram *v = new PixelProgram(_filename, _filename);
+        v->reload(std::string(""));
+        return v;
+    }
 
 
-PixelProgramRef PixelProgram::fromCode(const std::string& name, const std::string& code) {
-    PixelProgram* v = new PixelProgram(name, std::string(""));
-    v->reload(code);
-    return v;
-}
+    PixelProgramRef PixelProgram::fromCode(const std::string &name, const std::string &code) {
+        PixelProgram *v = new PixelProgram(name, std::string(""));
+        v->reload(code);
+        return v;
+    }
 
 }
 

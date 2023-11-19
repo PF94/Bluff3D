@@ -16,30 +16,30 @@
 
 namespace G3D {
 
-Color3uint8::Color3uint8(const class Color3& c) {
-    r = iMin(255, iRound(c.r * 256));
-    g = iMin(255, iRound(c.g * 256));
-    b = iMin(255, iRound(c.b * 256));
-}
+    Color3uint8::Color3uint8(const class Color3 &c) {
+        r = iMin(255, iRound(c.r * 256));
+        g = iMin(255, iRound(c.g * 256));
+        b = iMin(255, iRound(c.b * 256));
+    }
 
 
-Color3uint8::Color3uint8(class BinaryInput& bi) {
-    deserialize(bi);
-}
+    Color3uint8::Color3uint8(class BinaryInput &bi) {
+        deserialize(bi);
+    }
 
 
-void Color3uint8::serialize(class BinaryOutput& bo) const {
-    bo.writeUInt8(r);
-    bo.writeUInt8(g);
-    bo.writeUInt8(b);
-}
+    void Color3uint8::serialize(class BinaryOutput &bo) const {
+        bo.writeUInt8(r);
+        bo.writeUInt8(g);
+        bo.writeUInt8(b);
+    }
 
 
-void Color3uint8::deserialize(class BinaryInput& bi) {
-    r = bi.readUInt8();
-    g = bi.readUInt8();
-    b = bi.readUInt8();
-}
+    void Color3uint8::deserialize(class BinaryInput &bi) {
+        r = bi.readUInt8();
+        g = bi.readUInt8();
+        b = bi.readUInt8();
+    }
 
 
 }

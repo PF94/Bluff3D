@@ -5,6 +5,7 @@
 #include "../ArticulatedModel.h"
 
 typedef ReferenceCountedPointer<class Entity> EntityRef;
+
 class Entity : public ReferenceCountedObject {
 private:
 
@@ -12,18 +13,18 @@ private:
 
 public:
 
-    ArticulatedModelRef         model;
+    ArticulatedModelRef model;
 
-    ArticulatedModel::Pose      pose;
+    ArticulatedModel::Pose pose;
 
     /** Root frame */
-    CoordinateFrame             cframe;
+    CoordinateFrame cframe;
 
     static EntityRef create(
-        ArticulatedModelRef model = NULL,
-        const CoordinateFrame& c = CoordinateFrame()) {
+            ArticulatedModelRef model = NULL,
+            const CoordinateFrame &c = CoordinateFrame()) {
 
-        Entity* e = new Entity();
+        Entity *e = new Entity();
 
         e->model = model;
         e->cframe = c;
@@ -35,16 +36,17 @@ public:
 class App : public GApp {
 protected:
     void main();
+
 public:
-    SkyRef                      sky;
+    SkyRef sky;
 
-    LightingParameters          skyParameters;
-    LightingRef                 lighting;
+    LightingParameters skyParameters;
+    LightingRef lighting;
 
-    Array<EntityRef>            entityArray;
-    TextureRef                  texture;
+    Array<EntityRef> entityArray;
+    TextureRef texture;
 
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 
     void loadScene();
 

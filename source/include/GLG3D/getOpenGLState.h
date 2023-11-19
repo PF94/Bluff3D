@@ -30,7 +30,7 @@ namespace G3D {
   rendering is not shown (e.g. if lighting is off,
   lighting information is not shown).
  */
-std::string getOpenGLState(bool showDisabled=true);
+    std::string getOpenGLState(bool showDisabled = true);
 
 
 /**
@@ -38,13 +38,13 @@ std::string getOpenGLState(bool showDisabled=true);
  an OpenGL format (e.g. GL_FLOAT).  Returns 0 for unknown
  formats.
  */
-size_t sizeOfGLFormat(GLenum format);
+    size_t sizeOfGLFormat(GLenum format);
 
 /**
  Pretty printer for GLenums.  Useful for debugging OpenGL
  code.
  */
-const char* GLenumToString(GLenum i);
+    const char *GLenumToString(GLenum i);
 
 }
 

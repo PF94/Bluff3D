@@ -1,6 +1,6 @@
 #include "VideoSerializer.h"
 
-void VideoSerializer::serialize(BinaryOutput& b) const {
+void VideoSerializer::serialize(BinaryOutput &b) const {
     Encoding encoding = preferredEncoding;
 
     if ((encoding == ENCODING_TIME_DIFF1) && (previousFrame == NULL)) {
@@ -13,7 +13,7 @@ void VideoSerializer::serialize(BinaryOutput& b) const {
     b.writeUInt32(width);
     b.writeUInt32(height);
 
-    BinaryOutput* b2 = &b;
+    BinaryOutput *b2 = &b;
 
     if (zip) {
         // Hand a new BinaryOutput to the serializers so that
@@ -22,20 +22,20 @@ void VideoSerializer::serialize(BinaryOutput& b) const {
     }
 
     switch (encoding) {
-    case ENCODING_RAW:
-        serializeRaw(*b2);
-        break;
+        case ENCODING_RAW:
+            serializeRaw(*b2);
+            break;
 
-    case ENCODING_TIME_DIFF1:
-        serializeTimeDiff1(*b2);
-        break;
+        case ENCODING_TIME_DIFF1:
+            serializeTimeDiff1(*b2);
+            break;
 
-    case ENCODING_SPACE_DIFF1:
-        serializeSpaceDiff1(*b2);
-        break;
+        case ENCODING_SPACE_DIFF1:
+            serializeSpaceDiff1(*b2);
+            break;
 
-    default:
-        debugAssert(false);
+        default:
+            debugAssert(false);
     }
 
     if (zip) {
@@ -54,37 +54,37 @@ void VideoSerializer::serialize(BinaryOutput& b) const {
 }
 
 
-void VideoSerializer::deserialize(BinaryInput& b)  {
-    Encoding encoding = (Encoding)b.readUInt32();
+void VideoSerializer::deserialize(BinaryInput &b) {
+    Encoding encoding = (Encoding) b.readUInt32();
     zip = b.readBool8();
-    frameFormat = (Format)b.readUInt32();
+    frameFormat = (Format) b.readUInt32();
     width = b.readUInt32();
     height = b.readUInt32();
 
-    BinaryInput* b2 = &b;
+    BinaryInput *b2 = &b;
 
     if (zip) {
         // Hand a new BinarInput to the deserializers
-        b2 = new BinaryInput(b.getCArray() + b.getPosition(), 
-                             b.getLength() - b.getPosition(), 
+        b2 = new BinaryInput(b.getCArray() + b.getPosition(),
+                             b.getLength() - b.getPosition(),
                              G3D_LITTLE_ENDIAN, true, true);
     }
 
     switch (encoding) {
-    case ENCODING_RAW:
-        deserializeRaw(*b2);
-        break;
+        case ENCODING_RAW:
+            deserializeRaw(*b2);
+            break;
 
-    case ENCODING_TIME_DIFF1:
-        deserializeTimeDiff1(*b2);
-        break;
+        case ENCODING_TIME_DIFF1:
+            deserializeTimeDiff1(*b2);
+            break;
 
-    case ENCODING_SPACE_DIFF1:
-        deserializeSpaceDiff1(*b2);
-        break;
+        case ENCODING_SPACE_DIFF1:
+            deserializeSpaceDiff1(*b2);
+            break;
 
-    default:
-        debugAssert(false);
+        default:
+            debugAssert(false);
     }
 
     if (zip) {
@@ -94,14 +94,14 @@ void VideoSerializer::deserialize(BinaryInput& b)  {
 }
 
 
-void VideoSerializer::serializeRaw(BinaryOutput& b) const {
+void VideoSerializer::serializeRaw(BinaryOutput &b) const {
     uint32 n = width * height * bytesPerPixel(frameFormat);
     b.writeUInt32(n);
     b.writeBytes(currentFrame, n);
 }
 
 
-void VideoSerializer::deserializeRaw(BinaryInput& b) {
+void VideoSerializer::deserializeRaw(BinaryInput &b) {
     uint32 n = width * height * bytesPerPixel(frameFormat);
     int x = b.readUInt32();
     debugAssert(x == n);
@@ -109,11 +109,11 @@ void VideoSerializer::deserializeRaw(BinaryInput& b) {
 }
 
 
-void VideoSerializer::serializeTimeDiff1(BinaryOutput& b) const {
+void VideoSerializer::serializeTimeDiff1(BinaryOutput &b) const {
     static const int BITS = 4, MAXDELTA = 7, ESCAPE = 15;
 
     uint32 n = width * height * bytesPerPixel(frameFormat);
-    
+
     // Reserve space for the size header
     int sizePos = b.getPosition();
     b.writeUInt32(0);
@@ -122,20 +122,20 @@ void VideoSerializer::serializeTimeDiff1(BinaryOutput& b) const {
 
     // Iterate over the bytes in the frames
     for (size_t i = 0; i < n; ++i) {
-        int P = previousFrame[i];
-        int C = currentFrame[i];
+            int P = previousFrame[i];
+            int C = currentFrame[i];
 
-        int delta = C - P;
+            int delta = C - P;
 
-        if (iAbs(delta) > MAXDELTA) {
-            // Escape
-            b.writeBits(ESCAPE, BITS);
-            b.writeBits(C, 8);
-        } else {
-            // Send delta
-            b.writeBits(MAXDELTA + delta, BITS);
+            if (iAbs(delta) > MAXDELTA) {
+                // Escape
+                b.writeBits(ESCAPE, BITS);
+                b.writeBits(C, 8);
+            } else {
+                // Send delta
+                b.writeBits(MAXDELTA + delta, BITS);
+            }
         }
-    }
 
     b.endBits();
 
@@ -146,7 +146,7 @@ void VideoSerializer::serializeTimeDiff1(BinaryOutput& b) const {
 }
 
 
-void VideoSerializer::deserializeTimeDiff1(BinaryInput& b) {
+void VideoSerializer::deserializeTimeDiff1(BinaryInput &b) {
     static const int BITS = 4, MAXDELTA = 7, ESCAPE = 15;
 
     uint32 n = width * height * bytesPerPixel(frameFormat);
@@ -160,24 +160,24 @@ void VideoSerializer::deserializeTimeDiff1(BinaryInput& b) {
     b.beginBits();
 
     for (size_t i = 0; i < n; ++i) {
-        int a = b.readBits(BITS);
+            int a = b.readBits(BITS);
 
-        if (a < ESCAPE) {
-            int delta = a - MAXDELTA;
-            currentFrame[i] = previousFrame[i] + delta;
-        } else {
-            // Escape; the following 8 bits are the real value.
-            // We can't read a uint8 because the 8 bits will
-            // rarely be aligned on a byte boundary.
-            currentFrame[i] = b.readBits(8);
+            if (a < ESCAPE) {
+                int delta = a - MAXDELTA;
+                currentFrame[i] = previousFrame[i] + delta;
+            } else {
+                // Escape; the following 8 bits are the real value.
+                // We can't read a uint8 because the 8 bits will
+                // rarely be aligned on a byte boundary.
+                currentFrame[i] = b.readBits(8);
+            }
         }
-    }
 
     b.endBits();
 }
 
 
-void VideoSerializer::serializeSpaceDiff1(BinaryOutput& b) const {
+void VideoSerializer::serializeSpaceDiff1(BinaryOutput &b) const {
     static const int BITS = 4, MAXDELTA = 7, MAXSHIFTDELTA = 14;
     static const int ESCAPE = 15;
 
@@ -192,25 +192,25 @@ void VideoSerializer::serializeSpaceDiff1(BinaryOutput& b) const {
     // Write out the first Pstride bytes, since we have
     // no values against which to compute a delta.
     for (int i = 0; i < PStride; ++i) {
-        b.writeUInt8(currentFrame[i]);
-    }
+            b.writeUInt8(currentFrame[i]);
+        }
 
     b.beginBits();
 
     // Iterate over the bytes in the frame.
     for (size_t i = PStride; i < n; ++i) {
-        int P = currentFrame[i - PStride];
-        int C = currentFrame[i];
-        int delta = C - P + MAXDELTA;
+            int P = currentFrame[i - PStride];
+            int C = currentFrame[i];
+            int delta = C - P + MAXDELTA;
 
-        if ((delta >= 0) && (delta <= MAXSHIFTDELTA)) {
-            b.writeBits(delta, BITS);
-        } else {
-            // Escape and then write 8 components
-            b.writeBits(ESCAPE, BITS);
-            b.writeBits(C, 8);
+            if ((delta >= 0) && (delta <= MAXSHIFTDELTA)) {
+                b.writeBits(delta, BITS);
+            } else {
+                // Escape and then write 8 components
+                b.writeBits(ESCAPE, BITS);
+                b.writeBits(C, 8);
+            }
         }
-    }
 
     b.endBits();
 
@@ -221,8 +221,7 @@ void VideoSerializer::serializeSpaceDiff1(BinaryOutput& b) const {
 }
 
 
-
-void VideoSerializer::deserializeSpaceDiff1(BinaryInput& b) {
+void VideoSerializer::deserializeSpaceDiff1(BinaryInput &b) {
     static const int BITS = 4, MAXDELTA = 7, MAXSHIFTDELTA = 14;
     static const int ESCAPE = 15;
 
@@ -236,25 +235,25 @@ void VideoSerializer::deserializeSpaceDiff1(BinaryInput& b) {
 
     // Read the byte size (although we won't use it).
     int size = b.readUInt32();
-    
+
     int PStride = channelStride(frameFormat);
 
     // Read the first Pstride bytes, since we have
     // no values against which to compute a delta.
     for (int i = 0; i < PStride; ++i) {
-        currentFrame[i] = b.readUInt8();
-    }
+            currentFrame[i] = b.readUInt8();
+        }
 
     b.beginBits();
 
     for (size_t i = PStride; i < n; ++i) {
-        int delta = b.readBits(BITS);
+            int delta = b.readBits(BITS);
 
-        if (delta >= ESCAPE) {
-            currentFrame[i] = b.readBits(8);
-        } else {
-            currentFrame[i] = currentFrame[i - PStride] + (delta - MAXDELTA);
+            if (delta >= ESCAPE) {
+                currentFrame[i] = b.readBits(8);
+            } else {
+                currentFrame[i] = currentFrame[i - PStride] + (delta - MAXDELTA);
+            }
         }
-    }
     b.endBits();
 }

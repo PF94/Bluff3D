@@ -17,168 +17,169 @@
 namespace G3D {
 
 //----------------------------------------------------------------------------
-inline Color3::Color3 () {
-}
+    inline Color3::Color3() {
+    }
 
 //----------------------------------------------------------------------------
 
-inline Color3::Color3(float fX, float fY, float fZ) {
-    r = fX;
-    g = fY;
-    b = fZ;
-}
+    inline Color3::Color3(float fX, float fY, float fZ) {
+        r = fX;
+        g = fY;
+        b = fZ;
+    }
 
 //----------------------------------------------------------------------------
-inline Color3::Color3(const float afCoordinate[3]) {
-    r = afCoordinate[0];
-    g = afCoordinate[1];
-    b = afCoordinate[2];
-}
+    inline Color3::Color3(const float afCoordinate[3]) {
+        r = afCoordinate[0];
+        g = afCoordinate[1];
+        b = afCoordinate[2];
+    }
 
 //----------------------------------------------------------------------------
-inline Color3::Color3 (const Color3& rkVector) {
-    r = rkVector.r;
-    g = rkVector.g;
-    b = rkVector.b;
-}
+    inline Color3::Color3(const Color3 &rkVector) {
+        r = rkVector.r;
+        g = rkVector.g;
+        b = rkVector.b;
+    }
 
 //----------------------------------------------------------------------------
-inline float& Color3::operator[] (int i) {
-    return ((float*)this)[i];
-}
-
-//----------------------------------------------------------------------------
-
-inline const float& Color3::operator[] (int i) const {
-    return ((float*)this)[i];
-}
+    inline float &Color3::operator[](int i) {
+        return ((float *) this)[i];
+    }
 
 //----------------------------------------------------------------------------
 
-inline bool Color3::fuzzyEq(const Color3& other) const {
-    return G3D::fuzzyEq((*this - other).squaredLength(), 0);
-}
+    inline const float &Color3::operator[](int i) const {
+        return ((float *) this)[i];
+    }
 
 //----------------------------------------------------------------------------
 
-inline bool Color3::fuzzyNe(const Color3& other) const {
-    return G3D::fuzzyNe((*this - other).squaredLength(), 0);
-}
+    inline bool Color3::fuzzyEq(const Color3 &other) const {
+        return G3D::fuzzyEq((*this - other).squaredLength(), 0);
+    }
+
+//----------------------------------------------------------------------------
+
+    inline bool Color3::fuzzyNe(const Color3 &other) const {
+        return G3D::fuzzyNe((*this - other).squaredLength(), 0);
+    }
 
 
 //----------------------------------------------------------------------------
-inline Color3& Color3::operator= (const Color3& rkVector) {
-    r = rkVector.r;
-    g = rkVector.g;
-    b = rkVector.b;
-    return *this;
-}
-
-//----------------------------------------------------------------------------
-inline bool Color3::operator== (const Color3& rkVector) const {
-    return ( r == rkVector.r && g == rkVector.g && b == rkVector.b );
-}
-
-//----------------------------------------------------------------------------
-inline bool Color3::operator!= (const Color3& rkVector) const {
-    return ( r != rkVector.r || g != rkVector.g || b != rkVector.b );
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::operator+ (const Color3& rkVector) const {
-    return Color3(r + rkVector.r, g + rkVector.g, b + rkVector.b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::operator- (const Color3& rkVector) const {
-    return Color3(r -rkVector.r, g - rkVector.g, b - rkVector.b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::operator* (float fScalar) const {
-    return Color3(fScalar*r, fScalar*g, fScalar*b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::operator* (const Color3& rkVector) const {
-    return Color3(r * rkVector.r, g  * rkVector.g, b * rkVector.b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::operator- () const {
-    return Color3( -r, -g, -b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3& Color3::operator+= (const Color3& rkVector) {
-    r += rkVector.r;
-    g += rkVector.g;
-    b += rkVector.b;
-    return *this;
-}
-
-//----------------------------------------------------------------------------
-inline Color3& Color3::operator-= (const Color3& rkVector) {
-    r -= rkVector.r;
-    g -= rkVector.g;
-    b -= rkVector.b;
-    return *this;
-}
-
-//----------------------------------------------------------------------------
-inline Color3& Color3::operator*= (float fScalar) {
-    r *= fScalar;
-    g *= fScalar;
-    b *= fScalar;
-    return *this;
-}
-
-//----------------------------------------------------------------------------
-inline Color3& Color3::operator*= (const Color3& rkVector) {
-    r *= rkVector.r;
-    g *= rkVector.g;
-    b *= rkVector.b;
-    return *this;
-}
-//----------------------------------------------------------------------------
-inline float Color3::squaredLength () const {
-    return r*r + g*g + b*b;
-}
-
-//----------------------------------------------------------------------------
-inline float Color3::length () const {
-    return sqrtf(r*r + g*g + b*b);
-}
-
-//----------------------------------------------------------------------------
-inline Color3 Color3::direction () const {
-    float lenSquared = r * r + g * g + b * b;
-
-    if (lenSquared != 1.0f) {
-        return *this / sqrtf(lenSquared);
-    } else {
+    inline Color3 &Color3::operator=(const Color3 &rkVector) {
+        r = rkVector.r;
+        g = rkVector.g;
+        b = rkVector.b;
         return *this;
     }
-}
 
 //----------------------------------------------------------------------------
-inline float Color3::dot (const Color3& rkVector) const {
-    return r*rkVector.r + g*rkVector.g + b*rkVector.b;
-}
+    inline bool Color3::operator==(const Color3 &rkVector) const {
+        return (r == rkVector.r && g == rkVector.g && b == rkVector.b);
+    }
 
 //----------------------------------------------------------------------------
-inline Color3 Color3::cross (const Color3& rkVector) const {
-    return Color3(g*rkVector.b - b*rkVector.g, b*rkVector.r - r*rkVector.b,
-                  r*rkVector.g - g*rkVector.r);
-}
+    inline bool Color3::operator!=(const Color3 &rkVector) const {
+        return (r != rkVector.r || g != rkVector.g || b != rkVector.b);
+    }
 
 //----------------------------------------------------------------------------
-inline Color3 Color3::unitCross (const Color3& rkVector) const {
-    Color3 kCross(g*rkVector.b - b*rkVector.g, b*rkVector.r - r*rkVector.b,
-                  r*rkVector.g - g*rkVector.r);
-    kCross.unitize();
-    return kCross;
-}
+    inline Color3 Color3::operator+(const Color3 &rkVector) const {
+        return Color3(r + rkVector.r, g + rkVector.g, b + rkVector.b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::operator-(const Color3 &rkVector) const {
+        return Color3(r - rkVector.r, g - rkVector.g, b - rkVector.b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::operator*(float fScalar) const {
+        return Color3(fScalar * r, fScalar * g, fScalar * b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::operator*(const Color3 &rkVector) const {
+        return Color3(r * rkVector.r, g * rkVector.g, b * rkVector.b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::operator-() const {
+        return Color3(-r, -g, -b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 &Color3::operator+=(const Color3 &rkVector) {
+        r += rkVector.r;
+        g += rkVector.g;
+        b += rkVector.b;
+        return *this;
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 &Color3::operator-=(const Color3 &rkVector) {
+        r -= rkVector.r;
+        g -= rkVector.g;
+        b -= rkVector.b;
+        return *this;
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 &Color3::operator*=(float fScalar) {
+        r *= fScalar;
+        g *= fScalar;
+        b *= fScalar;
+        return *this;
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 &Color3::operator*=(const Color3 &rkVector) {
+        r *= rkVector.r;
+        g *= rkVector.g;
+        b *= rkVector.b;
+        return *this;
+    }
+
+//----------------------------------------------------------------------------
+    inline float Color3::squaredLength() const {
+        return r * r + g * g + b * b;
+    }
+
+//----------------------------------------------------------------------------
+    inline float Color3::length() const {
+        return sqrtf(r * r + g * g + b * b);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::direction() const {
+        float lenSquared = r * r + g * g + b * b;
+
+        if (lenSquared != 1.0f) {
+            return *this / sqrtf(lenSquared);
+        } else {
+            return *this;
+        }
+    }
+
+//----------------------------------------------------------------------------
+    inline float Color3::dot(const Color3 &rkVector) const {
+        return r * rkVector.r + g * rkVector.g + b * rkVector.b;
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::cross(const Color3 &rkVector) const {
+        return Color3(g * rkVector.b - b * rkVector.g, b * rkVector.r - r * rkVector.b,
+                      r * rkVector.g - g * rkVector.r);
+    }
+
+//----------------------------------------------------------------------------
+    inline Color3 Color3::unitCross(const Color3 &rkVector) const {
+        Color3 kCross(g *rkVector.b - b * rkVector.g, b * rkVector.r - r * rkVector.b,
+                r * rkVector.g - g * rkVector.r);
+        kCross.unitize();
+        return kCross;
+    }
 
 }
 

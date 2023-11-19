@@ -13,34 +13,34 @@
 
 namespace G3D {
 
-void GWindow::loadExtensions() {
-    GLCaps::init();
-}
+    void GWindow::loadExtensions() {
+        GLCaps::init();
+    }
 
-void GWindow::executeLoopBody() {
-    if (notDone()) {
-        if (loopBodyStack.last().isGApplet) {
-            loopBodyStack.last().applet->oneFrame();
-        } else {                
-            loopBodyStack.last().func(loopBodyStack.last().arg);
+    void GWindow::executeLoopBody() {
+        if (notDone()) {
+            if (loopBodyStack.last().isGApplet) {
+                loopBodyStack.last().applet->oneFrame();
+            } else {
+                loopBodyStack.last().func(loopBodyStack.last().arg);
+            }
         }
     }
-}
 
 
-void GWindow::pushLoopBody(GApplet* applet) {
-    loopBodyStack.push(LoopBody(applet));
-    applet->beginRun();
-}
+    void GWindow::pushLoopBody(GApplet *applet) {
+        loopBodyStack.push(LoopBody(applet));
+        applet->beginRun();
+    }
 
 
-void GWindow::popLoopBody() {
-    if (loopBodyStack.size() > 0) {
-        if (loopBodyStack.last().isGApplet) {
-            loopBodyStack.last().applet->endRun();
-            loopBodyStack.pop();
+    void GWindow::popLoopBody() {
+        if (loopBodyStack.size() > 0) {
+            if (loopBodyStack.last().isGApplet) {
+                loopBodyStack.last().applet->endRun();
+                loopBodyStack.pop();
+            }
         }
     }
-}
 
 }

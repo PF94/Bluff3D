@@ -44,83 +44,87 @@ namespace G3D {
   </PRE>
 
 */
-class ToneMap {
-private:
+    class ToneMap {
+    private:
 
-    /** PS14ATI shaders */
-    static unsigned int         gammaShaderPS14ATI; 
+        /** PS14ATI shaders */
+        static unsigned int gammaShaderPS14ATI;
 
 
-    /** Three pass algorithm. */
-    static ShaderRef            bloomShader[3];
+        /** Three pass algorithm. */
+        static ShaderRef bloomShader[3];
 
-    TextureRef                  screenImage;
+        TextureRef screenImage;
 
-    bool                        stereo;
+        bool stereo;
 
-    /** When in stereo mode, BloomMap 0 is the left eye, bloom map 1 is the right eye. */
-    TextureRef                  stereoBloomMap[2];
+        /** When in stereo mode, BloomMap 0 is the left eye, bloom map 1 is the right eye. */
+        TextureRef stereoBloomMap[2];
 
-    /** Intermediate result used when computing the bloom map.  This is 1/4 the horizontal resolution of the screen.*/
-    TextureRef                  bloomMapIntermediate;
+        /** Intermediate result used when computing the bloom map.  This is 1/4 the horizontal resolution of the screen.*/
+        TextureRef bloomMapIntermediate;
 
-    bool                        mEnabled;
+        bool mEnabled;
 
-    /** Inverse gamma ramps. */
-    // For programmable we don't use B
-    static TextureRef           RG, B;
+        /** Inverse gamma ramps. */
+        // For programmable we don't use B
+        static TextureRef RG, B;
 
-    static void makeGammaCorrectionTextures();
+        static void makeGammaCorrectionTextures();
 
-    static void makeShadersPS14ATI();
+        static void makeShadersPS14ATI();
 
-    static void makeShadersPS20();
+        static void makeShadersPS20();
 
-    /** Resizes screenImage and bloomMap if needed to match the screen size.*/
-    void resizeImages(RenderDevice* rd);
+        /** Resizes screenImage and bloomMap if needed to match the screen size.*/
+        void resizeImages(RenderDevice *rd);
 
-    enum Profile {NO_TONE, UNINITIALIZED, PS14ATI, PS14NVIDIA, PS20};
+        enum Profile {
+            NO_TONE, UNINITIALIZED, PS14ATI, PS14NVIDIA, PS20
+        };
 
-    static Profile profile;
+        static Profile profile;
 
-    void applyPS20(RenderDevice* rd);
-    void applyPS14ATI(RenderDevice* rd);
-    void applyPS14NVIDIA(RenderDevice* rd);
+        void applyPS20(RenderDevice *rd);
 
-    /** Called from resizeImages and to clear the old bloom map on occasion. */
-    void resizeBloomMap(int w, int h);
+        void applyPS14ATI(RenderDevice *rd);
 
-    /** Returns the appropriate bloom map for the current draw buffer (i.e., resolves stereo issues)*/
-    TextureRef getBloomMap(RenderDevice* rd) const;
+        void applyPS14NVIDIA(RenderDevice *rd);
 
-public:
+        /** Called from resizeImages and to clear the old bloom map on occasion. */
+        void resizeBloomMap(int w, int h);
 
-    ToneMap();
+        /** Returns the appropriate bloom map for the current draw buffer (i.e., resolves stereo issues)*/
+        TextureRef getBloomMap(RenderDevice *rd) const;
 
-    void setEnabled(bool e);
+    public:
 
-    inline bool enabled() const {
-        return mEnabled;
-    }
+        ToneMap();
 
-    /** Call before rendering the scene to create a tone-mapping compatible lighting environment.
-        Guaranteed to return a new lighting environment that is safe to further mutate. 
-    
-        If you created the lighting from LightingParameters that was itself prepared, do not call
-        this method or the lights will be too dark.
-    */
-    LightingRef prepareLighting(const LightingRef& L) const;
+        void setEnabled(bool e);
 
-    /** Call before rendering the scene to create a tone-mapping compatible lighting environment. */
-    LightingParameters prepareLightingParameters(const LightingParameters& L) const;
+        inline bool enabled() const {
+            return mEnabled;
+        }
 
-    /** Call before rendering anything (including clearing the screen. */
-    void beginFrame(RenderDevice* rd);
+        /** Call before rendering the scene to create a tone-mapping compatible lighting environment.
+            Guaranteed to return a new lighting environment that is safe to further mutate.
 
-    /** Call after rendering the rest of the scene to apply tone mapping. */
-    void endFrame(RenderDevice* rd);
+            If you created the lighting from LightingParameters that was itself prepared, do not call
+            this method or the lights will be too dark.
+        */
+        LightingRef prepareLighting(const LightingRef &L) const;
 
-};
+        /** Call before rendering the scene to create a tone-mapping compatible lighting environment. */
+        LightingParameters prepareLightingParameters(const LightingParameters &L) const;
+
+        /** Call before rendering anything (including clearing the screen. */
+        void beginFrame(RenderDevice *rd);
+
+        /** Call after rendering the rest of the scene to apply tone mapping. */
+        void endFrame(RenderDevice *rd);
+
+    };
 
 }
 

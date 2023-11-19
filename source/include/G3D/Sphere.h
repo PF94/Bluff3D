@@ -22,111 +22,114 @@ namespace G3D {
 /**
  Sphere.
  */
-class Sphere {
-private:
+    class Sphere {
+    private:
 
-    static int32     dummy;
+        static int32 dummy;
 
-public:
-    Vector3          center;
-    float            radius;
+    public:
+        Vector3 center;
+        float radius;
 
-    Sphere() {
-        center = Vector3::zero();
-        radius = 0;
-    }
+        Sphere() {
+            center = Vector3::zero();
+            radius = 0;
+        }
 
-	Sphere(class BinaryInput& b);
-	void serialize(class BinaryOutput& b) const;
-	void deserialize(class BinaryInput& b);
+        Sphere(class BinaryInput &b);
 
-    Sphere(
-        const Vector3&  center,
-        float           radius) {
+        void serialize(class BinaryOutput &b) const;
 
-        this->center = center;
-        this->radius = radius;
-    }
+        void deserialize(class BinaryInput &b);
 
-    virtual ~Sphere() {}
+        Sphere(
+                const Vector3 &center,
+                float radius) {
 
-    bool operator==(const Sphere& other) const {
-        return (center == other.center) && (radius == other.radius);
-    }
+            this->center = center;
+            this->radius = radius;
+        }
 
-    bool operator!=(const Sphere& other) const {
-        return !((center == other.center) && (radius == other.radius));
-    }
+        virtual ~Sphere() {}
 
-    /**
-     Returns true if point is less than or equal to radius away from
-     the center.
-     */
-    bool contains(const Vector3& point) const;
+        bool operator==(const Sphere &other) const {
+            return (center == other.center) && (radius == other.radius);
+        }
+
+        bool operator!=(const Sphere &other) const {
+            return !((center == other.center) && (radius == other.radius));
+        }
+
+        /**
+         Returns true if point is less than or equal to radius away from
+         the center.
+         */
+        bool contains(const Vector3 &point) const;
 
 /**
 	 @deprecated Use culledBy(Array<Plane>&)
      */
-    bool culledBy(
-        const class Plane*  plane,
-        int                 numPlanes,
-		int32&				cullingPlaneIndex,
-		const uint32  		testMask,
-        uint32&             childMask) const;
+        bool culledBy(
+                const class Plane *plane,
+                int numPlanes,
+                int32 &cullingPlaneIndex,
+                const uint32 testMask,
+                uint32 &childMask) const;
 
-    /**
-	 @deprecated Use culledBy(Array<Plane>&)
-     */
-    bool culledBy(
-        const class Plane*  plane,
-        int                 numPlanes,
-		int32&				cullingPlaneIndex = dummy,
-		const uint32  		testMask = -1) const;
+        /**
+         @deprecated Use culledBy(Array<Plane>&)
+         */
+        bool culledBy(
+                const class Plane *plane,
+                int numPlanes,
+                int32 &cullingPlaneIndex = dummy,
+                const uint32 testMask = -1) const;
 
-	/**
-      See AABox::culledBy
-	 */
-	bool culledBy(
-		const Array<Plane>&		plane,
-		int32&					cullingPlaneIndex,
-		const uint32  			testMask,
-        uint32&                 childMask) const;
+        /**
+          See AABox::culledBy
+         */
+        bool culledBy(
+                const Array<Plane> &plane,
+                int32 &cullingPlaneIndex,
+                const uint32 testMask,
+                uint32 &childMask) const;
 
-    /**
-     Conservative culling test that does not produce a mask for children.
-     */
-	bool culledBy(
-		const Array<Plane>&		plane,
-		int32&					cullingPlaneIndex = dummy,
-		const uint32  			testMask		  = -1) const;
-    virtual std::string toString() const;
+        /**
+         Conservative culling test that does not produce a mask for children.
+         */
+        bool culledBy(
+                const Array<Plane> &plane,
+                int32 &cullingPlaneIndex = dummy,
+                const uint32 testMask = -1) const;
 
-    float volume() const;
+        virtual std::string toString() const;
 
-    /** @deprecated */
-    float surfaceArea() const;
+        float volume() const;
 
-    inline float area() const {
-        return surfaceArea();
-    }
+        /** @deprecated */
+        float surfaceArea() const;
 
-    /**
-     Uniformly distributed on the surface.
-     */
-    Vector3 randomSurfacePoint() const;
+        inline float area() const {
+            return surfaceArea();
+        }
 
-    /**
-     Uniformly distributed on the interior (includes surface)
-     */
-    Vector3 randomInteriorPoint() const;
+        /**
+         Uniformly distributed on the surface.
+         */
+        Vector3 randomSurfacePoint() const;
 
-    void getBounds(class AABox& out) const;
-};
+        /**
+         Uniformly distributed on the interior (includes surface)
+         */
+        Vector3 randomInteriorPoint() const;
+
+        void getBounds(class AABox &out) const;
+    };
 
 } // namespace
 
-inline unsigned int hashCode(const G3D::Sphere& sphere) {
-    return (unsigned int)(hashCode(sphere.center) + (sphere.radius * 13));
+inline unsigned int hashCode(const G3D::Sphere &sphere) {
+    return (unsigned int) (hashCode(sphere.center) + (sphere.radius * 13));
 }
 
 #endif

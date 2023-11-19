@@ -69,6 +69,6 @@
 
 #  define BOOST_WORKAROUND(symbol, test) 0
 
-# endif 
+# endif
 
 #endif // WORKAROUND_DWA2002126_HPP

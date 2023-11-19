@@ -13,7 +13,7 @@
 #include "G3D/platform.h"
 
 #if G3D_VER < 60900
-    #error Requires G3D 6.09 or later
+#error Requires G3D 6.09 or later
 #endif
 
 #include "G3D/Array.h"
@@ -26,9 +26,9 @@
 
 namespace G3D {
 
-class RenderDevice;
+    class RenderDevice;
 
-typedef ReferenceCountedPointer<class GConsole> GConsoleRef;
+    typedef ReferenceCountedPointer<class GConsole> GConsoleRef;
 
 /**
  Command-line console.
@@ -58,281 +58,283 @@ typedef ReferenceCountedPointer<class GConsole> GConsoleRef;
  provide colored fonts and line wrapping.
 
  */
-class GConsole : public GModule {
-public:
-    /** To allow later change to std::wstring */
-    typedef std::string string;
-
-    class Settings {
+    class GConsole : public GModule {
     public:
-        /** Cursor flashes per second. */
-        float               blinkRate;
+        /** To allow later change to std::wstring */
+        typedef std::string string;
 
-        /** Keypresses per second. */
-        float               keyRepeatRate;
+        class Settings {
+        public:
+            /** Cursor flashes per second. */
+            float blinkRate;
 
-        /** Pixel height between lines when displayed. (font is slightly smaller than this) */
-        float               lineHeight;
+            /** Keypresses per second. */
+            float keyRepeatRate;
 
-        /** Number of lines visible at any time. */
-        int                 numVisibleLines;
+            /** Pixel height between lines when displayed. (font is slightly smaller than this) */
+            float lineHeight;
 
-        /** Maximum number of lines of scrollback */
-        int                 maxBufferLength;
+            /** Number of lines visible at any time. */
+            int numVisibleLines;
 
-        /** Delay before the first key repeat in seconds. */
-        RealTime            keyRepeatDelay;
+            /** Maximum number of lines of scrollback */
+            int maxBufferLength;
 
-        /** If true, commands are shown in the buffer. */
-        bool                commandEcho;
+            /** Delay before the first key repeat in seconds. */
+            RealTime keyRepeatDelay;
 
-        /** If true, tab completion includes filenames from the local disk. */
-        bool                performFilenameCompletion;
+            /** If true, commands are shown in the buffer. */
+            bool commandEcho;
 
-        /** If true, tab completion includes issued commands and commands in the completionSeed array. */
-        bool                performCommandCompletion;
+            /** If true, tab completion includes filenames from the local disk. */
+            bool performFilenameCompletion;
 
-        /** Number of unique tokens to keep for command completion purposes.
-            Does not include commandCompletionSeed elements in the count. */
-        int                 maxCompletionHistorySize;
+            /** If true, tab completion includes issued commands and commands in the completionSeed array. */
+            bool performCommandCompletion;
 
-        Color4              defaultCommandColor;
+            /** Number of unique tokens to keep for command completion purposes.
+                Does not include commandCompletionSeed elements in the count. */
+            int maxCompletionHistorySize;
 
-        Color4              defaultPrintColor;
+            Color4 defaultCommandColor;
 
-        Color4              backgroundColor;
+            Color4 defaultPrintColor;
 
-        /** 
-         Commands that can be completed by TAB, in addition to those in the history.
-         Include common keywords here, for example, to seed the command completion buffer.
-         Commands that were actually typed by the user will take precedence.
+            Color4 backgroundColor;
+
+            /**
+             Commands that can be completed by TAB, in addition to those in the history.
+             Include common keywords here, for example, to seed the command completion buffer.
+             Commands that were actually typed by the user will take precedence.
+             */
+            Array<string> commandCompletionSeed;
+
+            Settings() :
+                    lineHeight(13),
+                    numVisibleLines(11),
+                    blinkRate(3),
+                    keyRepeatRate(18),
+                    keyRepeatDelay(0.25f),
+                    commandEcho(true),
+                    maxBufferLength(2000),
+                    performFilenameCompletion(true),
+                    performCommandCompletion(true),
+                    defaultCommandColor(Color3::white()),
+                    defaultPrintColor(0.8f, 1.0f, 0.8f),
+                    maxCompletionHistorySize(3000),
+                    backgroundColor(0, 0, 0, 0.3f) {
+            }
+        }; // Settings
+
+        typedef void(*Callback)(const string &, void *);
+
+        void setCallback(Callback c, void *data);
+
+    protected:
+
+        /** Invoked when the user presses enter.
+            Default implementation calls m_callback. */
+        virtual void onCommand(const string &command);
+
+        class PosedGConsole2D : public PosedModel2D {
+        private:
+            GConsole *m_console;
+
+        public:
+
+            PosedGConsole2D(GConsole *c);
+
+            virtual void render(RenderDevice *rd) const;
+
+            virtual Rect2D bounds() const;
+
+            virtual float depth() const;
+        };
+
+        PosedModel2DRef m_posedModel2D;
+
+    protected:
+
+        Settings m_settings;
+
+        Callback m_callback;
+        void *m_callbackData;
+
+        /** Key that is currently auto-repeating. */
+        SDL_keysym m_repeatKeysym;
+
+        GFontRef m_font;
+
+        /** Current history line being retrieved when using UP/DOWN.
+            When a history command is used unmodified,
+            the history index sticks.  Otherwise it resets to the end
+            of the list on Enter.*/
+        int m_historyIndex;
+
+        /** When true, the history item has been modified since the last UP/DOWN. */
+        bool m_resetHistoryIndexOnEnter;
+
+        /** Previously executed commands. */
+        Array<string> m_history;
+
+        Rect2D m_rect;
+
+        class Text {
+        public:
+            string value;
+            Color4 color;
+
+            inline Text() {}
+
+            inline Text(const string &s, const Color4 &c) : value(s), color(c) {}
+        };
+
+        /** Previously displayed text. */
+        Queue<Text> m_buffer;
+
+        /** Number of lines before the end of the buffer that are visible (affected
+            by page up/page down).*/
+        int m_bufferShift;
+
+        /** True when the console is open and processing events.*/
+        bool m_active;
+
+        /** Currently entered command. */
+        string m_currentLine;
+
+        ///////////////////////////////////////////////////////////////////////////
+        /** True when we have already generated a list of potential completions and
+            are now simply scrolling through them.*/
+        bool m_inCompletion;
+
+        /** String to prepend onto the current completion list during scrolling.*/
+        string m_completionBeginStr;
+
+        /** String to append onto the current completion list during scrolling.*/
+        string m_completionEndStr;
+
+        /** Filled out by beginCompletion.*/
+        Array<string> m_completionArray;
+
+        /** Index of the current completion in the m_completionArray */
+        int m_completionArrayIndex;
+
+        /** Buffer of identifiers to use for completions.  Updated by print and by issueCommand.*/
+        Queue<string> m_completionHistory;
+
+        /** All the strings that are in m_completionHistory.*/
+        Set<string> m_completionHistorySet;
+
+        /** Called from processCompletion the first time TAB is pressed. */
+        void beginCompletion();
+
+        /** Invoked from processRepeatKeysym when a non-completion key is pressed.
+            */
+        void endCompletion();
+
+        /** Parses the string and adds new tokens to the completion history.
+            Called from issueCommand and print.*/
+        virtual void addToCompletionHistory(const string &s);
+
+        /** Only called from addToCompletionHistory. */
+        void addTokenToCompletionHistory(const string &s);
+
+        /** Invoked from processRepeatKeysym to handle command completion keys. */
+        void completeCommand(int direction);
+
+        /** Called from beginCompletion to append filename and directory-based completions onto
+            fcomplete.
          */
-        Array<string>       commandCompletionSeed;
+        void generateFilenameCompletions(Array<string> &fcomplete);
 
-        Settings() : 
-            lineHeight(13),
-            numVisibleLines(11),
-            blinkRate(3),
-            keyRepeatRate(18),
-            keyRepeatDelay(0.25f),
-            commandEcho(true),
-            maxBufferLength(2000),
-            performFilenameCompletion(true),
-            performCommandCompletion(true),
-            defaultCommandColor(Color3::white()),
-            defaultPrintColor(0.8f, 1.0f, 0.8f),
-            maxCompletionHistorySize(3000),
-            backgroundColor(0, 0, 0, 0.3f) {
+        ///////////////////////////////////////////////////////////////////////////
+
+        /** Position of the cursor within m_currentLine (0 is the first slot) */
+        int m_cursorPos;
+
+        /** Time at which setRepeatKeysym was called. */
+        RealTime m_keyDownTime;
+
+        /** Time at which the key will repeat (if down). */
+        RealTime m_keyRepeatTime;
+
+
+        /** Called from onEvent when a key is pressed. */
+        void setRepeatKeysym(SDL_keysym key);
+
+        /** Called from onEvent when the repeat key is released. */
+        void unsetRepeatKeysym();
+
+        /** Called from render and onEvent to enact the action triggered by the repeat key. */
+        void processRepeatKeysym();
+
+        /** Invoked when the user presses enter. */
+        void issueCommand();
+
+        /** Called from repeatKeysym on UP/DOWN. */
+        void historySelect(int direction);
+
+        /** Issues text to the buffer. */
+        virtual void print(const string &s, const Color4 &c);
+
+        /** On Win32, calls paste with the clipboard text contents.  Does nothing on other
+           platforms (yet) */
+        void pasteClipboard();
+
+        /** Copies the text to the clipboard on Win32. */
+        void copyClipboard(const string &s) const;
+
+        GConsole(const GFontRef &f, const Settings &s, Callback c, void *callbackData);
+
+    public:
+
+        static GConsoleRef
+        create(const GFontRef &f, const Settings &s = Settings(), Callback c = NULL, void *callbackData = NULL);
+
+        virtual ~GConsole();
+
+        void setActive(bool a);
+
+        inline bool active() const {
+            return m_active;
         }
-    }; // Settings
 
-    typedef void(*Callback)(const string&, void*);
+        /** Insert the string as if it was typed at the command line.
+            If the string contains newlines they will cause commands to issue.
+            */
+        void paste(const string &s);
 
-    void setCallback(Callback c, void* data);
+        /** Clear displayed text. */
+        void clearBuffer();
 
-protected:
+        /** Clear command history. */
+        void clearHistory();
 
-    /** Invoked when the user presses enter.  
-        Default implementation calls m_callback. */
-    virtual void onCommand(const string& command);
+        /** Print to the buffer. */
+        void __cdecl printf(const char *fmt, ...) G3D_CHECK_PRINTF_METHOD_ARGS;
 
-    class PosedGConsole2D : public PosedModel2D {
-    private:
-        GConsole*           m_console;
+        /** Print to the buffer. */
+        void __cdecl vprintf(const char *, va_list argPtr) G3D_CHECK_VPRINTF_METHOD_ARGS;
 
-    public:
+        /** Call to render the console */
+        void render(RenderDevice *rd);
 
-        PosedGConsole2D(GConsole* c);
+        ////////////////////////////////
+        // Inherited from GModule
 
-        virtual void render(RenderDevice* rd) const;
+        /** Pass all events to the console. It returns true if it processed (consumed) the event.*/
+        virtual bool onEvent(const GEvent &event);
 
-        virtual Rect2D bounds() const;
+        virtual void onNetwork();
 
-        virtual float depth() const;
+        virtual void onLogic();
+
+        virtual void onUserInput(UserInput *ui);
+
+        virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
+
+        virtual void getPosedModel(Array<PosedModelRef> &posedArray, Array<PosedModel2DRef> &posed2DArray);
     };
-
-    PosedModel2DRef         m_posedModel2D;
-
-protected:
-
-    Settings            m_settings;
-
-    Callback            m_callback;
-    void*               m_callbackData;
-
-    /** Key that is currently auto-repeating. */
-    SDL_keysym          m_repeatKeysym;
-
-    GFontRef            m_font;
-
-    /** Current history line being retrieved when using UP/DOWN.
-        When a history command is used unmodified,
-        the history index sticks.  Otherwise it resets to the end
-        of the list on Enter.*/
-    int                 m_historyIndex;
-
-    /** When true, the history item has been modified since the last UP/DOWN. */
-    bool                m_resetHistoryIndexOnEnter;
-
-    /** Previously executed commands. */
-    Array<string>       m_history;
-
-    Rect2D              m_rect;
-
-    class Text {
-    public:
-        string          value;
-        Color4          color;
-
-        inline Text() {}
-        inline Text(const string& s, const Color4& c) : value(s), color(c) {}
-    };
-
-    /** Previously displayed text. */
-    Queue<Text>         m_buffer;
-
-    /** Number of lines before the end of the buffer that are visible (affected
-        by page up/page down).*/
-    int                 m_bufferShift;
-
-    /** True when the console is open and processing events.*/
-    bool                m_active;
-
-    /** Currently entered command. */
-    string              m_currentLine;
-
-    ///////////////////////////////////////////////////////////////////////////
-    /** True when we have already generated a list of potential completions and
-        are now simply scrolling through them.*/
-    bool                m_inCompletion;
-
-    /** String to prepend onto the current completion list during scrolling.*/
-    string              m_completionBeginStr;
-
-    /** String to append onto the current completion list during scrolling.*/
-    string              m_completionEndStr;
-
-    /** Filled out by beginCompletion.*/
-    Array<string>       m_completionArray;
-
-    /** Index of the current completion in the m_completionArray */
-    int                 m_completionArrayIndex;
-
-    /** Buffer of identifiers to use for completions.  Updated by print and by issueCommand.*/
-    Queue<string>       m_completionHistory;
-
-    /** All the strings that are in m_completionHistory.*/
-    Set<string>         m_completionHistorySet;
-
-    /** Called from processCompletion the first time TAB is pressed. */
-    void beginCompletion();
-
-    /** Invoked from processRepeatKeysym when a non-completion key is pressed. 
-        */
-    void endCompletion();
-
-    /** Parses the string and adds new tokens to the completion history. 
-        Called from issueCommand and print.*/
-    virtual void addToCompletionHistory(const string& s);
-
-    /** Only called from addToCompletionHistory. */
-    void addTokenToCompletionHistory(const string& s);
-
-    /** Invoked from processRepeatKeysym to handle command completion keys. */
-    void completeCommand(int direction);
-
-    /** Called from beginCompletion to append filename and directory-based completions onto
-        fcomplete.
-     */
-    void generateFilenameCompletions(Array<string>& fcomplete);
-
-    ///////////////////////////////////////////////////////////////////////////
-
-    /** Position of the cursor within m_currentLine (0 is the first slot) */
-    int                 m_cursorPos;
-
-    /** Time at which setRepeatKeysym was called. */
-    RealTime            m_keyDownTime;
-
-    /** Time at which the key will repeat (if down). */
-    RealTime            m_keyRepeatTime;
-
-
-    /** Called from onEvent when a key is pressed. */
-    void setRepeatKeysym(SDL_keysym key);
-
-    /** Called from onEvent when the repeat key is released. */
-    void unsetRepeatKeysym();
-
-    /** Called from render and onEvent to enact the action triggered by the repeat key. */
-    void processRepeatKeysym();
-
-    /** Invoked when the user presses enter. */
-    void issueCommand();
-
-    /** Called from repeatKeysym on UP/DOWN. */
-    void historySelect(int direction);
-
-    /** Issues text to the buffer. */
-    virtual void print(const string& s, const Color4& c);
-
-    /** On Win32, calls paste with the clipboard text contents.  Does nothing on other
-       platforms (yet) */
-    void pasteClipboard();
-
-    /** Copies the text to the clipboard on Win32. */
-    void copyClipboard(const string& s) const;
-
-    GConsole(const GFontRef& f, const Settings& s, Callback c, void* callbackData);
-
-public:
-
-    static GConsoleRef create(const GFontRef& f, const Settings& s = Settings(), Callback c = NULL, void* callbackData = NULL);
-
-    virtual ~GConsole();
-
-    void setActive(bool a);
-
-    inline bool active() const {
-        return m_active;
-    }
-
-    /** Insert the string as if it was typed at the command line.
-        If the string contains newlines they will cause commands to issue. 
-        */
-    void paste(const string& s);
-
-    /** Clear displayed text. */
-    void clearBuffer();
-
-    /** Clear command history. */
-    void clearHistory();
-
-    /** Print to the buffer. */
-    void __cdecl printf(const char* fmt, ...) G3D_CHECK_PRINTF_METHOD_ARGS;
-
-    /** Print to the buffer. */
-    void __cdecl vprintf(const char*, va_list argPtr) G3D_CHECK_VPRINTF_METHOD_ARGS;
-
-    /** Call to render the console */
-    void render(RenderDevice* rd);
-
-    ////////////////////////////////
-    // Inherited from GModule
-    
-    /** Pass all events to the console. It returns true if it processed (consumed) the event.*/
-    virtual bool onEvent(const GEvent& event);
-
-    virtual void onNetwork();
-    
-    virtual void onLogic();
-
-    virtual void onUserInput(UserInput* ui);
-
-    virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
-
-    virtual void getPosedModel(Array<PosedModelRef>& posedArray, Array<PosedModel2DRef>& posed2DArray);
-};
 
 } //G3D
 

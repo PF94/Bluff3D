@@ -18,18 +18,21 @@ class ServerProxy {
 private:
     friend class Client;
 
-    ReliableConduitRef                  net;
-    class App*                          app;
-    class Client*                       client;
+    ReliableConduitRef net;
+
+    class App *app;
+
+    class Client *client;
 
 public:
 
     ServerProxy() : app(NULL), client(NULL) {}
-    ServerProxy(App*, Client*);
+
+    ServerProxy(App *, Client *);
 
     bool ok() const;
 
-    void connect(const NetAddress&);
+    void connect(const NetAddress &);
 
 };
 
@@ -41,19 +44,19 @@ class Client : public GApplet {
 private:
     friend class ServerProxy;
 
-    class App*          app;
+    class App *app;
 
-    ServerProxy         serverProxy;
+    ServerProxy serverProxy;
 
-    EntityTable         entityTable;
+    EntityTable entityTable;
 
     /** ID of my entity */
-    Entity::ID          localID;
+    Entity::ID localID;
 
-    GCamera             camera;
+    GCamera camera;
 
     /** Called from renderEntities */
-    void renderEntity(const Entity& e);
+    void renderEntity(const Entity &e);
 
     /** Called from doGraphics */
     void renderEntities();
@@ -64,21 +67,21 @@ private:
 public:
 
     /** Server to which the client should connect. */
-    ServerAd            selectedServer;
+    ServerAd selectedServer;
 
-    Client(App* app); 
-    
-    virtual ~Client(){}
+    Client(App *app);
+
+    virtual ~Client() {}
 
     virtual void onInit();
 
-    virtual void onUserInput(UserInput* ui);
+    virtual void onUserInput(UserInput *ui);
 
-	virtual void onNetwork();
+    virtual void onNetwork();
 
     virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 
-    virtual void onGraphics(RenderDevice* rd);
+    virtual void onGraphics(RenderDevice *rd);
 
     virtual void onCleanup();
 

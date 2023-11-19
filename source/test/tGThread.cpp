@@ -3,8 +3,8 @@
 
 class TGThread : public GThread {
 public:
-    TGThread(const std::string& n): GThread(n),
-      _value(0) {}
+    TGThread(const std::string &n) : GThread(n),
+                                     _value(0) {}
 
     int value() {
         // Shouldn't need lock
@@ -16,6 +16,7 @@ public:
         ++_value;
         getterMutex.unlock();
     }
+
 protected:
     virtual void threadMain() {
         ++_value;

@@ -13,7 +13,7 @@
 namespace G3D {
 
     UserInput::UserInput(
-            Table<KeyCode, UIFunction>* keyMapping) {
+            Table<KeyCode, UIFunction> *keyMapping) {
 
         alwaysAssertM(RenderDevice::lastRenderDeviceCreated != NULL,
                       "Must create a RenderDevice before a UserInput");
@@ -38,15 +38,15 @@ namespace G3D {
 
 
     UserInput::UserInput(
-            GWindow*                          window,
-            Table<KeyCode, UIFunction>* keyMapping) {
+            GWindow *window,
+            Table<KeyCode, UIFunction> *keyMapping) {
         init(window, keyMapping);
     }
 
 
     void UserInput::init(
-            GWindow*                    window,
-            Table<KeyCode, UIFunction>* keyMapping) {
+            GWindow *window,
+            Table<KeyCode, UIFunction> *keyMapping) {
 
         _pureDeltaMouse = false;
         deltaMouse = Vector2(0, 0);
@@ -54,7 +54,7 @@ namespace G3D {
         alwaysAssertM(window != NULL, "Window must not be NULL");
 
         _window = window;
-        windowCenter = Vector2((float)window->width() / 2.0f, (float)window->height() / 2.0f);
+        windowCenter = Vector2((float) window->width() / 2.0f, (float) window->height() / 2.0f);
 
         up = left = down = right = false;
         jx = jy = 0.0;
@@ -99,16 +99,16 @@ namespace G3D {
     }
 
 
-    GWindow* UserInput::window() const {
+    GWindow *UserInput::window() const {
         return _window;
     }
 
 
     void UserInput::setKeyMapping(
-            Table<KeyCode, UIFunction>* keyMapping) {
+            Table<KeyCode, UIFunction> *keyMapping) {
 
         for (int i = keyState.size() - 1; i >= 0; --i) {
-                keyState[i]    = false;
+                keyState[i] = false;
                 if (keyMapping->containsKey(i)) {
                     keyFunction[i] = keyMapping->get(i);
                 } else {
@@ -122,12 +122,12 @@ namespace G3D {
     }
 
 
-    void UserInput::processEvent(const SDL_Event& event) {
+    void UserInput::processEvent(const SDL_Event &event) {
 
         debugAssert(inEventProcessing);
         // Translate everything into a key code then call processKey
 
-        switch(event.type) {
+        switch (event.type) {
             case SDL_KEYUP:
                 processKey(event.key.keysym.sym, SDL_KEYUP);
                 break;
@@ -148,7 +148,7 @@ namespace G3D {
 
 
     void UserInput::beginEvents() {
-        debugAssert(! inEventProcessing);
+        debugAssert(!inEventProcessing);
         inEventProcessing = true;
         justPressed.resize(0, DONT_SHRINK_UNDERLYING_ARRAY);
         justReleased.resize(0, DONT_SHRINK_UNDERLYING_ARRAY);
@@ -171,7 +171,7 @@ namespace G3D {
         }
 
         windowCenter =
-                Vector2((float)window()->width(), (float)window()->height()) / 2.0f;
+                Vector2((float) window()->width(), (float) window()->height()) / 2.0f;
 
         Vector2 oldMouse = mouse;
         _window->getRelativeMouseState(mouse, mouseButtons);
@@ -201,10 +201,10 @@ namespace G3D {
             }
 
             // Handle focus-in and focus-out gracefully
-            if (focus && ! appHadFocus) {
+            if (focus && !appHadFocus) {
                 // We just gained focus.
                 grabMouse();
-            } else if (! focus && appHadFocus) {
+            } else if (!focus && appHadFocus) {
                 // Just lost focus
                 releaseMouse();
             }
@@ -225,7 +225,7 @@ namespace G3D {
         }
 
         if (useJoystick && (fabs(jx) > 0.1)) {
-            return (float)jx;
+            return (float) jx;
         }
 
         return 0.0f;
@@ -240,7 +240,7 @@ namespace G3D {
         }
 
         if (useJoystick && (fabs(jy) > 0.1)) {
-            return (float)jy;
+            return (float) jy;
         }
 
         return 0.0f;
@@ -341,13 +341,13 @@ namespace G3D {
     }
 
 
-    void UserInput::pressedKeys(Array<KeyCode>& code) const {
+    void UserInput::pressedKeys(Array<KeyCode> &code) const {
         code.resize(justPressed.size());
         memcpy(code.getCArray(), justPressed.getCArray(), sizeof(UserInput::KeyCode) * justPressed.size());
     }
 
 
-    void UserInput::releasedKeys(Array<KeyCode>& code) const {
+    void UserInput::releasedKeys(Array<KeyCode> &code) const {
         code.resize(justReleased.size());
         memcpy(code.getCArray(), justReleased.getCArray(), sizeof(UserInput::KeyCode) * justReleased.size());
     }
@@ -411,7 +411,7 @@ namespace G3D {
     }
 
 
-    UserInput::KeyCode UserInput::stringToKeyCode(const std::string& _s) {
+    UserInput::KeyCode UserInput::stringToKeyCode(const std::string &_s) {
         std::string s = trimWhitespace(toLower(_s));
 
         for (int i = 0; i < SDL_CUSTOM_LAST; ++i) {

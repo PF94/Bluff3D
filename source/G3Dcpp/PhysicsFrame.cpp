@@ -14,91 +14,91 @@
 
 namespace G3D {
 
-PhysicsFrame::PhysicsFrame() {
-    translation = Vector3::zero();
-    rotation    = Quat();
-}
+    PhysicsFrame::PhysicsFrame() {
+        translation = Vector3::zero();
+        rotation = Quat();
+    }
 
 
-PhysicsFrame::PhysicsFrame(
-    const CoordinateFrame& coordinateFrame) {
+    PhysicsFrame::PhysicsFrame(
+            const CoordinateFrame &coordinateFrame) {
 
-    translation = coordinateFrame.translation;
-    rotation    = Quat(coordinateFrame.rotation);
-}
-
-
-PhysicsFrame PhysicsFrame::operator*(const PhysicsFrame& other) const {
-    PhysicsFrame result;
-
-    result.rotation = rotation * other.rotation;
-    result.translation = translation + rotation.toRotationMatrix() * other.translation;
-
-    return result;
-}
+        translation = coordinateFrame.translation;
+        rotation = Quat(coordinateFrame.rotation);
+    }
 
 
-CoordinateFrame PhysicsFrame::toCoordinateFrame() const {
-    CoordinateFrame f;
-    
-    f.translation = translation;
-    f.rotation    = rotation.toRotationMatrix();
+    PhysicsFrame PhysicsFrame::operator*(const PhysicsFrame &other) const {
+        PhysicsFrame result;
 
-    return f;
-}
+        result.rotation = rotation * other.rotation;
+        result.translation = translation + rotation.toRotationMatrix() * other.translation;
 
-
-PhysicsFrame PhysicsFrame::lerp(
-    const PhysicsFrame&     other,
-    float                   alpha) const {
-
-    PhysicsFrame result;
-
-    result.translation = translation.lerp(other.translation, alpha);
-    result.rotation    = rotation.slerp(other.rotation, alpha);
-
-    return result;
-}
+        return result;
+    }
 
 
-PhysicsFrame PhysicsFrame::integrate(
-    float                   t,
-    const PhysicsFrame&     dx) {
+    CoordinateFrame PhysicsFrame::toCoordinateFrame() const {
+        CoordinateFrame f;
 
-    PhysicsFrame result;
+        f.translation = translation;
+        f.rotation = rotation.toRotationMatrix();
 
-    result.translation = translation + t * dx.translation;
-    result.rotation    = rotation * dx.rotation.pow(t); 
-
-    return result;
-}
+        return f;
+    }
 
 
-PhysicsFrame PhysicsFrame::integrate(
-    float                   t,
-    const PhysicsFrame&     dx,
-    const PhysicsFrame&     ddx) {
+    PhysicsFrame PhysicsFrame::lerp(
+            const PhysicsFrame &other,
+            float alpha) const {
 
-    PhysicsFrame result;
+        PhysicsFrame result;
 
-    // TODO: is this correct?
-    result.translation = translation + t * dx.translation + t * t * ddx.translation;
-    result.rotation    = rotation * dx.rotation.pow(t) * ddx.rotation.pow(t * t);
+        result.translation = translation.lerp(other.translation, alpha);
+        result.rotation = rotation.slerp(other.rotation, alpha);
 
-    return result;
-}
+        return result;
+    }
 
 
-void PhysicsFrame::deserialize(class BinaryInput& b) {
-    translation.deserialize(b);
-    rotation.deserialize(b);
-}
+    PhysicsFrame PhysicsFrame::integrate(
+            float t,
+            const PhysicsFrame &dx) {
+
+        PhysicsFrame result;
+
+        result.translation = translation + t * dx.translation;
+        result.rotation = rotation * dx.rotation.pow(t);
+
+        return result;
+    }
 
 
-void PhysicsFrame::serialize(class BinaryOutput& b) const {
-    translation.serialize(b);
-    rotation.serialize(b);
-}
+    PhysicsFrame PhysicsFrame::integrate(
+            float t,
+            const PhysicsFrame &dx,
+            const PhysicsFrame &ddx) {
+
+        PhysicsFrame result;
+
+        // TODO: is this correct?
+        result.translation = translation + t * dx.translation + t * t * ddx.translation;
+        result.rotation = rotation * dx.rotation.pow(t) * ddx.rotation.pow(t * t);
+
+        return result;
+    }
+
+
+    void PhysicsFrame::deserialize(class BinaryInput &b) {
+        translation.deserialize(b);
+        rotation.deserialize(b);
+    }
+
+
+    void PhysicsFrame::serialize(class BinaryOutput &b) const {
+        translation.serialize(b);
+        rotation.serialize(b);
+    }
 
 
 }; // namespace

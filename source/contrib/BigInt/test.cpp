@@ -110,7 +110,7 @@ void testAdd() {
         BigInt a = 0xFFFF;
         BigInt b = 0x0047;
         BigInt c = a - b;
-        debugAssert(c == (int)0xFFFF - (int)0x0047);
+        debugAssert(c == (int) 0xFFFF - (int) 0x0047);
     }
 
     // Case requiring carry
@@ -153,20 +153,20 @@ void testPow() {
     {
         BigInt a = 10;
         BigInt c = a.pow(8);
-        debugAssert(c == (int)pow(10, 8));
+        debugAssert(c == (int) pow(10, 8));
     }
 
     {
         BigInt a = 2;
         BigInt c = a.pow(40);
-        int64 x = (int64)pow(2.0, 40.0);
+        int64 x = (int64) pow(2.0, 40.0);
         debugAssert(c == x);
     }
 
     {
         BigInt a = 15;
         BigInt c = a.pow(3);
-        int64 x = (int64)pow(15, 3);
+        int64 x = (int64) pow(15, 3);
         debugAssert(c == x);
     }
 }
@@ -188,14 +188,14 @@ void testConvert() {
 }
 
 
-int main(int argc, const char* argv) {
+int main(int argc, const char *argv) {
 
-	for (int i = 0; i < 20; ++i) {
-		BigInt x = BigInt::random(0, 255);
-		debugPrintf("%d\n", x.int32());
-	}
+    for (int i = 0; i < 20; ++i) {
+            BigInt x = BigInt::random(0, 255);
+            debugPrintf("%d\n", x.int32());
+        }
 
-	/*
+    /*
     testParser();
     testCompare();
     testAdd();

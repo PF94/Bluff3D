@@ -19,10 +19,10 @@
 
 #define NOMINMAX 1
 #ifdef min
-    #undef min
+#undef min
 #endif
 #ifdef max
-    #undef max
+#undef max
 #endif
 
 #include "G3D/platform.h"
@@ -93,30 +93,30 @@
 
 
 #ifdef G3D_WIN32
-    // These lines would link the ZLIB DLL, however we now use static linking
-    //#define ZLIB_DLL
-    //#pragma comment(lib, "zdll.lib")
+// These lines would link the ZLIB DLL, however we now use static linking
+//#define ZLIB_DLL
+//#pragma comment(lib, "zdll.lib")
 
-    #pragma comment(lib, "zlib.lib")
+#pragma comment(lib, "zlib.lib")
 
-    #pragma comment(lib, "ws2_32.lib")
-    #pragma comment(lib, "winmm.lib")
-    #pragma comment(lib, "imagehlp.lib")
-    #pragma comment(lib, "gdi32.lib")
-    #pragma comment(lib, "user32.lib")
-    #pragma comment(lib, "kernel32.lib")
-    #pragma comment(lib, "version.lib")
-    #ifdef _DEBUG
-        // Don't link against G3D when building G3D itself.
-        #ifndef G3D_BUILDING_LIBRARY_DLL
-           #pragma comment(lib, "G3D-debug.lib")
-        #endif
-    #else
-        // Don't link against G3D when building G3D itself.
-        #ifndef G3D_BUILDING_LIBRARY_DLL
-            #pragma comment(lib, "G3D.lib")
-        #endif
-    #endif
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "imagehlp.lib")
+#pragma comment(lib, "gdi32.lib")
+#pragma comment(lib, "user32.lib")
+#pragma comment(lib, "kernel32.lib")
+#pragma comment(lib, "version.lib")
+#ifdef _DEBUG
+// Don't link against G3D when building G3D itself.
+#ifndef G3D_BUILDING_LIBRARY_DLL
+#pragma comment(lib, "G3D-debug.lib")
+#endif
+#else
+// Don't link against G3D when building G3D itself.
+#ifndef G3D_BUILDING_LIBRARY_DLL
+#pragma comment(lib, "G3D.lib")
+#endif
+#endif
 #endif
 
 #endif

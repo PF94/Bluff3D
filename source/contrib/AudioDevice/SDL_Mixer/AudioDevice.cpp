@@ -9,7 +9,7 @@
 
 #include "AudioDevice.h"
 
-bool AudioDevice::init(Log* _debugLog) {
+bool AudioDevice::init(Log *_debugLog) {
 
     debugLog = _debugLog;
 
@@ -17,9 +17,9 @@ bool AudioDevice::init(Log* _debugLog) {
         debugLog->printf("Initializing audio system with default settings\n");
     }
 
-    int audioRate           = MIX_DEFAULT_FREQUENCY;
-    uint16 audioFormat      = MIX_DEFAULT_FORMAT;
-    int audioChannels       = 2; // stereo
+    int audioRate = MIX_DEFAULT_FREQUENCY;
+    uint16 audioFormat = MIX_DEFAULT_FORMAT;
+    int audioChannels = 2; // stereo
 
     bool ret = Mix_OpenAudio(audioRate, audioFormat, audioChannels, 4096) >= 0;
 
@@ -45,10 +45,10 @@ void AudioDevice::cleanup() {
 }
 
 
-SoundEffectRef AudioDevice::createSoundEffect(const std::string& filename) {
+SoundEffectRef AudioDevice::createSoundEffect(const std::string &filename) {
     if (debugLog != NULL) {
         debugLog->printf("Loading \"%s\".\n", filename.c_str());
-        if (! fileExists(filename)) {
+        if (!fileExists(filename)) {
             debugLog->printf("Error!  file does not exist\n");
             return NULL;
         }
@@ -58,10 +58,10 @@ SoundEffectRef AudioDevice::createSoundEffect(const std::string& filename) {
 }
 
 
-MusicStreamRef AudioDevice::createMusicStream(const std::string& filename) {
+MusicStreamRef AudioDevice::createMusicStream(const std::string &filename) {
     if (debugLog != NULL) {
         debugLog->printf("Loading \"%s\".\n", filename.c_str());
-        if (! fileExists(filename)) {
+        if (!fileExists(filename)) {
             debugLog->printf("Error!  file does not exist\n");
             return NULL;
         }
@@ -72,7 +72,7 @@ MusicStreamRef AudioDevice::createMusicStream(const std::string& filename) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-SoundEffect::SoundEffect(const std::string& filename) {
+SoundEffect::SoundEffect(const std::string &filename) {
     sample = Mix_LoadWAV(filename.c_str());
 }
 
@@ -89,13 +89,13 @@ void SoundEffect::play(double volume) const {
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-MusicStream::MusicStream(const std::string& filename) {
+MusicStream::MusicStream(const std::string &filename) {
     // Don't load music in debug mode
-    #ifdef _DEBUG
-        music   = NULL;
-    #else
-        music   = Mix_LoadMUS(filename.c_str());
-    #endif
+#ifdef _DEBUG
+    music   = NULL;
+#else
+    music = Mix_LoadMUS(filename.c_str());
+#endif
     playing = false;
     channel = 0;
 }
@@ -107,7 +107,7 @@ MusicStream::~MusicStream() {
 
 
 void MusicStream::play(double volume) {
-    if (! playing && (music != NULL)) {
+    if (!playing && (music != NULL)) {
         Mix_PlayMusic(music, false);
         playing = true;
     }

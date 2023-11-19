@@ -13,188 +13,190 @@
 
 namespace G3D {
 
-namespace _internal {
+    namespace _internal {
 
-using G3D::GThread;
+        using G3D::GThread;
 
-class GThreadPrivate {
-public:
-    bool running;
-    bool completed;
+        class GThreadPrivate {
+        public:
+            bool running;
+            bool completed;
 
 #   ifdef G3D_WIN32
-    HANDLE event;
+            HANDLE event;
 #   endif
 
-    GThreadPrivate():
-        running(false),
-        completed(false) {
+            GThreadPrivate() :
+                    running(false),
+                    completed(false) {
 
 #   ifdef G3D_WIN32
-        event = NULL;
+                event = NULL;
 #   endif
 
-    }
+            }
 
 #   ifdef G3D_WIN32
-    
-    static DWORD WINAPI GThreadProc(LPVOID param) {
-        GThread* current = (GThread*)param;
-        debugAssert(current->pthread->event);
-        current->pthread->running = true;
-        current->pthread->completed = false;
-        current->threadMain();
-        current->pthread->running = false;
-        current->pthread->completed = true;
-        ::SetEvent(current->pthread->event);
-        return 0;
-    }
-    
+
+            static DWORD WINAPI GThreadProc(LPVOID param) {
+                GThread *current = (GThread *) param;
+                debugAssert(current->pthread->event);
+                current->pthread->running = true;
+                current->pthread->completed = false;
+                current->threadMain();
+                current->pthread->running = false;
+                current->pthread->completed = true;
+                ::SetEvent(current->pthread->event);
+                return 0;
+            }
+
 #   else
-    
-    static void* GThreadProc(void* param) {
-        GThread* current = (GThread*)param;
-        current->pthread->running = true;
-        current->pthread->completed = false;
-        current->threadMain();
-        current->pthread->running = false;
-        current->pthread->completed = true;
-        return (void*)NULL;
-    }
+
+            static void* GThreadProc(void* param) {
+                GThread* current = (GThread*)param;
+                current->pthread->running = true;
+                current->pthread->completed = false;
+                current->threadMain();
+                current->pthread->running = false;
+                current->pthread->completed = true;
+                return (void*)NULL;
+            }
 
 #   endif
-};
+        };
 
-class BasicThread: public GThread {
-private:
-    void (*wrapperProc)();
-public:
-    BasicThread(const std::string& name, void (*proc)()):
-        GThread(name), wrapperProc(proc) { }
-protected:
-    virtual void threadMain() {
-        wrapperProc();
+        class BasicThread : public GThread {
+        private:
+            void (*wrapperProc)();
+
+        public:
+            BasicThread(const std::string &name, void (*proc)()) :
+                    GThread(name), wrapperProc(proc) {}
+
+        protected:
+            virtual void threadMain() {
+                wrapperProc();
+            }
+        };
+
+    } // namespace _internal
+
+
+    GThread::GThread(const std::string &name) :
+            handle(NULL),
+            _name(name) {
+
+        pthread = new _internal::GThreadPrivate;
     }
-};
 
-} // namespace _internal
-
-
-GThread::GThread(const std::string& name):
-    handle(NULL),
-    _name(name) {
-
-    pthread = new _internal::GThreadPrivate;
-}
-
-GThread::~GThread() {
+    GThread::~GThread() {
 #   ifdef G3D_WIN32
 #       pragma warning( push )
 #       pragma warning( disable : 4127 )
 #   endif
-    alwaysAssertM(!pthread->running, "Deleting thread while running.");
+        alwaysAssertM(!pthread->running, "Deleting thread while running.");
 #   ifdef G3D_WIN32
 #       pragma warning( pop )
 
-    if (pthread->event) {
-        ::CloseHandle(pthread->event);
-    }
+        if (pthread->event) {
+            ::CloseHandle(pthread->event);
+        }
 
 #   endif
-    delete pthread;
-}
-
-GThread* GThread::create(const std::string& name, void (*proc)()) {
-    return new _internal::BasicThread(name, proc);
-}
-
-bool GThread::start() {
-
-    debugAssertM(!pthread->completed, "Thread has already executed.");
-
-    if (pthread->completed) {
-        return false;
+        delete pthread;
     }
+
+    GThread *GThread::create(const std::string &name, void (*proc)()) {
+        return new _internal::BasicThread(name, proc);
+    }
+
+    bool GThread::start() {
+
+        debugAssertM(!pthread->completed, "Thread has already executed.");
+
+        if (pthread->completed) {
+            return false;
+        }
 
 #   ifdef G3D_WIN32
-    DWORD threadId;
+        DWORD threadId;
 
-    pthread->event = ::CreateEvent(NULL, TRUE, FALSE, NULL);
-    debugAssert(pthread->event);
+        pthread->event = ::CreateEvent(NULL, TRUE, FALSE, NULL);
+        debugAssert(pthread->event);
 
-    handle = ::CreateThread(
-        NULL,
-        0,
-        &_internal::GThreadPrivate::GThreadProc,
-        this,
-        0,
-        &threadId);
+        handle = ::CreateThread(
+                NULL,
+                0,
+                &_internal::GThreadPrivate::GThreadProc,
+                this,
+                0,
+                &threadId);
 
-    if (handle == NULL) {
-        ::CloseHandle(pthread->event);
-        pthread->event = NULL;
-    }
+        if (handle == NULL) {
+            ::CloseHandle(pthread->event);
+            pthread->event = NULL;
+        }
 
-    return (handle != NULL);
+        return (handle != NULL);
 #   else
-    if (!pthread_create((pthread_t*)&handle,
-                        NULL,
-                        &_internal::GThreadPrivate::GThreadProc, 
-                        this)) {
-        return true;
-    } else {
-        handle = NULL;
-        return false;
-    }
+        if (!pthread_create((pthread_t*)&handle,
+                            NULL,
+                            &_internal::GThreadPrivate::GThreadProc,
+                            this)) {
+            return true;
+        } else {
+            handle = NULL;
+            return false;
+        }
 #   endif
-}
+    }
 
-void GThread::terminate() {
-    if (handle) {
+    void GThread::terminate() {
+        if (handle) {
 #       ifdef G3D_WIN32
-        ::TerminateThread(handle, 0);
+            ::TerminateThread(handle, 0);
 #       else
-        pthread_kill((pthread_t)handle, SIGSTOP);
+            pthread_kill((pthread_t)handle, SIGSTOP);
 #       endif
-        handle = NULL;
+            handle = NULL;
+        }
     }
-}
 
-bool GThread::running() {
-    return pthread->running;
-}
+    bool GThread::running() {
+        return pthread->running;
+    }
 
-bool GThread::completed() {
-    return pthread->completed;
-}
+    bool GThread::completed() {
+        return pthread->completed;
+    }
 
-void GThread::waitForCompletion() {
+    void GThread::waitForCompletion() {
 #   ifdef G3D_WIN32
-    debugAssert(pthread->event);
-    ::WaitForSingleObject(pthread->event, INFINITE);
+        debugAssert(pthread->event);
+        ::WaitForSingleObject(pthread->event, INFINITE);
 #   else
-    debugAssert(handle);
-    pthread_join((pthread_t)handle, NULL);
+        debugAssert(handle);
+        pthread_join((pthread_t)handle, NULL);
 #   endif
-}
+    }
 
 
-GMutex::GMutex() {
+    GMutex::GMutex() {
 #   ifdef G3D_WIN32
-    ::InitializeCriticalSection(&handle);
+        ::InitializeCriticalSection(&handle);
 #   else
-    pthread_mutex_init(&handle, NULL);
+        pthread_mutex_init(&handle, NULL);
 #   endif
-}
+    }
 
-GMutex::~GMutex() {
-    //TODO: Debug check for locked
+    GMutex::~GMutex() {
+        //TODO: Debug check for locked
 #   ifdef G3D_WIN32
-    ::DeleteCriticalSection(&handle);
+        ::DeleteCriticalSection(&handle);
 #   else
-    pthread_mutex_destroy(&handle);
+        pthread_mutex_destroy(&handle);
 #   endif
-}
+    }
 
 //bool GMutex::tryLock() {
 //#   ifdef G3D_WIN32
@@ -204,20 +206,20 @@ GMutex::~GMutex() {
 //#   endif
 //}
 
-void GMutex::lock() {
+    void GMutex::lock() {
 #   ifdef G3D_WIN32
-    ::EnterCriticalSection(&handle);
+        ::EnterCriticalSection(&handle);
 #   else
-    pthread_mutex_lock(&handle);
+        pthread_mutex_lock(&handle);
 #   endif
-}
+    }
 
-void GMutex::unlock() {
+    void GMutex::unlock() {
 #   ifdef G3D_WIN32
-    ::LeaveCriticalSection(&handle);
+        ::LeaveCriticalSection(&handle);
 #   else
-    pthread_mutex_unlock(&handle);
+        pthread_mutex_unlock(&handle);
 #   endif
-}
+    }
 
 } // namespace G3D

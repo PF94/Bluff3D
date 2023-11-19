@@ -14,7 +14,7 @@
 
 namespace G3D {
 
-typedef ReferenceCountedPointer<class PixelProgram> PixelProgramRef;
+    typedef ReferenceCountedPointer<class PixelProgram> PixelProgramRef;
 
 /**
   Abstraction of OpenGL pixel programs.  This class can be used with raw OpenGL, 
@@ -36,17 +36,17 @@ typedef ReferenceCountedPointer<class PixelProgram> PixelProgramRef;
   @deprecated
   Use G3D::PixelShader
  */
-class PixelProgram : public GPUProgram {
-private:
+    class PixelProgram : public GPUProgram {
+    private:
 
-    PixelProgram(const std::string& _name, const std::string& filename);
+        PixelProgram(const std::string &_name, const std::string &filename);
 
-public:
+    public:
 
-    static PixelProgramRef fromFile(const std::string& filename);
+        static PixelProgramRef fromFile(const std::string &filename);
 
-    static PixelProgramRef fromCode(const std::string& name, const std::string& code);
-};
+        static PixelProgramRef fromCode(const std::string &name, const std::string &code);
+    };
 
 }
 

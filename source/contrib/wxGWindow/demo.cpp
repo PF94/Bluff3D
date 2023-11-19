@@ -12,23 +12,23 @@ protected:
 
 public:
 
-    static App* app;
+    static App *app;
 
-    App(GAppSettings& settings, GWindow* window) : GApp(settings, window) {
+    App(GAppSettings &settings, GWindow *window) : GApp(settings, window) {
         app = this;
     }
 };
 
-App* App::app = NULL;
+App *App::app = NULL;
 
 // G3D wrapper objects
 class Demo : public GApplet {
 
 public:
 
-    App*            app;
+    App *app;
 
-    Demo(App* app);    
+    Demo(App *app);
 
     virtual void init();
 
@@ -39,20 +39,20 @@ public:
 
 
 void App::main() {
-	setDebugMode(true);
-	debugController.setActive(false);
-    Demo* demo = new Demo(this);
+    setDebugMode(true);
+    debugController.setActive(false);
+    Demo *demo = new Demo(this);
     demo->run();
 }
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app) {
 
 //    model = IFSModel::create("D:/libraries/g3d-6_05-b01/data/ifs/p51-mustang.ifs", 5);
 }
 
 
-void Demo::init()  {
+void Demo::init() {
     app->debugCamera.setPosition(Vector3(0, 0, 10));
     app->debugCamera.lookAt(Vector3(0, 0, 0));
 
@@ -100,21 +100,23 @@ void Demo::doGraphics() {
 
 
 // Define a new frame type
-class MyFrame: public wxFrame {
+class MyFrame : public wxFrame {
 public:
-    MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
-            const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
+    MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
+            const wxSize &size, long style = wxDEFAULT_FRAME_STYLE);
 
-    wxStatusBar*    statusBar;
-    wxSlider*       timeSlider;
+    wxStatusBar *statusBar;
+    wxSlider *timeSlider;
 
 public:
-    wxGWindow*      gwindow;
+    wxGWindow *gwindow;
 
     // Event handlers
-    void OnClose(wxCloseEvent& event);
-    void OnSize(wxSizeEvent& event);
-    void OnFileMenuExit(wxCommandEvent& event);
+    void OnClose(wxCloseEvent &event);
+
+    void OnSize(wxSizeEvent &event);
+
+    void OnFileMenuExit(wxCommandEvent &event);
 
     DECLARE_EVENT_TABLE();
 };
@@ -124,10 +126,13 @@ enum {
     FILEMENU_EXIT = 100
 };
 
-BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_CLOSE( MyFrame::OnClose )
-    EVT_SIZE( MyFrame::OnSize )
-    EVT_MENU(FILEMENU_EXIT,  MyFrame::OnFileMenuExit)
+BEGIN_EVENT_TABLE(MyFrame, wxFrame
+)
+EVT_CLOSE( MyFrame::OnClose )
+EVT_SIZE( MyFrame::OnSize )
+EVT_MENU(FILEMENU_EXIT, MyFrame::OnFileMenuExit
+)
+
 END_EVENT_TABLE()
 
 /* -----------------------------------------------------------------------
@@ -135,32 +140,41 @@ END_EVENT_TABLE()
 -------------------------------------------------------------------------*/
 
 
-MyFrame::MyFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
-                 const wxSize& size, long style) :
-         wxFrame(frame, -1, title, pos, size, style),
-         gwindow(NULL),
-         statusBar(NULL),
-         timeSlider(NULL) {
+MyFrame::MyFrame(wxFrame * frame,
+const wxString &title,
+const wxPoint &pos,
+const wxSize &size,
+long style
+) :
+wxFrame(frame,
+-1, title, pos, size, style),
+gwindow(NULL),
+statusBar(NULL),
+timeSlider(NULL) {
 
-    // Menus            
-    wxMenu* fileMenu = new wxMenu;
+// Menus
+wxMenu *fileMenu = new wxMenu;
 
-    fileMenu->Append(FILEMENU_EXIT, _T("E&xit\tAlt-X"), _T("Quit this program"));
+fileMenu->
+Append(FILEMENU_EXIT, _T("E&xit\tAlt-X"), _T("Quit this program")
+);
 
-    wxMenuBar* menuBar = new wxMenuBar;
-    menuBar->Append(fileMenu, _T("&File"));
-    SetMenuBar(menuBar);
+wxMenuBar *menuBar = new wxMenuBar;
+menuBar->
+Append(fileMenu, _T("&File")
+);
+SetMenuBar(menuBar);
 
-    // Status bar
-    statusBar = new wxStatusBar(this, wxID_ANY);
-    SetStatusBar(statusBar);
+// Status bar
+statusBar = new wxStatusBar(this, wxID_ANY);
+SetStatusBar(statusBar);
 
-    // 3D Window
-    gwindow = new wxGWindow(GWindowSettings(), this, -1);
+// 3D Window
+gwindow = new wxGWindow(GWindowSettings(), this, -1);
 }
 
 
-void MyFrame::OnSize(wxSizeEvent& event) {
+void MyFrame::OnSize(wxSizeEvent &event) {
 
     // Layout code
     wxSize size = GetClientSize();
@@ -187,23 +201,26 @@ void MyFrame::OnSize(wxSizeEvent& event) {
 }
 
 
-void MyFrame::OnFileMenuExit(wxCommandEvent& WXUNUSED(event)) {
-    App::app->endProgram = true;
+void MyFrame::OnFileMenuExit(wxCommandEvent &WXUNUSED(event)
+
+) {
+App::app->
+endProgram = true;
 }
 
 
-void MyFrame::OnClose(wxCloseEvent& event) {
+void MyFrame::OnClose(wxCloseEvent &event) {
     Destroy();
 }
 
 // wxWidgets required app object
-class MyApp: public wxApp {
+class MyApp : public wxApp {
 
 private:
 
-    Demo*           demo;
+    Demo *demo;
 
-    MyFrame*        frame;
+    MyFrame *frame;
 
 public:
 
@@ -221,16 +238,16 @@ bool MyApp::OnInit(void) {
 
     // Create the main frame window
     frame = new MyFrame(NULL,
-        "wxWidgets Demo",
-        wxPoint(50, 50),
-        wxSize(820, 640));
+                        "wxWidgets Demo",
+                        wxPoint(50, 50),
+                        wxSize(820, 640));
 
-    
+
 
     // Show the frame
     frame->Show(true);
 
-    App* gApp = new App(GAppSettings(), frame->gwindow);
+    App *gApp = new App(GAppSettings(), frame->gwindow);
     gApp->run();
 
     return true;

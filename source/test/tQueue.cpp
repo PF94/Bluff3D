@@ -13,24 +13,24 @@ public:
     BigE() {
         x = 7;
         for (int i = 0; i < 100; ++i) {
-            dummy[i] = i;
-        }
+                dummy[i] = i;
+            }
     }
 
     ~BigE() {
     }
 
-    BigE(const BigE& a) : x(a.x) {
+    BigE(const BigE &a) : x(a.x) {
         for (int i = 0; i < 100; ++i) {
-            dummy[i] = a.dummy[i];
-        }
+                dummy[i] = a.dummy[i];
+            }
     }
 
-    BigE& operator=(const BigE& a) {
+    BigE &operator=(const BigE &a) {
         x = a.x;
         for (int i = 0; i < 100; ++i) {
-            dummy[i] = a.dummy[i];
-        }
+                dummy[i] = a.dummy[i];
+            }
         return *this;
     }
 };
@@ -47,227 +47,227 @@ void perfQueue() {
 
     int iterations = 1000000;
     int enqueuesize = 10000;
- 
+
     // Number of elements in the queue at the beginning for streaming tests
     int qsize = 1000;
     {
-        Queue<int>      g3dQ;
+        Queue<int> g3dQ;
         std::deque<int> stdQ;
 
 
         for (int i = 0; i < qsize; ++i) {
-            g3dQ.pushBack(i);
-            stdQ.push_back(i);
-        }
+                g3dQ.pushBack(i);
+                stdQ.push_back(i);
+            }
 
         // Run many times to filter out startup behavior
         for (int j = 0; j < 3; ++j) {
 
-            System::beginCycleCount(g3dStreamSmall);
-            {
-                for (int i = 0; i < iterations; ++i) {
-                    g3dQ.pushBack(g3dQ.popFront());
+                System::beginCycleCount(g3dStreamSmall);
+                {
+                    for (int i = 0; i < iterations; ++i) {
+                            g3dQ.pushBack(g3dQ.popFront());
+                        }
                 }
-            }
-            System::endCycleCount(g3dStreamSmall);   
+                System::endCycleCount(g3dStreamSmall);
 
-            System::beginCycleCount(stdStreamSmall);
-            {
-                for (int i = 0; i < iterations; ++i) {
-                    int v = stdQ[0];
-                    stdQ.pop_front();
-                    stdQ.push_back(v);
+                System::beginCycleCount(stdStreamSmall);
+                {
+                    for (int i = 0; i < iterations; ++i) {
+                            int v = stdQ[0];
+                            stdQ.pop_front();
+                            stdQ.push_back(v);
+                        }
                 }
+                System::endCycleCount(stdStreamSmall);
             }
-            System::endCycleCount(stdStreamSmall);   
-        }
     }
     {
-        Queue<int>      g3dQ;
+        Queue<int> g3dQ;
         System::beginCycleCount(g3dEnquequeFSmall);
         {
             for (int i = 0; i < enqueuesize; ++i) {
-                g3dQ.pushFront(i);
-            }
+                    g3dQ.pushFront(i);
+                }
         }
-        System::endCycleCount(g3dEnquequeFSmall);   
+        System::endCycleCount(g3dEnquequeFSmall);
 
         std::deque<int> stdQ;
         System::beginCycleCount(stdEnquequeFSmall);
         {
             for (int i = 0; i < enqueuesize; ++i) {
-                stdQ.push_front(i);
-            }
+                    stdQ.push_front(i);
+                }
         }
-        System::endCycleCount(stdEnquequeFSmall);   
+        System::endCycleCount(stdEnquequeFSmall);
     }
     {
-        Queue<int>      g3dQ;
+        Queue<int> g3dQ;
         System::beginCycleCount(g3dEnquequeBSmall);
         {
             for (int i = 0; i < enqueuesize; ++i) {
-                g3dQ.pushBack(i);
-            }
+                    g3dQ.pushBack(i);
+                }
         }
-        System::endCycleCount(g3dEnquequeBSmall);   
+        System::endCycleCount(g3dEnquequeBSmall);
 
         std::deque<int> stdQ;
         System::beginCycleCount(stdEnquequeBSmall);
         {
             for (int i = 0; i < enqueuesize; ++i) {
-                stdQ.push_back(i);
-            }
+                    stdQ.push_back(i);
+                }
         }
-        System::endCycleCount(stdEnquequeBSmall);   
+        System::endCycleCount(stdEnquequeBSmall);
     }
 
     /////////////////////////////////
     {
-        Queue<BigE>      g3dQ;
+        Queue<BigE> g3dQ;
         std::deque<BigE> stdQ;
 
 
         for (int i = 0; i < qsize; ++i) {
-            BigE v;
-            g3dQ.pushBack(v);
-            stdQ.push_back(v);
-        }
+                BigE v;
+                g3dQ.pushBack(v);
+                stdQ.push_back(v);
+            }
 
         // Run many times to filter out startup behavior
         for (int j = 0; j < 3; ++j) {
-            BigE v = stdQ[0];
+                BigE v = stdQ[0];
 
-            System::beginCycleCount(g3dStreamLarge);
-            {
-                for (int i = 0; i < iterations; ++i) {
-                    g3dQ.popFront();
-                    g3dQ.pushBack(v);
+                System::beginCycleCount(g3dStreamLarge);
+                {
+                    for (int i = 0; i < iterations; ++i) {
+                            g3dQ.popFront();
+                            g3dQ.pushBack(v);
+                        }
                 }
-            }
-            System::endCycleCount(g3dStreamLarge);   
+                System::endCycleCount(g3dStreamLarge);
 
-            System::beginCycleCount(stdStreamLarge);
-            {
-                for (int i = 0; i < iterations; ++i) {
-                    stdQ.pop_front();
-                    stdQ.push_back(v);
+                System::beginCycleCount(stdStreamLarge);
+                {
+                    for (int i = 0; i < iterations; ++i) {
+                            stdQ.pop_front();
+                            stdQ.push_back(v);
+                        }
                 }
+                System::endCycleCount(stdStreamLarge);
             }
-            System::endCycleCount(stdStreamLarge);   
-        }
     }
     {
-        Queue<BigE>      g3dQ;
+        Queue<BigE> g3dQ;
         System::beginCycleCount(g3dEnquequeFLarge);
         {
             BigE v;
             for (int i = 0; i < enqueuesize; ++i) {
-                g3dQ.pushFront(v);
-            }
+                    g3dQ.pushFront(v);
+                }
         }
-        System::endCycleCount(g3dEnquequeFLarge);   
+        System::endCycleCount(g3dEnquequeFLarge);
 
         std::deque<BigE> stdQ;
         System::beginCycleCount(stdEnquequeFLarge);
         {
             BigE v;
             for (int i = 0; i < enqueuesize; ++i) {
-                stdQ.push_front(v);
-            }
+                    stdQ.push_front(v);
+                }
         }
-        System::endCycleCount(stdEnquequeFLarge);   
+        System::endCycleCount(stdEnquequeFLarge);
     }
     {
-        Queue<BigE>      g3dQ;
+        Queue<BigE> g3dQ;
         System::beginCycleCount(g3dEnquequeBLarge);
         BigE v;
         for (int i = 0; i < enqueuesize; ++i) {
-            g3dQ.pushBack(v);
-        }
-        System::endCycleCount(g3dEnquequeBLarge);   
+                g3dQ.pushBack(v);
+            }
+        System::endCycleCount(g3dEnquequeBLarge);
 
         std::deque<BigE> stdQ;
         System::beginCycleCount(stdEnquequeBLarge);
         {
             BigE v;
             for (int i = 0; i < enqueuesize; ++i) {
-                stdQ.push_back(v);
-            }
+                    stdQ.push_back(v);
+                }
         }
-        System::endCycleCount(stdEnquequeBLarge);   
+        System::endCycleCount(stdEnquequeBLarge);
     }
 
 
     printf(" Pile-up push front cycles per elt (max queue size = %d)\n", enqueuesize);
-    printf("  G3D::Queue<int>             %5.02f\n",  g3dEnquequeFSmall / 
-(float)enqueuesize);
-    printf("  std::deque<int>             %5.02f\n",  stdEnquequeFSmall / 
-(float)enqueuesize);
-    printf("  G3D::Queue<BigE>            %5.02f\n",  g3dEnquequeFLarge / 
-(float)enqueuesize);
-    printf("  std::deque<BigE>            %5.02f\n",  stdEnquequeFLarge / 
-(float)enqueuesize);
+    printf("  G3D::Queue<int>             %5.02f\n", g3dEnquequeFSmall /
+                                                     (float) enqueuesize);
+    printf("  std::deque<int>             %5.02f\n", stdEnquequeFSmall /
+                                                     (float) enqueuesize);
+    printf("  G3D::Queue<BigE>            %5.02f\n", g3dEnquequeFLarge /
+                                                     (float) enqueuesize);
+    printf("  std::deque<BigE>            %5.02f\n", stdEnquequeFLarge /
+                                                     (float) enqueuesize);
     printf("\n");
 
     printf(" Pile-up push back cycles per elt (max queue size = %d)\n", enqueuesize);
-    printf("  G3D::Queue<int>             %5.02f\n",  g3dEnquequeBSmall / 
-(float)enqueuesize);
-    printf("  std::deque<int>             %5.02f\n",  stdEnquequeBSmall / 
-(float)enqueuesize);
-    printf("  G3D::Queue<BigE>            %5.02f\n",  g3dEnquequeBLarge / 
-(float)enqueuesize);
-    printf("  std::deque<BigE>            %5.02f\n",  stdEnquequeBLarge / 
-(float)enqueuesize);
+    printf("  G3D::Queue<int>             %5.02f\n", g3dEnquequeBSmall /
+                                                     (float) enqueuesize);
+    printf("  std::deque<int>             %5.02f\n", stdEnquequeBSmall /
+                                                     (float) enqueuesize);
+    printf("  G3D::Queue<BigE>            %5.02f\n", g3dEnquequeBLarge /
+                                                     (float) enqueuesize);
+    printf("  std::deque<BigE>            %5.02f\n", stdEnquequeBLarge /
+                                                     (float) enqueuesize);
     printf("\n");
 
     printf(" Streaming cycles per iteration (queue size = %d)\n", qsize);
-    printf("  G3D::Queue<int>             %5.02f\n",  g3dStreamSmall / 
-(float)iterations);
-    printf("  std::deque<int>             %5.02f\n",  stdStreamSmall / 
-(float)iterations);
-    printf("  G3D::Queue<BigE>            %5.02f\n",  g3dStreamLarge / 
-(float)iterations);
-    printf("  std::deque<BigE>            %5.02f\n",  stdStreamLarge / 
-(float)iterations);
+    printf("  G3D::Queue<int>             %5.02f\n", g3dStreamSmall /
+                                                     (float) iterations);
+    printf("  std::deque<int>             %5.02f\n", stdStreamSmall /
+                                                     (float) iterations);
+    printf("  G3D::Queue<BigE>            %5.02f\n", g3dStreamLarge /
+                                                     (float) iterations);
+    printf("  std::deque<BigE>            %5.02f\n", stdStreamLarge /
+                                                     (float) iterations);
 
 
     printf("\n\n");
 }
 
 
-static std::string makeMessage(Queue<int>& q) {
+static std::string makeMessage(Queue<int> &q) {
     std::string s = "Expected [ ";
     for (int i = 0; i < q.size(); ++i) {
-        s = s + format("%d ", i);
-    }
+            s = s + format("%d ", i);
+        }
     s = s + "], got [";
     for (int i = 0; i < q.size(); ++i) {
-        s = s + format("%d ", q[i]);
-    }
+            s = s + format("%d ", q[i]);
+        }
     return s + "]";
 
 }
 
 
-static void check(Queue<int>& q) {
+static void check(Queue<int> &q) {
     for (int i = 0; i < q.size(); ++i) {
-        debugAssertM(q[i] == (i + 1),
-            makeMessage(q));
-    }
+            debugAssertM(q[i] == (i + 1),
+                         makeMessage(q));
+        }
 }
 
 
 static void testCopy() {
     Queue<int> q1, q2;
     for (int i = 0; i < 10; ++i) {
-        q1.pushBack(i);
-    }
+            q1.pushBack(i);
+        }
 
     q2 = q1;
 
     for (int i = 0; i < 10; ++i) {
-        debugAssert(q2[i] == q1[i]);
-    }
+            debugAssert(q2[i] == q1[i]);
+        }
 }
 
 
@@ -302,7 +302,7 @@ void testQueue() {
     }
 
 
-    { 
+    {
         Queue<int> q;
         q.pushFront(2);
         q.pushBack(3);
@@ -347,7 +347,7 @@ void testQueue() {
         q.pushBack(1);
         q.pushBack(2);
         q.pushBack(3);
- 
+
         q.popFront();
         check(q);
     }
@@ -358,13 +358,13 @@ void testQueue() {
         q.pushBack(1);
         q.pushBack(2);
         q.pushBack(3);
- 
+
         check(q);
 
         Queue<int> r(q);
         check(r);
     }
-    
+
     printf("succeeded\n");
 }
 

@@ -19,12 +19,14 @@
 #include <SDL/SDL_syswm.h>
 #else
 #undef WIN32_LEAN_AND_MEAN
+
 #include <SDL.h>
 #include <SDL_syswm.h>
+
 #endif
 // Setup the "main" linkage if not using SDL_main
 #if (defined(NO_SDL_MAIN) || defined(_CONSOLE)) && defined(main)
-    #undef main
+#undef main
 #endif
 
 namespace G3D {
@@ -41,114 +43,119 @@ namespace G3D {
  be available for Mac and Linux (and will still work on Windows, but
  it won't be part of the build).
  */
-class SDLWindow : public GWindow {
-private:
+    class SDLWindow : public GWindow {
+    private:
 
-    /** The window itself */
-    SDL_Window*                 window;
+        /** The window itself */
+        SDL_Window *window;
 
-    /** Window title */
-    std::string                 _caption;
+        /** Window title */
+        std::string _caption;
 
-    /** API version */
-    std::string                 _version;
+        /** API version */
+        std::string _version;
 
-    /** The x, y fields are not updated when the window moves. */
-    GWindowSettings             _settings;
+        /** The x, y fields are not updated when the window moves. */
+        GWindowSettings _settings;
 
-    bool                        _inputCapture;
+        bool _inputCapture;
 
-    Array< ::SDL_Joystick* >    joy;
+        Array<::SDL_Joystick *> joy;
 
-    bool                        _mouseVisible;
+        bool _mouseVisible;
 
-    GLContext                   _glContext;
-    #if defined(G3D_LINUX)
+        GLContext _glContext;
+#if defined(G3D_LINUX)
         Display*                _X11Display;
         Window                  _X11Window;
         Window                  _X11WMWindow;
-    #elif defined(G3D_WIN32)
-        HDC                     _Win32HDC;
-        HWND                    _Win32HWND;
-    #endif
+#elif defined(G3D_WIN32)
+        HDC _Win32HDC;
+        HWND _Win32HWND;
+#endif
 
-protected:
-    
-    virtual void reallyMakeCurrent() const;
+    protected:
 
-public:
+        virtual void reallyMakeCurrent() const;
 
-    SDLWindow(const GWindowSettings& settings);
+    public:
 
-    virtual ~SDLWindow();
+        SDLWindow(const GWindowSettings &settings);
 
-    virtual void getSettings(GWindowSettings& settings) const;
+        virtual ~SDLWindow();
 
-    virtual int width() const;
+        virtual void getSettings(GWindowSettings &settings) const;
 
-    virtual int height() const ;
+        virtual int width() const;
 
-    virtual Rect2D dimensions() const;
+        virtual int height() const;
 
-    virtual void setDimensions(const Rect2D& dims);
+        virtual Rect2D dimensions() const;
 
-    virtual void setPosition(int x, int y);
+        virtual void setDimensions(const Rect2D &dims);
 
-    virtual bool hasFocus() const;
+        virtual void setPosition(int x, int y);
 
-    virtual std::string getAPIVersion() const;
+        virtual bool hasFocus() const;
 
-    virtual std::string getAPIName() const;
+        virtual std::string getAPIVersion() const;
 
-    virtual void setGammaRamp(const Array<uint16>& gammaRamp);
+        virtual std::string getAPIName() const;
 
-    virtual void setCaption(const std::string& caption);
+        virtual void setGammaRamp(const Array<uint16> &gammaRamp);
 
-    virtual std::string caption();
+        virtual void setCaption(const std::string &caption);
 
-    virtual void setIcon(const GImage& image);
+        virtual std::string caption();
 
-    virtual void swapGLBuffers();
+        virtual void setIcon(const GImage &image);
 
-    virtual void notifyResize(int w, int h);
+        virtual void swapGLBuffers();
 
-    virtual int numJoysticks() const;
+        virtual void notifyResize(int w, int h);
 
-    virtual std::string joystickName(unsigned int sticknum);
+        virtual int numJoysticks() const;
 
-    virtual void getJoystickState(unsigned int stickNum, Array<float>& axis, Array<bool>& button);
+        virtual std::string joystickName(unsigned int sticknum);
 
-    virtual void setRelativeMousePosition(double x, double y);
+        virtual void getJoystickState(unsigned int stickNum, Array<float> &axis, Array<bool> &button);
 
-    virtual void setRelativeMousePosition(const Vector2& p);
+        virtual void setRelativeMousePosition(double x, double y);
 
-    virtual void getRelativeMouseState(Vector2& p, uint8& mouseButtons) const;
-    virtual void getRelativeMouseState(int& x, int& y, uint8& mouseButtons) const;
-    virtual void getRelativeMouseState(double& x, double& y, uint8& mouseButtons) const;
+        virtual void setRelativeMousePosition(const Vector2 &p);
 
-    virtual void setMouseVisible(bool b);
+        virtual void getRelativeMouseState(Vector2 &p, uint8 &mouseButtons) const;
 
-    virtual bool mouseVisible() const;
+        virtual void getRelativeMouseState(int &x, int &y, uint8 &mouseButtons) const;
 
-    virtual void setInputCapture(bool c);
+        virtual void getRelativeMouseState(double &x, double &y, uint8 &mouseButtons) const;
 
-    virtual bool inputCapture() const;
+        virtual void setMouseVisible(bool b);
 
-    virtual bool pollEvent(GEvent& e);
+        virtual bool mouseVisible() const;
 
-    /** Returns the underlying SDL joystick pointer */
-    ::SDL_Joystick* getSDL_Joystick(unsigned int num) const;
+        virtual void setInputCapture(bool c);
 
-    #if defined(G3D_LINUX)
+        virtual bool inputCapture() const;
+
+        virtual bool pollEvent(GEvent &e);
+
+        /** Returns the underlying SDL joystick pointer */
+        ::SDL_Joystick *getSDL_Joystick(unsigned int num) const;
+
+#if defined(G3D_LINUX)
         Window   x11Window() const;
         Display* x11Display() const;
-    #elif defined(G3D_WIN32)
-        HDC      win32HDC() const;
-        HWND     win32HWND() const;
-    #endif
+#elif defined(G3D_WIN32)
+
+        HDC win32HDC() const;
+
+        HWND win32HWND() const;
+
+#endif
 
 //    virtual void makeCurrent() const;
-};
+    };
 
 } // namespace
 

@@ -15,7 +15,7 @@ void testAtomicInt32() {
         a = 2;
         a.decrement();
         debugAssert(a.value() == 1);
-		debugAssert(a.decrement() == 0);
+        debugAssert(a.decrement() == 0);
 
         a = 10;
         debugAssert(a.value() == 10);

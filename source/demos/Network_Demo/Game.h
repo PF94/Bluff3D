@@ -22,15 +22,15 @@ public:
     // If you have multiple applets that need to share
     // state, put it in the App.
 
-    class App*          app;
+    class App *app;
 
-    Game(App* app);    
+    Game(App *app);
 
     virtual void init();
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 

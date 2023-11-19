@@ -16,11 +16,12 @@
  */
 class Object {
 protected:
-    Color3                  color;
+    Color3 color;
 
 public:
 
-    Object(const Color3& color);
+    Object(const Color3 &color);
+
     virtual ~Object();
 
     virtual void render() const = 0;
@@ -30,11 +31,11 @@ public:
         collisions are detected, not ones where the sphere
         is leaving an object it is trapped inside. */
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const = 0;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const = 0;
 };
 
 /**
@@ -43,80 +44,81 @@ public:
 class GeneralObject : public Object {
 private:
 
-    class Model*            model;
-    CoordinateFrame         cframe;
+    class Model *model;
+
+    CoordinateFrame cframe;
 
 public:
 
-    GeneralObject(class Model* _model, const CoordinateFrame& cframe, const Color3& _color);
+    GeneralObject(class Model *_model, const CoordinateFrame &cframe, const Color3 &_color);
 
     virtual void render() const;
 
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 
 class SphereObject : public Object {
 protected:
 
-    Sphere                  sphere;
+    Sphere sphere;
 
 public:
 
-    SphereObject(const Sphere& s, const Color3& _color);
+    SphereObject(const Sphere &s, const Color3 &_color);
 
     virtual void render() const;
 
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 
 class CapsuleObject : public Object {
 protected:
 
-    Capsule                  capsule;
+    Capsule capsule;
 
 public:
 
-    CapsuleObject(const Capsule& c, const Color3& _color);
+    CapsuleObject(const Capsule &c, const Color3 &_color);
 
     virtual void render() const;
 
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 
-class BoxObject : public Object  {
+class BoxObject : public Object {
 private:
-    Box                     box;
+    Box box;
 
 public:
 
-    BoxObject(const Box& b, const Color3& _color);
+    BoxObject(const Box &b, const Color3 &_color);
 
     virtual void render() const;
 
     virtual GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 
@@ -128,11 +130,12 @@ public:
 // TODO: make private
     friend class Scene;
 
-    Vector3                 velocity;
+    Vector3 velocity;
 
 public:
 
-    SimSphere(const Sphere& s, const Vector3& _velocity, const Color3& _color);
+    SimSphere(const Sphere &s, const Vector3 &_velocity, const Color3 &_color);
+
     virtual void render() const;
 };
 

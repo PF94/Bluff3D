@@ -29,26 +29,26 @@
 class Browse : public GApplet {
 private:
 
-    class App*                          app;
+    class App *app;
 
-    DiscoveryClient<ServerAd>           discoveryClient;
+    DiscoveryClient<ServerAd> discoveryClient;
 
     /**
       The last button is exit, the 2nd to last
       is host, the others correspond to discoveryClient
       servers.
       */
-    Array<Rect2D>                       button;
+    Array<Rect2D> button;
 
 public:
 
     /** When a server is selected, this field is set */
-    ServerAd                            selectedServer;
+    ServerAd selectedServer;
 
     /** Whether this machine should host */
-    bool                                host;
+    bool host;
 
-    Browse(App* app);
+    Browse(App *app);
 
     virtual ~Browse() {}
 
@@ -56,7 +56,7 @@ public:
 
     virtual void doLogic();
 
-	virtual void doNetwork();
+    virtual void doNetwork();
 
     virtual void doSimulation(SimTime dt);
 

@@ -50,7 +50,7 @@ public:
             are 8-bit numbers representing absolute values and (2) each
             delta is relative to the current byte minus PStride instead
             of the previous frame.  Gives about 1:6 : 1 compression.
-     */ 
+     */
     // Design note:  I tried many other schemes, including a single 
     // compression bit for all three channels, 3-bit schemes, and
     // a single escape for all three channels.  In each case, compression
@@ -82,36 +82,40 @@ public:
         alternate in interpretation.*/
     static int bytesPerPixel(Format f) {
         switch (f) {
-        case FORMAT_R8G8B8:
-            return 3;
-        default:
-            return 1;
+            case FORMAT_R8G8B8:
+                return 3;
+            default:
+                return 1;
         }
     }
 
 private:
 
-    void serializeRaw(BinaryOutput& b) const;
-    void deserializeRaw(BinaryInput& b);
+    void serializeRaw(BinaryOutput &b) const;
+
+    void deserializeRaw(BinaryInput &b);
 
     /** Called after the width, height, and format have been read. */
-    void serializeTimeDiff1(BinaryOutput& b) const;
-    void deserializeTimeDiff1(BinaryInput& b);
+    void serializeTimeDiff1(BinaryOutput &b) const;
 
-    void serializeSpaceDiff1(BinaryOutput& b) const;
-    void deserializeSpaceDiff1(BinaryInput& b);
+    void deserializeTimeDiff1(BinaryInput &b);
+
+    void serializeSpaceDiff1(BinaryOutput &b) const;
+
+    void deserializeSpaceDiff1(BinaryInput &b);
 
     // Bytes between elements that should correspond for diffing purposes.
     // 1 for monochrome, 2 for Bayer, 3 for RGB
     int prevStride;
+
     inline static int channelStride(Format f) {
         switch (f) {
-        case FORMAT_R8G8B8:
-            return 3;
-        case FORMAT_L8:
-            return 1;
-        case FORMAT_BAYER_R8G8_G8B8:
-            return 2;
+            case FORMAT_R8G8B8:
+                return 3;
+            case FORMAT_L8:
+                return 1;
+            case FORMAT_BAYER_R8G8_G8B8:
+                return 2;
         }
         debugAssert(false);
         return 0;
@@ -119,41 +123,42 @@ private:
 
 public:
 
-    void serialize(BinaryOutput& b) const;
-    void deserialize(BinaryInput& b);
+    void serialize(BinaryOutput &b) const;
+
+    void deserialize(BinaryInput &b);
 
     /** Pointer to the bytes of the current frame.  Set this before invoking serialize 
         or deserialize.*/
-    uint8*              currentFrame;
+    uint8 *currentFrame;
 
     /** May be NULL when not using time-based encoding. */
-    uint8*              previousFrame;
+    uint8 *previousFrame;
 
     /** Number of pixel columns, not necessarily the number of bytes in that row.*/
-    int                 width;
-    int                 height;
+    int width;
+    int height;
 
     /** The encoding that the system will attempt to use first when sending data.
         Not guaranteed to be followed. */
-    Encoding            preferredEncoding;
+    Encoding preferredEncoding;
 
     /* If true, the data is compressed by BinaryOutput's internal Lempel-Ziv
        compressor after being encoded.  Can give better compression ratios
        at the cost of slower compression/decompression times. For noisy images
 	   this may only improve compression a few percent. */
-    bool                zip;
+    bool zip;
 
     /** Format of currentFrame and previousFrame */
-    Format              frameFormat;
+    Format frameFormat;
 
 
     VideoSerializer() :
-        zip(false), 
-        preferredEncoding(ENCODING_SPACE_DIFF1),
-        width(0), height(0), 
-        frameFormat(FORMAT_R8G8B8),
-        currentFrame(NULL),
-        previousFrame(NULL) {}
+            zip(false),
+            preferredEncoding(ENCODING_SPACE_DIFF1),
+            width(0), height(0),
+            frameFormat(FORMAT_R8G8B8),
+            currentFrame(NULL),
+            previousFrame(NULL) {}
 };
 
 #endif

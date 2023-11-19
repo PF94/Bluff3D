@@ -21,14 +21,15 @@ public:
     /**
      The ID of the object associated with this client.
      */
-    Entity::ID                          id;
+    Entity::ID id;
 
     /**
      1/2 the ping time.
      */
-    RealTime                            oneWayLatency;
+    RealTime oneWayLatency;
 
     ClientProxy() {}
+
     ClientProxy(Entity::ID _id) : id(_id), oneWayLatency(0) {}
 };
 
@@ -41,9 +42,9 @@ public:
 class Server {
 private:
 
-    class App*                  app;
+    class App *app;
 
-    DiscoveryServer             discoveryServer;
+    DiscoveryServer discoveryServer;
 
     // Servers send all information over reliable network connections
     // so that the LAN and internet structure of the game is identical.
@@ -51,20 +52,20 @@ private:
 
     /** Array parallel to clientProxyArray.  Add/remove entries through
         addClient/fastRemoveClient*/
-    Array<ReliableConduitRef>   clientConduitArray;
+    Array<ReliableConduitRef> clientConduitArray;
 
-    Array<ClientProxy>          clientProxyArray;
+    Array<ClientProxy> clientProxyArray;
 
-    void addClient(ClientProxy& p, ReliableConduitRef& r);
+    void addClient(ClientProxy &p, ReliableConduitRef &r);
 
     void fastRemoveClient(int i);
 
     /**
      Listens for new clients.  Handled in doNetwork.
      */
-    NetListenerRef              listener;
-    
-    EntityTable                 entityTable;
+    NetListenerRef listener;
+
+    EntityTable entityTable;
 
     /** Generates a fresh ID */
     Entity::ID newID();
@@ -75,9 +76,9 @@ private:
 public:
 
     /** The advertisement for this server */
-    ServerAd                    advertisement;
+    ServerAd advertisement;
 
-    Server(class App* app);
+    Server(class App *app);
 
     ~Server();
 
@@ -87,7 +88,7 @@ public:
 
     void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
 
-    void onGraphics(RenderDevice* rd);
+    void onGraphics(RenderDevice *rd);
 };
 
 #endif

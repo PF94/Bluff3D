@@ -14,14 +14,14 @@ void App::loadScene() {
     if (true) {
         ArticulatedModelRef model = ArticulatedModel::fromFile("sphere.ifs", 1);
 
-        SuperShader::Material& material = model->partArray[0].triListArray[0].material;
+        SuperShader::Material &material = model->partArray[0].triListArray[0].material;
         model->partArray[0].triListArray[0].twoSided = false;
         material.diffuse = Color3::white() * 1.0f;
         material.specular = Color3::white() * 0.7f;
         material.specularExponent = Color3::white() * 60;
         model->updateAll();
 
-        entityArray.append(Entity::create(model, CoordinateFrame(Vector3(x,0,-2))));
+        entityArray.append(Entity::create(model, CoordinateFrame(Vector3(x, 0, -2))));
     }
 
 #if LOAD_ALL
@@ -428,25 +428,25 @@ void App::loadScene() {
         ArticulatedModelRef model = ArticulatedModel::createEmpty();
 
         model->name = "Ground Plane";
-        ArticulatedModel::Part& part = model->partArray.next();
+        ArticulatedModel::Part &part = model->partArray.next();
         part.cframe = CoordinateFrame();
         part.name = "root";
-    
+
         const float S = 10.0;
         part.geometry.vertexArray.append(
-            Vector3(-S, 0, -S),
-            Vector3(-S, 0, S),
-            Vector3(S, 0, S),
-            Vector3(S, 0, -S));
+                Vector3(-S, 0, -S),
+                Vector3(-S, 0, S),
+                Vector3(S, 0, S),
+                Vector3(S, 0, -S));
 
         double texScale = 5;
         part.texCoordArray.append(
-            Vector2(0,0) * texScale,
-            Vector2(0,1) * texScale,
-            Vector2(1,1) * texScale,
-            Vector2(1,0) * texScale);
+                Vector2(0, 0) * texScale,
+                Vector2(0, 1) * texScale,
+                Vector2(1, 1) * texScale,
+                Vector2(1, 0) * texScale);
 
-        ArticulatedModel::Part::TriList& triList = part.triListArray.next();
+        ArticulatedModel::Part::TriList &triList = part.triListArray.next();
         triList.indexArray.clear();
         triList.indexArray.append(0, 1, 2);
         triList.indexArray.append(0, 2, 3);
@@ -460,13 +460,14 @@ void App::loadScene() {
 
         triList.material.diffuse.constant = Color3::white() * 0.8f;
         triList.material.diffuse.map = Texture::fromFile("stone.jpg", TextureFormat::AUTO, Texture::TILE,
-            Texture::TRILINEAR_MIPMAP, Texture::DIM_2D, 1.0f, Texture::DEPTH_NORMAL, 4.0f);
+                                                         Texture::TRILINEAR_MIPMAP, Texture::DIM_2D, 1.0f,
+                                                         Texture::DEPTH_NORMAL, 4.0f);
 
         GImage normalBumpMap;
         computeNormalMap(GImage("stone-bump.png"), normalBumpMap, false, true);
-        triList.material.normalBumpMap =         
-            Texture::fromGImage("Bump Map", normalBumpMap, TextureFormat::AUTO, Texture::TILE,
-            Texture::TRILINEAR_MIPMAP, Texture::DIM_2D, Texture::DEPTH_NORMAL, 1.0f);
+        triList.material.normalBumpMap =
+                Texture::fromGImage("Bump Map", normalBumpMap, TextureFormat::AUTO, Texture::TILE,
+                                    Texture::TRILINEAR_MIPMAP, Texture::DIM_2D, Texture::DEPTH_NORMAL, 1.0f);
 
         triList.material.bumpMapScale = 0.04f;
 
@@ -479,7 +480,7 @@ void App::loadScene() {
         part.updateVAR();
         part.updateShaders();
 
-        entityArray.append(Entity::create(model, CoordinateFrame(Vector3(0,-1,0))));
+        entityArray.append(Entity::create(model, CoordinateFrame(Vector3(0, -1, 0))));
     }
 
 
@@ -493,7 +494,7 @@ void App::loadScene() {
     lighting = Lighting::create();
     {
         skyParameters = LightingParameters(G3D::toSeconds(1, 00, 00, PM));
-    
+
         skyParameters.skyAmbient = Color3::white();
 
         if (sky.notNull()) {
@@ -515,7 +516,7 @@ void App::loadScene() {
         GLight L = skyParameters.directionalLight();
         // Decrease the blue since we're adding blue ambient
         L.color *= Color3(1.2f, 1.2f, 1);
-        L.position = Vector4(Vector3(0,1,1).direction(), 0);
+        L.position = Vector4(Vector3(0, 1, 1).direction(), 0);
 
         lighting->shadowedLightArray.append(L);
     }

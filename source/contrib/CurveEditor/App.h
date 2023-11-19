@@ -1,10 +1,12 @@
 #include <G3DAll.h>
+
 class App : public GApp {
 protected:
     void main();
+
 public:
 
-    GFontRef    font;
+    GFontRef font;
 
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 };

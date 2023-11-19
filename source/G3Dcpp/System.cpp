@@ -29,76 +29,78 @@
 
 #ifdef G3D_WIN32
 
-    #include <conio.h>
-    #include <sys/timeb.h>
+#include <conio.h>
+#include <sys/timeb.h>
 #   include "G3D/RegistryUtil.h"
 
-#elif defined(G3D_LINUX) 
+#elif defined(G3D_LINUX)
 
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include <errno.h>
-    #include <sys/types.h>
-    #include <sys/select.h>
-    #include <termios.h>
-    #include <stropts.h>
-    #include <unistd.h>
-    #include <sys/ioctl.h>
-    #include <sys/time.h>
-    #include <pthread.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/select.h>
+#include <termios.h>
+#include <stropts.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <pthread.h>
 
 #elif defined(G3D_OSX)
 
-    #include <stdlib.h>
-    #include <stdio.h>
-    #include <errno.h>
-    #include <sys/types.h>
-    #include <sys/select.h>
-    #include <termios.h>
-    #include <unistd.h>
-    #include <sys/time.h>
-    #include <pthread.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/select.h>
+#include <termios.h>
+#include <unistd.h>
+#include <sys/time.h>
+#include <pthread.h>
 
-    #include <sstream>
-    #include <CoreServices/CoreServices.h>
+#include <sstream>
+#include <CoreServices/CoreServices.h>
 #endif
 
 #if defined(SSE)
-    #include <xmmintrin.h>
+
+#include <xmmintrin.h>
+
 #endif
 
 namespace G3D {
 
-uint32 crc32(const void* byte, size_t numBytes) {
-    return Crypto::crc32(byte, numBytes);
-}
-
-
-std::string demoFindData(bool errorIfNotFound) {
-
-    // Directories that might contain the data
-    Array<std::string> potential;
-
-    // Look back up the directory tree
-    std::string x = "../";
-    std::string f = "";
-    for (int i = 0; i < 6; ++i) {
-        potential.append(f);
-        f = f + x;
-    }
-    
-    // Hard-code in likely install directories
-    int ver = G3D_VER;
-    std::string lname = format("g3d-%d_%02d", ver / 10000, (ver / 100) % 100);
-
-    if (G3D_VER % 10 != 0) {
-        lname = lname + format("-b%02d/", ver % 100);
-    } else {
-        lname = lname + "/";
+    uint32 crc32(const void *byte, size_t numBytes) {
+        return Crypto::crc32(byte, numBytes);
     }
 
-    std::string lpath = "libraries/" + lname;
-    #ifdef G3D_WIN32
+
+    std::string demoFindData(bool errorIfNotFound) {
+
+        // Directories that might contain the data
+        Array<std::string> potential;
+
+        // Look back up the directory tree
+        std::string x = "../";
+        std::string f = "";
+        for (int i = 0; i < 6; ++i) {
+                potential.append(f);
+                f = f + x;
+            }
+
+        // Hard-code in likely install directories
+        int ver = G3D_VER;
+        std::string lname = format("g3d-%d_%02d", ver / 10000, (ver / 100) % 100);
+
+        if (G3D_VER % 10 != 0) {
+            lname = lname + format("-b%02d/", ver % 100);
+        } else {
+            lname = lname + "/";
+        }
+
+        std::string lpath = "libraries/" + lname;
+#ifdef G3D_WIN32
         potential.append(std::string("c:/") + lpath);
         potential.append(std::string("d:/") + lpath);
         potential.append(std::string("e:/") + lpath);
@@ -106,54 +108,54 @@ std::string demoFindData(bool errorIfNotFound) {
         potential.append(std::string("g:/") + lpath);
         potential.append(std::string("x:/") + lpath);
         potential.append(std::string("c:/users/morgan/data/"));
-    #else
+#else
         potential.append(std::string("/course/cs224/") + lpath);
         potential.append(std::string("/map/gfx0/common/games/") + lpath);
-    #endif
+#endif
 
-    // Scan all potentials for the font directory
-    for (int p = 0; p < potential.size();  ++p) {
-        std::string path = potential[p];
-        if (fileExists(path + "data") && fileExists(path + "data/font")) {
-            return path + "data/";
+        // Scan all potentials for the font directory
+        for (int p = 0; p < potential.size(); ++p) {
+                std::string path = potential[p];
+                if (fileExists(path + "data") && fileExists(path + "data/font")) {
+                    return path + "data/";
+                }
+            }
+
+        if (errorIfNotFound) {
+            const char *choice[] = {"Exit"};
+
+            prompt("Demo Error", "The demo could not locate the data directory.  "
+                                 "The data is required to run this demo.  If you have not downloaded "
+                                 "the data zipfile, get it from http://g3d-cpp.sf.net.  If you have "
+                                 "downloaded it, it needs to be no more than 4 directories above the "
+                                 "demo directory.", choice, 1, true);
         }
+
+        return "";
     }
 
-    if (errorIfNotFound) {
-        const char* choice[] = {"Exit"};
-
-        prompt("Demo Error", "The demo could not locate the data directory.  "
-            "The data is required to run this demo.  If you have not downloaded "
-            "the data zipfile, get it from http://g3d-cpp.sf.net.  If you have "
-            "downloaded it, it needs to be no more than 4 directories above the "
-            "demo directory.", choice, 1, true);
-    }
-
-    return "";
-}
-
-static int                                      _CPUSpeed           = 0;
-static bool                                     _rdtsc              = false;
-static bool                                     _mmx                = false;
-static bool                                     _sse                = false;
-static bool                                     _sse2               = false;
-static bool                                     _3dnow              = false;
-static char                                     _cpuVendorCstr[1024] = {'U', 'n', 'k', 'n', 'o', 'w', 'n', '\0'};
-static bool                                     _cpuID              = false;
-static G3DEndian                                _machineEndian      = G3D_LITTLE_ENDIAN;
-static char                                     _cpuArchCstr[1024];
-static char                                     _operatingSystemCstr[1024];
+    static int _CPUSpeed = 0;
+    static bool _rdtsc = false;
+    static bool _mmx = false;
+    static bool _sse = false;
+    static bool _sse2 = false;
+    static bool _3dnow = false;
+    static char _cpuVendorCstr[1024] = {'U', 'n', 'k', 'n', 'o', 'w', 'n', '\0'};
+    static bool _cpuID = false;
+    static G3DEndian _machineEndian = G3D_LITTLE_ENDIAN;
+    static char _cpuArchCstr[1024];
+    static char _operatingSystemCstr[1024];
 
 #ifdef G3D_WIN32
 /** Used by getTick() for timing */
-static LARGE_INTEGER                            _start;
-static LARGE_INTEGER                            _counterFrequency;
+    static LARGE_INTEGER _start;
+    static LARGE_INTEGER _counterFrequency;
 #else
-static struct timeval                           _start;
+    static struct timeval                           _start;
 #endif
 
-static char                                     versionCstr[1024];
-System::OutOfMemoryCallback                     System::outOfMemoryCallback = NULL;
+    static char versionCstr[1024];
+    System::OutOfMemoryCallback                     System::outOfMemoryCallback = NULL;
 
 #ifdef G3D_OSX
     long System::m_OSXCPUSpeed;
@@ -161,149 +163,149 @@ System::OutOfMemoryCallback                     System::outOfMemoryCallback = NU
 #endif
 
 /** The Real-World time of System::getTick() time 0.  Set by initTime */
-static RealTime             realWorldGetTickTime0;
+    static RealTime realWorldGetTickTime0;
 
 
-static int               maxSupportedCPUIDLevel = 0;
-static int            maxSupportedExtendedLevel = 0;
+    static int maxSupportedCPUIDLevel = 0;
+    static int maxSupportedExtendedLevel = 0;
 
 #define checkBit(var, bit)   ((var & (1 << bit)) ? true : false)
 
 /** Checks if the CPUID command is available on the processor (called from init) */
-static void checkForCPUID();
+    static void checkForCPUID();
 
 /** ReadRead the standard processor extensions.  Called from init(). */
-static void getStandardProcessorExtensions();
+    static void getStandardProcessorExtensions();
 
 /** Called from init */
-static void initTime();
+    static void initTime();
 
 
-bool System::hasCPUID() {
-    init();
-    return _cpuID;
-}
+    bool System::hasCPUID() {
+        init();
+        return _cpuID;
+    }
 
-bool System::hasRDTSC() {
-    init();
-    return _rdtsc;
-}
-
-
-bool System::hasSSE() {
-    init();
-    return _sse;
-}
+    bool System::hasRDTSC() {
+        init();
+        return _rdtsc;
+    }
 
 
-bool System::hasSSE2() {
-    init();
-    return _sse2;
-}
+    bool System::hasSSE() {
+        init();
+        return _sse;
+    }
 
 
-bool System::hasMMX() {
-    init();
-    return _mmx;
-}
+    bool System::hasSSE2() {
+        init();
+        return _sse2;
+    }
 
 
-bool System::has3DNow() {
-    init();
-    return _3dnow;
-}
+    bool System::hasMMX() {
+        init();
+        return _mmx;
+    }
 
 
-const std::string& System::cpuVendor() {
-    init();
-    static const std::string _cpuVendor = _cpuVendorCstr;
-    return _cpuVendor;
-}
+    bool System::has3DNow() {
+        init();
+        return _3dnow;
+    }
 
 
-G3DEndian System::machineEndian() {
-    init();
-    return _machineEndian;
-}
+    const std::string &System::cpuVendor() {
+        init();
+        static const std::string _cpuVendor = _cpuVendorCstr;
+        return _cpuVendor;
+    }
 
-const std::string& System::operatingSystem() {
-    init();
-    static const std::string _operatingSystem =_operatingSystemCstr;
-    return _operatingSystem;
-}
-        
 
-const std::string& System::cpuArchitecture() {
-    init();
-    static const std::string _cpuArch = _cpuArchCstr;
-    return _cpuArch;
-}
+    G3DEndian System::machineEndian() {
+        init();
+        return _machineEndian;
+    }
 
-const std::string& System::build() {
-    const static std::string b =
+    const std::string &System::operatingSystem() {
+        init();
+        static const std::string _operatingSystem = _operatingSystemCstr;
+        return _operatingSystem;
+    }
+
+
+    const std::string &System::cpuArchitecture() {
+        init();
+        static const std::string _cpuArch = _cpuArchCstr;
+        return _cpuArch;
+    }
+
+    const std::string &System::build() {
+        const static std::string b =
 #   ifdef _DEBUG
-        "Debug";
-#   else 
-        "Release";
+                "Debug";
+#   else
+                "Release";
 #   endif
 
-    return b;
-}
-
-const std::string& System::version() {
-    init();
-
-    static const std::string _version = versionCstr;
-    return _version;
-}
-
-
-void System::init() {
-    // Cannot use most G3D data structures or utility functions in here because
-    // they are not initialized.
-
-    static bool initialized = false;
-
-    if (initialized) {
-        return;
+        return b;
     }
 
-    initialized = true;
+    const std::string &System::version() {
+        init();
 
-    if ((G3D_VER % 100) != 0) {
-        sprintf(versionCstr, "G3D %d.%02d beta %d",
-            G3D_VER / 10000,
-            (G3D_VER / 100) % 100,
-            G3D_VER % 100);
-    } else {
-        sprintf(versionCstr, "G3D %d.%02d",
-            G3D_VER / 10000,
-            (G3D_VER / 100) % 100);
+        static const std::string _version = versionCstr;
+        return _version;
     }
 
-    unsigned long eaxreg, ebxreg, ecxreg, edxreg;
-    eaxreg = ebxreg = ecxreg = edxreg = 0;
- 
-    // First of all we check if the CPUID command is available
-    checkForCPUID();
 
-    // Figure out if this machine is little or big endian.
-    {
-        int32 a = 1;
-        if (*(uint8*)&a == 1) {
-            _machineEndian = G3D_LITTLE_ENDIAN;
-        } else {
-            _machineEndian = G3D_BIG_ENDIAN;
+    void System::init() {
+        // Cannot use most G3D data structures or utility functions in here because
+        // they are not initialized.
+
+        static bool initialized = false;
+
+        if (initialized) {
+            return;
         }
-    }
 
-    if (_cpuID) {
-        // Process the CPUID information
+        initialized = true;
 
-        // We read the standard CPUID level 0x00000000 which should
-        // be available on every x86 processor.  This fills out
-        // a string with the processor vendor tag.
-        #ifdef _MSC_VER
+        if ((G3D_VER % 100) != 0) {
+            sprintf(versionCstr, "G3D %d.%02d beta %d",
+                    G3D_VER / 10000,
+                    (G3D_VER / 100) % 100,
+                    G3D_VER % 100);
+        } else {
+            sprintf(versionCstr, "G3D %d.%02d",
+                    G3D_VER / 10000,
+                    (G3D_VER / 100) % 100);
+        }
+
+        unsigned long eaxreg, ebxreg, ecxreg, edxreg;
+        eaxreg = ebxreg = ecxreg = edxreg = 0;
+
+        // First of all we check if the CPUID command is available
+        checkForCPUID();
+
+        // Figure out if this machine is little or big endian.
+        {
+            int32 a = 1;
+            if (*(uint8 *) &a == 1) {
+                _machineEndian = G3D_LITTLE_ENDIAN;
+            } else {
+                _machineEndian = G3D_BIG_ENDIAN;
+            }
+        }
+
+        if (_cpuID) {
+            // Process the CPUID information
+
+            // We read the standard CPUID level 0x00000000 which should
+            // be available on every x86 processor.  This fills out
+            // a string with the processor vendor tag.
+#ifdef _MSC_VER
             __asm {
                 push eax
                 push ebx
@@ -320,7 +322,7 @@ void System::init() {
                 pop ebx
                 pop eax
             }
-        #elif defined(__GNUC__) && defined(i386)
+#elif defined(__GNUC__) && defined(i386)
             asm (
                 "movl $0, %%eax \n"
                 "cpuid          \n"
@@ -337,23 +339,23 @@ void System::init() {
                 // No inputs
                 : 
                 "%eax","%ebx","%ecx","%edx" );
-        #else
+#else
             ebxreg = 0;
             edxreg = 0;
             ecxreg = 0;
-        #endif
+#endif
 
-        // Then we connect the single register values to the vendor string
-        *((unsigned long *) _cpuVendorCstr)       = ebxreg;
-        *((unsigned long *) (_cpuVendorCstr + 4)) = edxreg;
-        *((unsigned long *) (_cpuVendorCstr + 8)) = ecxreg;
-        _cpuVendorCstr[12] = '\0';
+            // Then we connect the single register values to the vendor string
+            *((unsigned long *) _cpuVendorCstr) = ebxreg;
+            *((unsigned long *) (_cpuVendorCstr + 4)) = edxreg;
+            *((unsigned long *) (_cpuVendorCstr + 8)) = ecxreg;
+            _cpuVendorCstr[12] = '\0';
 
-        // We can also read the max. supported standard CPUID level
-        maxSupportedCPUIDLevel = eaxreg & 0xFFFF;
+            // We can also read the max. supported standard CPUID level
+            maxSupportedCPUIDLevel = eaxreg & 0xFFFF;
 
-        // Then we read the ext. CPUID level 0x80000000
-        #ifdef _MSC_VER
+            // Then we read the ext. CPUID level 0x80000000
+#ifdef _MSC_VER
             __asm {
                 push eax
                 push ebx
@@ -367,7 +369,7 @@ void System::init() {
                 pop ebx
                 pop eax
             }
-        #elif defined(__GNUC__) && defined(i386)
+#elif defined(__GNUC__) && defined(i386)
             asm (
                 "movl $0x80000000, %%eax \n"
                 "cpuid                   \n"
@@ -378,69 +380,70 @@ void System::init() {
                 // No inputs
                 : 
                 "%eax", "%ebx", "%ecx", "%edx" );
-        #else
+#else
             eaxreg = 0;
-        #endif
+#endif
 
-        // ...to check the max. supported extended CPUID level
-        maxSupportedExtendedLevel = eaxreg;
+            // ...to check the max. supported extended CPUID level
+            maxSupportedExtendedLevel = eaxreg;
 
-        // Then we switch to the specific processor vendors.
-        // Fill out _cpuArch based on this information.  It will
-        // be overwritten by the next block of code on Windows,
-        // but on Linux will stand.
-        switch (ebxreg) {
-        case 0x756E6547:        // GenuineIntel
-            strcpy(_cpuArchCstr, "Intel Processor");
-            break;
-            
-        case 0x68747541:        // AuthenticAMD
-            strcpy(_cpuArchCstr, "AMD Processor");
-            break;
+            // Then we switch to the specific processor vendors.
+            // Fill out _cpuArch based on this information.  It will
+            // be overwritten by the next block of code on Windows,
+            // but on Linux will stand.
+            switch (ebxreg) {
+                case 0x756E6547:        // GenuineIntel
+                    strcpy(_cpuArchCstr, "Intel Processor");
+                    break;
 
-        case 0x69727943:        // CyrixInstead
-            strcpy(_cpuArchCstr, "Cyrix Processor");
-            break;
+                case 0x68747541:        // AuthenticAMD
+                    strcpy(_cpuArchCstr, "AMD Processor");
+                    break;
 
-        default:
-            strcpy(_cpuArchCstr, "Unknown Processor Vendor");
-            break;
+                case 0x69727943:        // CyrixInstead
+                    strcpy(_cpuArchCstr, "Cyrix Processor");
+                    break;
+
+                default:
+                    strcpy(_cpuArchCstr, "Unknown Processor Vendor");
+                    break;
+            }
         }
-    }
 
-    #ifdef G3D_WIN32
-        bool success = RegistryUtil::readInt32("HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\~MHz", _CPUSpeed);
+#ifdef G3D_WIN32
+        bool success = RegistryUtil::readInt32(
+                "HKEY_LOCAL_MACHINE\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0\\~MHz", _CPUSpeed);
 
         SYSTEM_INFO systemInfo;
         GetSystemInfo(&systemInfo);
-        char* arch;
+        char *arch;
         switch (systemInfo.wProcessorArchitecture) {
-        case PROCESSOR_ARCHITECTURE_INTEL:
-            arch = "Intel";
-            break;
-    
-        case PROCESSOR_ARCHITECTURE_MIPS:
-            arch = "MIPS";
-            break;
+            case PROCESSOR_ARCHITECTURE_INTEL:
+                arch = "Intel";
+                break;
 
-        case PROCESSOR_ARCHITECTURE_ALPHA:
-            arch = "Alpha";
-            break;
+            case PROCESSOR_ARCHITECTURE_MIPS:
+                arch = "MIPS";
+                break;
 
-        case PROCESSOR_ARCHITECTURE_PPC:
-            arch = "Power PC";
-            break;
+            case PROCESSOR_ARCHITECTURE_ALPHA:
+                arch = "Alpha";
+                break;
 
-        default:
-            arch = "Unknown";
+            case PROCESSOR_ARCHITECTURE_PPC:
+                arch = "Power PC";
+                break;
+
+            default:
+                arch = "Unknown";
         }
 
-        uint32 maxAddr = (uint32)(size_t)systemInfo.lpMaximumApplicationAddress;
+        uint32 maxAddr = (uint32) (size_t) systemInfo.lpMaximumApplicationAddress;
         sprintf(_cpuArchCstr, "%d x %d-bit %s processor @ %4.1 GHz",
-                    systemInfo.dwNumberOfProcessors,
-                    (int)(::log((double)maxAddr) / ::log(2.0) + 2.0),
-                    arch,
-                    _CPUSpeed / (1024.0 * 1024));
+                systemInfo.dwNumberOfProcessors,
+                (int) (::log((double) maxAddr) / ::log(2.0) + 2.0),
+                arch,
+                _CPUSpeed / (1024.0 * 1024));
 
         OSVERSIONINFO osVersionInfo;
         osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -448,16 +451,16 @@ void System::init() {
 
         if (success) {
             sprintf(_operatingSystemCstr, "Windows %d.%d build %d Platform %d %s",
-                osVersionInfo.dwMajorVersion, 
-                osVersionInfo.dwMinorVersion,
-                osVersionInfo.dwBuildNumber,
-                osVersionInfo.dwPlatformId,
-                osVersionInfo.szCSDVersion);
+                    osVersionInfo.dwMajorVersion,
+                    osVersionInfo.dwMinorVersion,
+                    osVersionInfo.dwBuildNumber,
+                    osVersionInfo.dwPlatformId,
+                    osVersionInfo.szCSDVersion);
         } else {
             strcpy(_operatingSystemCstr, "Windows");
         }
-    
-    #elif defined(G3D_LINUX)
+
+#elif defined(G3D_LINUX)
 
         {
             // Shell out to the 'uname' command
@@ -477,7 +480,7 @@ void System::init() {
             ::free(r);
         }
 
-    #elif defined(G3D_OSX)
+#elif defined(G3D_OSX)
 
         //Operating System:
         SInt32 macVersion;
@@ -511,21 +514,21 @@ void System::init() {
             strcpy(_cpuVendorCstr, "IBM");
             break;
         }
-            
-    #endif
 
-    initTime();
+#endif
 
-    getStandardProcessorExtensions();
-}
+        initTime();
+
+        getStandardProcessorExtensions();
+    }
 
 
-void checkForCPUID() {
-    unsigned long bitChanged = 0;
+    void checkForCPUID() {
+        unsigned long bitChanged = 0;
 
-    // We've to check if we can toggle the flag register bit 21.
-    // If we can't the processor does not support the CPUID command.
-    
+        // We've to check if we can toggle the flag register bit 21.
+        // If we can't the processor does not support the CPUID command.
+
 #   ifdef _MSC_VER
         __asm {
                 push eax
@@ -566,26 +569,26 @@ void checkForCPUID() {
         : "%eax", "%ecx"
         );
 
-#    else               
-       // Unknown architecture
+#    else
+        // Unknown architecture
         _cpuID = false;
 #    endif
 
-    _cpuID = ((bitChanged) ? true : false);
-}
-
-
-void getStandardProcessorExtensions() {
-    if (! _cpuID) {
-        return;
+        _cpuID = ((bitChanged) ? true : false);
     }
 
-    unsigned long features;
 
-    // Invoking CPUID with '1' in EAX fills out edx with a bit string.
-    // The bits of this value indicate the presence or absence of 
-    // useful processor features.
-    #ifdef _MSC_VER
+    void getStandardProcessorExtensions() {
+        if (!_cpuID) {
+            return;
+        }
+
+        unsigned long features;
+
+        // Invoking CPUID with '1' in EAX fills out edx with a bit string.
+        // The bits of this value indicate the presence or absence of
+        // useful processor features.
+#ifdef _MSC_VER
         // Windows
 
             __asm {
@@ -602,7 +605,7 @@ void getStandardProcessorExtensions() {
             pop eax
             }
 
-    #elif defined(__GNUC__) && defined(i386)
+#elif defined(__GNUC__) && defined(i386)
         // Linux
         __asm__ (
                 "movl    $1, %%eax                                                 \n"
@@ -615,11 +618,11 @@ void getStandardProcessorExtensions() {
                 : 
                 "%eax", "%ebx", "%ecx", "%edx" );
 
-    #else
+#else
         // Other
         features = 0;
-    #endif
-    
+#endif
+
         // FPU_FloatingPointUnit                                                        = checkBit(features, 0);
         // VME_Virtual8086ModeEnhancements                                      = checkBit(features, 1);
         // DE_DebuggingExtensions                                                       = checkBit(features, 2);
@@ -637,8 +640,8 @@ void getStandardProcessorExtensions() {
         // MCA_MachineCheckArchitecture                                         = checkBit(features, 14);
         // CMOV_ConditionalMoveAndCompareInstructions           = checkBit(features, 15);
 
-    // (According to SDL)
-        _rdtsc                                                                  = checkBit(features, 16);
+        // (According to SDL)
+        _rdtsc = checkBit(features, 16);
 
         // PSE36_36bitPageSizeExtension                                         = checkBit(features, 17);
         // PN_ProcessorSerialNumber                                                     = checkBit(features, 18);
@@ -646,21 +649,20 @@ void getStandardProcessorExtensions() {
         // CLFLUSH_InstructionCacheLineSize                                     = (ebxreg >> 8) & 0xFF;
         // DS_DebugStore                                                                        = checkBit(features, 21);
         // ACPI_ThermalMonitorAndClockControl                           = checkBit(features, 22);
-        _mmx                                                                                            = checkBit(features, 23);
+        _mmx = checkBit(features, 23);
         // FXSR_FastStreamingSIMD_ExtensionsSaveRestore         = checkBit(features, 24);
-        _sse                                                                                            = checkBit(features, 25);
-        _sse2                                                                                           = checkBit(features, 26);
+        _sse = checkBit(features, 25);
+        _sse2 = checkBit(features, 26);
         // SS_SelfSnoop                                                                         = checkBit(features, 27);
         // HT_HyperThreading                                                            = checkBit(features, 28);
         // HT_HyterThreadingSiblings = (ebxreg >> 16) & 0xFF;
         // TM_ThermalMonitor                                                            = checkBit(features, 29);
         // IA64_Intel64BitArchitecture                                          = checkBit(features, 30);
-        _3dnow                                              = checkBit(features, 31);
-}
+        _3dnow = checkBit(features, 31);
+    }
 
 
 #undef checkBit
-
 
 
 #if defined(SSE)
@@ -668,52 +670,54 @@ void getStandardProcessorExtensions() {
 // Copy in 128 bytes chunks, where each chunk contains 8*float32x4 = 8 * 4 * 4 bytes = 128 bytes
 //
 //
-void memcpySSE2(void* dst, const void* src, int nbytes) {
-    int remainingBytes = nbytes;
+    void memcpySSE2(void *dst, const void *src, int nbytes) {
+        int remainingBytes = nbytes;
 
-    if (nbytes > 128) {
+        if (nbytes > 128) {
 
-        // Number of chunks
-        int N = nbytes / 128;
+            // Number of chunks
+            int N = nbytes / 128;
 
-        float* restrict d = (float*)dst;
-        const float* restrict s = (const float*)src;
-    
-        // Finish when the destination pointer has moved 8N elements 
-        float* stop = d + (N * 8 * 4);
+            float *restrict d = (float *) dst;
+            const float *restrict s = (const float *) src;
 
-        while (d < stop) {
-            // Inner loop unrolled 8 times
-            const __m128 r0 = _mm_loadu_ps(s);
-            const __m128 r1 = _mm_loadu_ps(s + 4);
-            const __m128 r2 = _mm_loadu_ps(s + 8);
-            const __m128 r3 = _mm_loadu_ps(s + 12);
-            const __m128 r4 = _mm_loadu_ps(s + 16);
-            const __m128 r5 = _mm_loadu_ps(s + 20);
-            const __m128 r6 = _mm_loadu_ps(s + 24);
-            const __m128 r7 = _mm_loadu_ps(s + 28);
+            // Finish when the destination pointer has moved 8N elements
+            float *stop = d + (N * 8 * 4);
 
-            _mm_storeu_ps(d, r0);
-            _mm_storeu_ps(d + 4, r1);
-            _mm_storeu_ps(d + 8, r2);
-            _mm_storeu_ps(d + 12, r3);
-            _mm_storeu_ps(d + 16, r4);
-            _mm_storeu_ps(d + 20, r5);
-            _mm_storeu_ps(d + 24, r6);
-            _mm_storeu_ps(d + 28, r7);
+            while (d < stop) {
+                // Inner loop unrolled 8 times
+                const __m128 r0 = _mm_loadu_ps(s);
+                const __m128 r1 = _mm_loadu_ps(s + 4);
+                const __m128 r2 = _mm_loadu_ps(s + 8);
+                const __m128 r3 = _mm_loadu_ps(s + 12);
+                const __m128 r4 = _mm_loadu_ps(s + 16);
+                const __m128 r5 = _mm_loadu_ps(s + 20);
+                const __m128 r6 = _mm_loadu_ps(s + 24);
+                const __m128 r7 = _mm_loadu_ps(s + 28);
 
-            s += 32;
-            d += 32;
+                _mm_storeu_ps(d, r0);
+                _mm_storeu_ps(d + 4, r1);
+                _mm_storeu_ps(d + 8, r2);
+                _mm_storeu_ps(d + 12, r3);
+                _mm_storeu_ps(d + 16, r4);
+                _mm_storeu_ps(d + 20, r5);
+                _mm_storeu_ps(d + 24, r6);
+                _mm_storeu_ps(d + 28, r7);
+
+                s += 32;
+                d += 32;
+            }
+
+            remainingBytes -= N * 8 * 4 * 4;
         }
 
-        remainingBytes -= N * 8 * 4 * 4; 
+        if (remainingBytes > 0) {
+            // Memcpy the rest
+            memcpy((uint8 *) dst + (nbytes - remainingBytes), (const uint8 *) src + (nbytes - remainingBytes),
+                   remainingBytes);
+        }
     }
 
-    if (remainingBytes > 0) {
-        // Memcpy the rest
-        memcpy((uint8*)dst + (nbytes - remainingBytes), (const uint8*)src + (nbytes - remainingBytes), remainingBytes); 
-    }
-}
 #else
 
     // Fall back to memcpy
@@ -725,53 +729,54 @@ void memcpySSE2(void* dst, const void* src, int nbytes) {
 
 //#if defined(G3D_WIN32) && defined(SSE)
 #if 0
-/** Michael Herf's fast memcpy */
-void memcpyMMX(void* dst, const void* src, int nbytes) {
-    int remainingBytes = nbytes;
+    /** Michael Herf's fast memcpy */
+    void memcpyMMX(void* dst, const void* src, int nbytes) {
+        int remainingBytes = nbytes;
 
-    if (nbytes > 64) {
-            _asm {
-                    mov esi, src
-                    mov edi, dst
-                    mov ecx, nbytes
-                    shr ecx, 6 // 64 bytes per iteration
+        if (nbytes > 64) {
+                _asm {
+                        mov esi, src
+                        mov edi, dst
+                        mov ecx, nbytes
+                        shr ecx, 6 // 64 bytes per iteration
 
-    loop1:
-                    movq mm1,  0[ESI] // Read in source data
-                    movq mm2,  8[ESI]
-                    movq mm3, 16[ESI]
-                    movq mm4, 24[ESI]
-                    movq mm5, 32[ESI]
-                    movq mm6, 40[ESI]
-                    movq mm7, 48[ESI]
-                    movq mm0, 56[ESI]
+        loop1:
+                        movq mm1,  0[ESI] // Read in source data
+                        movq mm2,  8[ESI]
+                        movq mm3, 16[ESI]
+                        movq mm4, 24[ESI]
+                        movq mm5, 32[ESI]
+                        movq mm6, 40[ESI]
+                        movq mm7, 48[ESI]
+                        movq mm0, 56[ESI]
 
-                    movntq  0[EDI], mm1 // Non-temporal stores
-                    movntq  8[EDI], mm2
-                    movntq 16[EDI], mm3
-                    movntq 24[EDI], mm4
-                    movntq 32[EDI], mm5
-                    movntq 40[EDI], mm6
-                    movntq 48[EDI], mm7
-                    movntq 56[EDI], mm0
+                        movntq  0[EDI], mm1 // Non-temporal stores
+                        movntq  8[EDI], mm2
+                        movntq 16[EDI], mm3
+                        movntq 24[EDI], mm4
+                        movntq 32[EDI], mm5
+                        movntq 40[EDI], mm6
+                        movntq 48[EDI], mm7
+                        movntq 56[EDI], mm0
 
-                    add esi, 64
-                    add edi, 64
-                    dec ecx
-                    jnz loop1
+                        add esi, 64
+                        add edi, 64
+                        dec ecx
+                        jnz loop1
 
-                    emms
-            }
-            remainingBytes -= ((nbytes >> 6) << 6);
+                        emms
+                }
+                remainingBytes -= ((nbytes >> 6) << 6);
+        }
+
+        if (remainingBytes > 0) {
+            // Memcpy the rest
+            memcpy((uint8*)dst + (nbytes - remainingBytes), (const uint8*)src + (nbytes - remainingBytes), remainingBytes);
+        }
     }
-
-    if (remainingBytes > 0) {
-        // Memcpy the rest
-        memcpy((uint8*)dst + (nbytes - remainingBytes), (const uint8*)src + (nbytes - remainingBytes), remainingBytes);
-    }
-}
 
 #else
+
     // Fall back to memcpy
     void memcpyMMX(void *dst, const void *src, int nbytes) {
         memcpy(dst, src, nbytes);
@@ -780,162 +785,162 @@ void memcpyMMX(void* dst, const void* src, int nbytes) {
 #endif
 
 
-void System::memcpy(void* dst, const void* src, size_t numBytes) {
-    if (System::hasSSE2() && System::hasMMX()) {
-        G3D::memcpyMMX(dst, src, numBytes);
-    } else if (System::hasSSE() && System::hasMMX()) {
-        G3D::memcpyMMX(dst, src, numBytes);
-    } else {
-        ::memcpy(dst, src, numBytes);
+    void System::memcpy(void *dst, const void *src, size_t numBytes) {
+        if (System::hasSSE2() && System::hasMMX()) {
+            G3D::memcpyMMX(dst, src, numBytes);
+        } else if (System::hasSSE() && System::hasMMX()) {
+            G3D::memcpyMMX(dst, src, numBytes);
+        } else {
+            ::memcpy(dst, src, numBytes);
+        }
     }
-}
 
 
 /** Michael Herf's fastest memset. n32 must be filled with the same
     character repeated. */
 #if 0
-//#if defined(G3D_WIN32) && defined(SSE)
+    //#if defined(G3D_WIN32) && defined(SSE)
 
-// On x86 processors, use MMX
-void memfill(void *dst, int n32, unsigned long i) {
+    // On x86 processors, use MMX
+    void memfill(void *dst, int n32, unsigned long i) {
 
-    int originalSize = i;
-    int bytesRemaining = i;
+        int originalSize = i;
+        int bytesRemaining = i;
 
-    if (i > 16) {
-        
-        bytesRemaining = i % 16;
-        i -= bytesRemaining;
-                __asm {
-                        movq mm0, n32
-                        punpckldq mm0, mm0
-                        mov edi, dst
+        if (i > 16) {
 
-                loopwrite:
+            bytesRemaining = i % 16;
+            i -= bytesRemaining;
+                    __asm {
+                            movq mm0, n32
+                            punpckldq mm0, mm0
+                            mov edi, dst
 
-                        movntq 0[edi], mm0
-                        movntq 8[edi], mm0
+                    loopwrite:
 
-                        add edi, 16
-                        sub i, 16
-                        jg loopwrite
+                            movntq 0[edi], mm0
+                            movntq 8[edi], mm0
 
-                        emms
-                }
+                            add edi, 16
+                            sub i, 16
+                            jg loopwrite
+
+                            emms
+                    }
+        }
+
+        if (bytesRemaining > 0) {
+            ::memset((uint8*)dst + (originalSize - bytesRemaining), n32, bytesRemaining);
+        }
     }
-
-    if (bytesRemaining > 0) {
-        ::memset((uint8*)dst + (originalSize - bytesRemaining), n32, bytesRemaining); 
-    }
-}
 
 #else
 
 // For non x86 processors, we fall back to the standard memset
-void memfill(void *dst, int n32, unsigned long i) {
-    ::memset(dst, n32, i);
-}
+    void memfill(void *dst, int n32, unsigned long i) {
+        ::memset(dst, n32, i);
+    }
 
 #endif
 
 
-void System::memset(void* dst, uint8 value, size_t numBytes) {
-    if (System::hasSSE() && System::hasMMX()) {
-        uint32 v = value;
-        v = v + (v << 8) + (v << 16) + (v << 24); 
-        G3D::memfill(dst, v, numBytes);
-    } else {
-        ::memset(dst, value, numBytes);
-    }
-}
-
-
-std::string System::currentProgramFilename() {
-    char filename[2048];
-
-    #ifdef G3D_WIN32
-    {
-        GetModuleFileName(NULL, filename, sizeof(filename));
-    } 
-    #else
-    {
-            int ret = readlink("/proc/self/exe", filename, sizeof(filename));
-            
-            // In case of an error, leave the handling up to the caller
-        if (ret == -1) {
-                    return "";
-        }
-            
-        debugAssert((int)sizeof(filename) > ret);
-            
-            // Ensure proper NULL termination
-            filename[ret] = 0;      
-    }
-    #endif
-
-    return filename;
-}
-
-
-void System::sleep(RealTime t) {
-
-    // Overhead of calling this function.
-    static const RealTime OVERHEAD = .000006;
-
-    RealTime now = getTick();
-    RealTime wakeupTime = now + t - OVERHEAD;
-
-    RealTime remainingTime = wakeupTime - now;
-    RealTime sleepTime = 0;
-
-    while (remainingTime > 0) {
-        
-
-        if (remainingTime > 0.001) {
-            // Safe to use Sleep with a time... sleep for half the remaining time
-            sleepTime = max(remainingTime * .5, 0.0005);
-        } else if (remainingTime > 0.0001) {
-            // Safe to use Sleep with a zero time;
-            // causes the program to yield only
-            // the current time slice, and then return.
-            sleepTime = 0;
+    void System::memset(void *dst, uint8 value, size_t numBytes) {
+        if (System::hasSSE() && System::hasMMX()) {
+            uint32 v = value;
+            v = v + (v << 8) + (v << 16) + (v << 24);
+            G3D::memfill(dst, v, numBytes);
         } else {
-            // Not safe to use Sleep; busy wait
-            sleepTime = -1;
+            ::memset(dst, value, numBytes);
         }
+    }
 
-        if (sleepTime >= 0) {
-            #ifdef G3D_WIN32
+
+    std::string System::currentProgramFilename() {
+        char filename[2048];
+
+#ifdef G3D_WIN32
+        {
+            GetModuleFileName(NULL, filename, sizeof(filename));
+        }
+#else
+        {
+                int ret = readlink("/proc/self/exe", filename, sizeof(filename));
+
+                // In case of an error, leave the handling up to the caller
+            if (ret == -1) {
+                        return "";
+            }
+
+            debugAssert((int)sizeof(filename) > ret);
+
+                // Ensure proper NULL termination
+                filename[ret] = 0;
+        }
+#endif
+
+        return filename;
+    }
+
+
+    void System::sleep(RealTime t) {
+
+        // Overhead of calling this function.
+        static const RealTime OVERHEAD = .000006;
+
+        RealTime now = getTick();
+        RealTime wakeupTime = now + t - OVERHEAD;
+
+        RealTime remainingTime = wakeupTime - now;
+        RealTime sleepTime = 0;
+
+        while (remainingTime > 0) {
+
+
+            if (remainingTime > 0.001) {
+                // Safe to use Sleep with a time... sleep for half the remaining time
+                sleepTime = max(remainingTime * .5, 0.0005);
+            } else if (remainingTime > 0.0001) {
+                // Safe to use Sleep with a zero time;
+                // causes the program to yield only
+                // the current time slice, and then return.
+                sleepTime = 0;
+            } else {
+                // Not safe to use Sleep; busy wait
+                sleepTime = -1;
+            }
+
+            if (sleepTime >= 0) {
+#ifdef G3D_WIN32
                 // Translate to milliseconds
-                Sleep((int)(sleepTime * 1e3));
-            #else
+                Sleep((int) (sleepTime * 1e3));
+#else
                 // Translate to microseconds
                 usleep((int)(sleepTime * 1e6));
-            #endif
+#endif
+            }
+
+            now = getTick();
+            remainingTime = wakeupTime - now;
         }
-
-        now = getTick();
-        remainingTime = wakeupTime - now;
     }
-}
 
 
-void System::consoleClearScreen() {
-    #ifdef G3D_WIN32
+    void System::consoleClearScreen() {
+#ifdef G3D_WIN32
         system("cls");
-    #else
+#else
         system("clear");
-    #endif
-}
+#endif
+    }
 
 
-bool System::consoleKeyPressed() {
-    #ifdef G3D_WIN32
-    
+    bool System::consoleKeyPressed() {
+#ifdef G3D_WIN32
+
         return _kbhit() != 0;
 
-    #else
-    
+#else
+
         static const int STDIN = 0;
         static bool initialized = false;
 
@@ -949,13 +954,13 @@ bool System::consoleKeyPressed() {
             initialized = true;
         }
 
-        #ifdef G3D_LINUX
+#ifdef G3D_LINUX
 
             int bytesWaiting;
             ioctl(STDIN, FIONREAD, &bytesWaiting);
             return bytesWaiting;
 
-        #else
+#else
 
             timeval timeout;
             fd_set rdset;
@@ -966,24 +971,24 @@ bool System::consoleKeyPressed() {
             timeout.tv_usec = 0;
 
             return select(STDIN + 1, &rdset, NULL, NULL, &timeout);
-        #endif
-    #endif
-}
+#endif
+#endif
+    }
 
 
-int System::consoleReadKey() {
-    #ifdef G3D_WIN32
+    int System::consoleReadKey() {
+#ifdef G3D_WIN32
         return _getch();
-    #else
+#else
         char c;
         read(0, &c, 1);
         return c;
-    #endif
-}
+#endif
+    }
 
 
-void initTime() {
-    #ifdef G3D_WIN32
+    void initTime() {
+#ifdef G3D_WIN32
         if (QueryPerformanceFrequency(&_counterFrequency)) {
             QueryPerformanceCounter(&_start);
         }
@@ -991,9 +996,9 @@ void initTime() {
         struct _timeb t;
         _ftime(&t);
 
-        realWorldGetTickTime0 = (RealTime)t.time - t.timezone * G3D::MINUTE + (t.dstflag ? G3D::HOUR : 0);
+        realWorldGetTickTime0 = (RealTime) t.time - t.timezone * G3D::MINUTE + (t.dstflag ? G3D::HOUR : 0);
 
-    #else
+#else
         gettimeofday(&_start, NULL);
         // "sse" = "seconds since epoch".  The time
         // function returns the seconds since the epoch
@@ -1013,19 +1018,19 @@ void initTime() {
         }
         
         realWorldGetTickTime0 = local;
-    #endif
-}
+#endif
+    }
 
 
-RealTime System::getTick() { 
-    init();
-    #ifdef G3D_WIN32
+    RealTime System::getTick() {
+        init();
+#ifdef G3D_WIN32
         LARGE_INTEGER now;
         QueryPerformanceCounter(&now);
 
-        return (RealTime)(now.QuadPart - _start.QuadPart) /
-                _counterFrequency.QuadPart;
-    #else
+        return (RealTime) (now.QuadPart - _start.QuadPart) /
+               _counterFrequency.QuadPart;
+#else
         // Linux resolution defaults to 100Hz.
         // There is no need to do a separate RDTSC call as gettimeofday
         // actually uses RDTSC when on systems that support it, otherwise
@@ -1035,621 +1040,628 @@ RealTime System::getTick() {
 
         return (now.tv_sec  - _start.tv_sec) +
                (now.tv_usec - _start.tv_usec) / 1e6;
-    #endif
-}
+#endif
+    }
 
 
-RealTime System::getLocalTime() {
-    return getTick() + realWorldGetTickTime0;
-}
+    RealTime System::getLocalTime() {
+        return getTick() + realWorldGetTickTime0;
+    }
 
 
 ////////////////////////////////////////////////////////////////
-class BufferPool {
-public:
-
-    /** Only store buffers up to these sizes (in bytes) in each pool->
-        Different pools have different management strategies.
-
-        A large block is preallocated for tiny buffers; they are used with
-        tremendous frequency.  Other buffers are allocated as demanded.
-      */
-    enum {tinyBufferSize = 128, smallBufferSize = 1024, medBufferSize = 4096};
-
-    /** 
-       Most buffers we're allowed to store.
-       64000 * 128  = 8 MB (preallocated)
-        1024 * 1024 = 1 MB (allocated on demand)
-        1024 * 4096 = 4 MB (allocated on demand)
-     */
-    enum {maxTinyBuffers = 64000, maxSmallBuffers = 1024, maxMedBuffers = 1024};
-
-private:
-
-    class MemBlock {
+    class BufferPool {
     public:
-        void*           ptr;
-        size_t          bytes;
 
-        inline MemBlock() : ptr(NULL), bytes(0) {}
-        inline MemBlock(void* p, size_t b) : ptr(p), bytes(b) {}
-    };
+        /** Only store buffers up to these sizes (in bytes) in each pool->
+            Different pools have different management strategies.
 
-    MemBlock smallPool[maxSmallBuffers];
-    int smallPoolSize;
+            A large block is preallocated for tiny buffers; they are used with
+            tremendous frequency.  Other buffers are allocated as demanded.
+          */
+        enum {
+            tinyBufferSize = 128, smallBufferSize = 1024, medBufferSize = 4096
+        };
 
-    MemBlock medPool[maxMedBuffers];
-    int medPoolSize;
+        /**
+           Most buffers we're allowed to store.
+           64000 * 128  = 8 MB (preallocated)
+            1024 * 1024 = 1 MB (allocated on demand)
+            1024 * 4096 = 4 MB (allocated on demand)
+         */
+        enum {
+            maxTinyBuffers = 64000, maxSmallBuffers = 1024, maxMedBuffers = 1024
+        };
 
-    /** The tiny pool is a single block of storage into which all tiny
-        objects are allocated.  This provides better locality for
-        small objects and avoids the search time, since all tiny
-        blocks are exactly the same size. */
-    void* tinyPool[maxTinyBuffers];
-    int tinyPoolSize;
+    private:
 
-    /** Pointer to the data in the tiny pool */
-    void* tinyHeap;
+        class MemBlock {
+        public:
+            void *ptr;
+            size_t bytes;
+
+            inline MemBlock() : ptr(NULL), bytes(0) {}
+
+            inline MemBlock(void *p, size_t b) : ptr(p), bytes(b) {}
+        };
+
+        MemBlock smallPool[maxSmallBuffers];
+        int smallPoolSize;
+
+        MemBlock medPool[maxMedBuffers];
+        int medPoolSize;
+
+        /** The tiny pool is a single block of storage into which all tiny
+            objects are allocated.  This provides better locality for
+            small objects and avoids the search time, since all tiny
+            blocks are exactly the same size. */
+        void *tinyPool[maxTinyBuffers];
+        int tinyPoolSize;
+
+        /** Pointer to the data in the tiny pool */
+        void *tinyHeap;
 
 #   ifdef G3D_WIN32
-    CRITICAL_SECTION    mutex;
+        CRITICAL_SECTION mutex;
 #   else
-    pthread_mutex_t     mutex;
+        pthread_mutex_t     mutex;
 #   endif
 
-    /** Provide synchronization between threads */
-    void lock() {
+        /** Provide synchronization between threads */
+        void lock() {
 #       ifdef G3D_WIN32
             EnterCriticalSection(&mutex);
 #       else
             pthread_mutex_lock(&mutex);
 #       endif
-    }
+        }
 
-    void unlock() {
+        void unlock() {
 #       ifdef G3D_WIN32
             LeaveCriticalSection(&mutex);
 #       else
             pthread_mutex_unlock(&mutex);
 #       endif
-    }
-
-    /** 
-     Malloc out of the tiny heap.
-     */
-    inline void* tinyMalloc(size_t bytes) {
-        // Note that we ignore the actual byte size
-        // and create a constant size block.
-        (void)bytes;
-        debugAssert(tinyBufferSize >= bytes);
-
-        void* ptr = NULL;
-
-        if (tinyPoolSize > 0) {
-            --tinyPoolSize;
-            // Return the last one
-            ptr = tinyPool[tinyPoolSize];
         }
 
-        return ptr;
-    }
-
-    /** Returns true if this is a pointer into the tiny heap. */
-    bool inTinyHeap(void* ptr) {
-        return (ptr >= tinyHeap) && 
-               (ptr < (uint8*)tinyHeap + maxTinyBuffers * tinyBufferSize);
-    }
-
-    void tinyFree(void* ptr) {
-        debugAssert(tinyPoolSize < maxTinyBuffers);
-
-        // Put the pointer back into the free list
-        tinyPool[tinyPoolSize] = ptr;
-        ++tinyPoolSize;
-
-    }
-
-    void flushPool(MemBlock* pool, int& poolSize) {
-        for (int i = 0; i < poolSize; ++i) {
-            ::free(pool->ptr);
-            pool->ptr = NULL;
-            pool->bytes = 0;
-        }
-        poolSize = 0;
-    }
-
-
-    /**  Allocate out of a specific pool->  Return NULL if no suitable 
-         memory was found. 
-    
+        /**
+         Malloc out of the tiny heap.
          */
-    void* malloc(MemBlock* pool, int& poolSize, size_t bytes) {
+        inline void *tinyMalloc(size_t bytes) {
+            // Note that we ignore the actual byte size
+            // and create a constant size block.
+            (void) bytes;
+            debugAssert(tinyBufferSize >= bytes);
 
-        // OPT: find the smallest block that satisfies the request.
+            void *ptr = NULL;
 
-        // See if there's something we can use in the buffer pool->
-        // Search backwards since usually we'll re-use the last one.
-        for (int i = (int)poolSize - 1; i >= 0; --i) {
-            if (pool[i].bytes >= bytes) {
-                // We found a suitable entry in the pool->
-
-                // No need to offset the pointer; it is already offset
-                void* ptr = pool[i].ptr;
-
-                // Remove this element from the pool
-                --poolSize;
-                pool[i] = pool[poolSize];
-
-                return ptr;
+            if (tinyPoolSize > 0) {
+                --tinyPoolSize;
+                // Return the last one
+                ptr = tinyPool[tinyPoolSize];
             }
+
+            return ptr;
         }
 
-        return NULL;
-    }
-
-public:
-
-    /** Count of memory allocations that have occurred. */
-    int totalMallocs;
-    int mallocsFromTinyPool;
-    int mallocsFromSmallPool;
-    int mallocsFromMedPool;
-
-    /** Amount of memory currently allocated (according to the application). 
-        This does not count the memory still remaining in the buffer pool,
-        but does count extra memory required for rounding off to the size
-        of a buffer.
-        Primarily useful for detecting leaks.*/
-    // TODO: make me an atomic int!
-    int bytesAllocated;
-
-    BufferPool() {
-        totalMallocs         = 0;
-
-        mallocsFromTinyPool  = 0;
-        mallocsFromSmallPool = 0;
-        mallocsFromMedPool   = 0;
-
-        bytesAllocated       = true;
-
-        tinyPoolSize         = 0;
-        tinyHeap             = NULL;
-
-        smallPoolSize        = 0;
-
-        medPoolSize          = 0;
-
-
-        // Initialize the tiny heap as a bunch of pointers into one
-        // pre-allocated buffer.
-        tinyHeap = ::malloc(maxTinyBuffers * tinyBufferSize);
-        for (int i = 0; i < maxTinyBuffers; ++i) {
-            tinyPool[i] = (uint8*)tinyHeap + (tinyBufferSize * i);
+        /** Returns true if this is a pointer into the tiny heap. */
+        bool inTinyHeap(void *ptr) {
+            return (ptr >= tinyHeap) &&
+                   (ptr < (uint8 *) tinyHeap + maxTinyBuffers * tinyBufferSize);
         }
-        tinyPoolSize = maxTinyBuffers;
+
+        void tinyFree(void *ptr) {
+            debugAssert(tinyPoolSize < maxTinyBuffers);
+
+            // Put the pointer back into the free list
+            tinyPool[tinyPoolSize] = ptr;
+            ++tinyPoolSize;
+
+        }
+
+        void flushPool(MemBlock *pool, int &poolSize) {
+            for (int i = 0; i < poolSize; ++i) {
+                    ::free(pool->ptr);
+                    pool->ptr = NULL;
+                    pool->bytes = 0;
+                }
+            poolSize = 0;
+        }
+
+
+        /**  Allocate out of a specific pool->  Return NULL if no suitable
+             memory was found.
+
+             */
+        void *malloc(MemBlock *pool, int &poolSize, size_t bytes) {
+
+            // OPT: find the smallest block that satisfies the request.
+
+            // See if there's something we can use in the buffer pool->
+            // Search backwards since usually we'll re-use the last one.
+            for (int i = (int) poolSize - 1; i >= 0; --i) {
+                    if (pool[i].bytes >= bytes) {
+                        // We found a suitable entry in the pool->
+
+                        // No need to offset the pointer; it is already offset
+                        void *ptr = pool[i].ptr;
+
+                        // Remove this element from the pool
+                        --poolSize;
+                        pool[i] = pool[poolSize];
+
+                        return ptr;
+                    }
+                }
+
+            return NULL;
+        }
+
+    public:
+
+        /** Count of memory allocations that have occurred. */
+        int totalMallocs;
+        int mallocsFromTinyPool;
+        int mallocsFromSmallPool;
+        int mallocsFromMedPool;
+
+        /** Amount of memory currently allocated (according to the application).
+            This does not count the memory still remaining in the buffer pool,
+            but does count extra memory required for rounding off to the size
+            of a buffer.
+            Primarily useful for detecting leaks.*/
+        // TODO: make me an atomic int!
+        int bytesAllocated;
+
+        BufferPool() {
+            totalMallocs = 0;
+
+            mallocsFromTinyPool = 0;
+            mallocsFromSmallPool = 0;
+            mallocsFromMedPool = 0;
+
+            bytesAllocated = true;
+
+            tinyPoolSize = 0;
+            tinyHeap = NULL;
+
+            smallPoolSize = 0;
+
+            medPoolSize = 0;
+
+
+            // Initialize the tiny heap as a bunch of pointers into one
+            // pre-allocated buffer.
+            tinyHeap = ::malloc(maxTinyBuffers * tinyBufferSize);
+            for (int i = 0; i < maxTinyBuffers; ++i) {
+                    tinyPool[i] = (uint8 *) tinyHeap + (tinyBufferSize * i);
+                }
+            tinyPoolSize = maxTinyBuffers;
 
 #       ifdef G3D_WIN32
             InitializeCriticalSection(&mutex);
 #       else
             pthread_mutex_init(&mutex, NULL);
 #       endif
-    }
+        }
 
 
-    ~BufferPool() {
-        ::free(tinyHeap);
+        ~BufferPool() {
+            ::free(tinyHeap);
 #       ifdef G3D_WIN32
             DeleteCriticalSection(&mutex);
 #       else
             // No destruction on pthreads
 #       endif
-    }
-
-    
-    void* realloc(void* ptr, size_t bytes) {
-        if (ptr == NULL) {
-            return malloc(bytes);
         }
 
-        if (inTinyHeap(ptr)) {
-            if (bytes <= tinyBufferSize) {
-                // The old pointer actually had enough space.
-                return ptr;
+
+        void *realloc(void *ptr, size_t bytes) {
+            if (ptr == NULL) {
+                return malloc(bytes);
+            }
+
+            if (inTinyHeap(ptr)) {
+                if (bytes <= tinyBufferSize) {
+                    // The old pointer actually had enough space.
+                    return ptr;
+                } else {
+                    // Free the old pointer and malloc
+
+                    void *newPtr = malloc(bytes);
+                    System::memcpy(newPtr, ptr, tinyBufferSize);
+                    tinyFree(ptr);
+                    return newPtr;
+
+                }
             } else {
-                // Free the old pointer and malloc
-                
-                void* newPtr = malloc(bytes);
-                System::memcpy(newPtr, ptr, tinyBufferSize);
-                tinyFree(ptr);
+                // In one of our heaps.
+
+                // See how big the block really was
+                size_t realSize = ((uint32 *) ptr)[-1];
+                if (bytes <= realSize) {
+                    // The old block was big enough.
+                    return ptr;
+                }
+
+                // Need to reallocate
+                void *newPtr = malloc(bytes);
+                System::memcpy(newPtr, ptr, realSize);
+                free(ptr);
                 return newPtr;
-
-            }
-        } else {
-            // In one of our heaps.
-
-            // See how big the block really was
-            size_t realSize = ((uint32*)ptr)[-1];
-            if (bytes <= realSize) {
-                // The old block was big enough.
-                return ptr;
-            }
-
-            // Need to reallocate
-            void* newPtr = malloc(bytes);
-            System::memcpy(newPtr, ptr, realSize);
-            free(ptr);
-            return newPtr;
-        }
-    }
-
-
-    void* malloc(size_t bytes) {
-        lock();
-        ++totalMallocs;
-
-        if (bytes <= tinyBufferSize) {
-
-            void* ptr = tinyMalloc(bytes);
-
-            if (ptr) {
-                ++mallocsFromTinyPool;
-                unlock();
-                return ptr;
-            }
-
-        } 
-        
-        // Failure to allocate a tiny buffer is allowed to flow
-        // through to a small buffer
-        if (bytes <= smallBufferSize) {
-            
-            void* ptr = malloc(smallPool, smallPoolSize, bytes);
-
-            if (ptr) {
-                ++mallocsFromSmallPool;
-                unlock();
-                return ptr;
-            }
-
-        } else  if (bytes <= medBufferSize) {
-            // Note that a small allocation failure does *not* fall
-            // through into a medium allocation because that would
-            // waste the medium buffer's resources.
-
-            void* ptr = malloc(medPool, medPoolSize, bytes);
-
-            if (ptr) {
-                ++mallocsFromMedPool;
-                unlock();
-                return ptr;
             }
         }
 
-        bytesAllocated += 4 + bytes;
-        unlock();
 
-        // Heap allocate
+        void *malloc(size_t bytes) {
+            lock();
+            ++totalMallocs;
 
-        // Allocate 4 extra bytes for our size header (unfortunate,
-        // since malloc already added its own header).
-        void* ptr = ::malloc(bytes + 4);
+            if (bytes <= tinyBufferSize) {
 
-        if (ptr == NULL) {
-            // Flush memory pools to try and recover space
-            flushPool(smallPool, smallPoolSize);
-            flushPool(medPool, medPoolSize);
-            ptr = ::malloc(bytes + 4);
-        }
+                void *ptr = tinyMalloc(bytes);
 
+                if (ptr) {
+                    ++mallocsFromTinyPool;
+                    unlock();
+                    return ptr;
+                }
 
-        if (ptr == NULL) {
-            if ((System::outOfMemoryCallback != NULL) &&
-                (System::outOfMemoryCallback(bytes + 4, true) == true)) {
-                // Re-attempt the malloc
+            }
+
+            // Failure to allocate a tiny buffer is allowed to flow
+            // through to a small buffer
+            if (bytes <= smallBufferSize) {
+
+                void *ptr = malloc(smallPool, smallPoolSize, bytes);
+
+                if (ptr) {
+                    ++mallocsFromSmallPool;
+                    unlock();
+                    return ptr;
+                }
+
+            } else if (bytes <= medBufferSize) {
+                // Note that a small allocation failure does *not* fall
+                // through into a medium allocation because that would
+                // waste the medium buffer's resources.
+
+                void *ptr = malloc(medPool, medPoolSize, bytes);
+
+                if (ptr) {
+                    ++mallocsFromMedPool;
+                    unlock();
+                    return ptr;
+                }
+            }
+
+            bytesAllocated += 4 + bytes;
+            unlock();
+
+            // Heap allocate
+
+            // Allocate 4 extra bytes for our size header (unfortunate,
+            // since malloc already added its own header).
+            void *ptr = ::malloc(bytes + 4);
+
+            if (ptr == NULL) {
+                // Flush memory pools to try and recover space
+                flushPool(smallPool, smallPoolSize);
+                flushPool(medPool, medPoolSize);
                 ptr = ::malloc(bytes + 4);
             }
-        }
 
-        if (ptr == NULL) {
-            if (System::outOfMemoryCallback != NULL) {
-                // Notify the application
-                System::outOfMemoryCallback(bytes + 4, false);
+
+            if (ptr == NULL) {
+                if ((System::outOfMemoryCallback != NULL) &&
+                    (System::outOfMemoryCallback(bytes + 4, true) == true)) {
+                    // Re-attempt the malloc
+                    ptr = ::malloc(bytes + 4);
+                }
             }
-            return NULL;
+
+            if (ptr == NULL) {
+                if (System::outOfMemoryCallback != NULL) {
+                    // Notify the application
+                    System::outOfMemoryCallback(bytes + 4, false);
+                }
+                return NULL;
+            }
+
+            *(uint32 *) ptr = bytes;
+
+            return (uint8 *) ptr + 4;
         }
 
-        *(uint32*)ptr = bytes;
 
-        return (uint8*)ptr + 4;
-    }
+        void free(void *ptr) {
+            if (ptr == NULL) {
+                // Free does nothing on null pointers
+                return;
+            }
 
+            debugAssert(isValidPointer(ptr));
 
-    void free(void* ptr) {
-        if (ptr == NULL) {
-            // Free does nothing on null pointers
-            return;
-        }
+            if (inTinyHeap(ptr)) {
+                lock();
+                tinyFree(ptr);
+                unlock();
+                return;
+            }
 
-        debugAssert(isValidPointer(ptr));
+            uint32 bytes = ((uint32 *) ptr)[-1];
 
-        if (inTinyHeap(ptr)) {
             lock();
-            tinyFree(ptr);
+            if (bytes <= smallBufferSize) {
+                if (smallPoolSize < maxSmallBuffers) {
+                    smallPool[smallPoolSize] = MemBlock(ptr, bytes);
+                    ++smallPoolSize;
+                    unlock();
+                    return;
+                }
+            } else if (bytes <= medBufferSize) {
+                if (medPoolSize < maxMedBuffers) {
+                    medPool[medPoolSize] = MemBlock(ptr, bytes);
+                    ++medPoolSize;
+                    unlock();
+                    return;
+                }
+            }
+            bytesAllocated -= bytes + 4;
             unlock();
-            return;
+
+            // Free; the buffer pools are full or this is too big to store.
+            ::free((uint8 *) ptr - 4);
         }
 
-        uint32 bytes = ((uint32*)ptr)[-1];
+        std::string performance() const {
+            if (totalMallocs > 0) {
+                int pooled = mallocsFromTinyPool +
+                             mallocsFromSmallPool +
+                             mallocsFromMedPool;
 
-        lock();
-        if (bytes <= smallBufferSize) {
-            if (smallPoolSize < maxSmallBuffers) {
-                smallPool[smallPoolSize] = MemBlock(ptr, bytes);
-                ++smallPoolSize;
-                unlock();
-                return;
+                int total = totalMallocs;
+
+                return format("malloc performance: %5.1f%% <= %db, %5.1f%% <= %db, "
+                              "%5.1f%% <= %db, %5.1f%% > %db",
+                              100.0 * mallocsFromTinyPool / total,
+                              BufferPool::tinyBufferSize,
+                              100.0 * mallocsFromSmallPool / total,
+                              BufferPool::smallBufferSize,
+                              100.0 * mallocsFromMedPool / total,
+                              BufferPool::medBufferSize,
+                              100.0 * (1.0 - (double) pooled / total),
+                              BufferPool::medBufferSize);
+            } else {
+                return "No System::malloc calls made yet.";
             }
-        } else if (bytes <= medBufferSize) {
-            if (medPoolSize < maxMedBuffers) {
-                medPool[medPoolSize] = MemBlock(ptr, bytes);
-                ++medPoolSize;
-                unlock();
-                return;
-            }
         }
-        bytesAllocated -= bytes + 4;
-        unlock();
 
-        // Free; the buffer pools are full or this is too big to store.
-        ::free((uint8*)ptr - 4);
-    }
-
-    std::string performance() const {
-        if (totalMallocs > 0) {
-            int pooled = mallocsFromTinyPool +
-                         mallocsFromSmallPool + 
-                         mallocsFromMedPool;
-
-            int total = totalMallocs;
-
-            return format("malloc performance: %5.1f%% <= %db, %5.1f%% <= %db, "
-                          "%5.1f%% <= %db, %5.1f%% > %db",
-                          100.0 * mallocsFromTinyPool  / total,
-                          BufferPool::tinyBufferSize,
-                          100.0 * mallocsFromSmallPool / total,
-                          BufferPool::smallBufferSize,
-                          100.0 * mallocsFromMedPool   / total,
-                          BufferPool::medBufferSize,
-                          100.0 * (1.0 - (double)pooled / total),
-                          BufferPool::medBufferSize);
-        } else {
-            return "No System::malloc calls made yet.";
+        std::string status() const {
+            return format("preallocated shared buffers: %5d/%d x %db",
+                          maxTinyBuffers - tinyPoolSize, maxTinyBuffers, tinyBufferSize);
         }
-    }
-
-    std::string status() const {
-        return format("preallocated shared buffers: %5d/%d x %db",
-            maxTinyBuffers - tinyPoolSize, maxTinyBuffers, tinyBufferSize);
-    }
-};
+    };
 
 // Dynamically allocated because we need to ensure that
 // the buffer pool is still around when the last global variable 
 // is deallocated.
-static BufferPool* bufferpool = NULL;
+    static BufferPool *bufferpool = NULL;
 
-std::string System::mallocPerformance() {    
+    std::string System::mallocPerformance() {
 #ifndef NO_BUFFERPOOL
-    return bufferpool->performance();
+        return bufferpool->performance();
 #else
-	return "NO_BUFFERPOOL";
+        return "NO_BUFFERPOOL";
 #endif
-}
-
-std::string System::mallocStatus() {    
-#ifndef NO_BUFFERPOOL
-    return bufferpool->status();
-#else
-	return "NO_BUFFERPOOL";
-#endif
-}
-
-
-void System::resetMallocPerformanceCounters() {
-#ifndef NO_BUFFERPOOL
-    bufferpool->totalMallocs         = 0;
-    bufferpool->mallocsFromMedPool   = 0;
-    bufferpool->mallocsFromSmallPool = 0;
-    bufferpool->mallocsFromTinyPool  = 0;
-#endif
-}
-
-
-#ifndef NO_BUFFERPOOL
-inline void initMem() {
-    // Putting the test here ensures that the system is always
-    // initialized, even when globals are being allocated.
-    static bool initialized = false;
-    if (! initialized) {
-        bufferpool = new BufferPool();
-        initialized = true;
-    }
-}
-#endif
-
-
-void* System::malloc(size_t bytes) {
-#ifndef NO_BUFFERPOOL
-    initMem();
-    return bufferpool->malloc(bytes);
-#else
-    return ::malloc(bytes);
-#endif
-}
-
-void* System::calloc(size_t n, size_t x) {
-#ifndef NO_BUFFERPOOL
-    void* b = System::malloc(n * x);
-    System::memset(b, 0, n * x);
-    return b;
-#else
-    return ::calloc(n, x);
-#endif
-}
-
-
-void* System::realloc(void* block, size_t bytes) {
-#ifndef NO_BUFFERPOOL
-    initMem();
-    return bufferpool->realloc(block, bytes);
-#else
-	return ::realloc(block, bytes);
-#endif
-}
-
-
-void System::free(void* p) {
-#ifndef NO_BUFFERPOOL
-    bufferpool->free(p);
-#else
-	return ::free(p);
-#endif
-}
-
-
-void* System::alignedMalloc(size_t bytes, size_t alignment) {
-    alwaysAssertM(isPow2(alignment), "alignment must be a power of 2");
-
-    // We must align to at least a word boundary.
-    alignment = iMax(alignment, sizeof(void *));
-
-    // Pad the allocation size with the alignment size and the
-    // size of the redirect pointer.
-    size_t totalBytes = bytes + alignment + sizeof(intptr_t);
-
-    void* truePtr = System::malloc(totalBytes);
-
-    if (truePtr == 0) {
-        // malloc returned NULL
-        return NULL;
     }
 
-    debugAssert(isValidHeapPointer(truePtr));
-    #ifdef G3D_WIN32
-    // The blocks we return will not be valid Win32 debug heap
-    // pointers because they are offset 
-    //  debugAssert(_CrtIsValidPointer((void*)truePtr, totalBytes, TRUE) );
-    #endif
+    std::string System::mallocStatus() {
+#ifndef NO_BUFFERPOOL
+        return bufferpool->status();
+#else
+        return "NO_BUFFERPOOL";
+#endif
+    }
 
-    // The return pointer will be the next aligned location (we must at least
-    // leave space for the redirect pointer, however).
-    char* alignedPtr = ((char*)truePtr)+ sizeof(intptr_t);
+
+    void System::resetMallocPerformanceCounters() {
+#ifndef NO_BUFFERPOOL
+        bufferpool->totalMallocs = 0;
+        bufferpool->mallocsFromMedPool = 0;
+        bufferpool->mallocsFromSmallPool = 0;
+        bufferpool->mallocsFromTinyPool = 0;
+#endif
+    }
+
+
+#ifndef NO_BUFFERPOOL
+
+    inline void initMem() {
+        // Putting the test here ensures that the system is always
+        // initialized, even when globals are being allocated.
+        static bool initialized = false;
+        if (!initialized) {
+            bufferpool = new BufferPool();
+            initialized = true;
+        }
+    }
+
+#endif
+
+
+    void *System::malloc(size_t bytes) {
+#ifndef NO_BUFFERPOOL
+        initMem();
+        return bufferpool->malloc(bytes);
+#else
+        return ::malloc(bytes);
+#endif
+    }
+
+    void *System::calloc(size_t n, size_t x) {
+#ifndef NO_BUFFERPOOL
+        void *b = System::malloc(n * x);
+        System::memset(b, 0, n * x);
+        return b;
+#else
+        return ::calloc(n, x);
+#endif
+    }
+
+
+    void *System::realloc(void *block, size_t bytes) {
+#ifndef NO_BUFFERPOOL
+        initMem();
+        return bufferpool->realloc(block, bytes);
+#else
+        return ::realloc(block, bytes);
+#endif
+    }
+
+
+    void System::free(void *p) {
+#ifndef NO_BUFFERPOOL
+        bufferpool->free(p);
+#else
+        return ::free(p);
+#endif
+    }
+
+
+    void *System::alignedMalloc(size_t bytes, size_t alignment) {
+        alwaysAssertM(isPow2(alignment), "alignment must be a power of 2");
+
+        // We must align to at least a word boundary.
+        alignment = iMax(alignment, sizeof(void *));
+
+        // Pad the allocation size with the alignment size and the
+        // size of the redirect pointer.
+        size_t totalBytes = bytes + alignment + sizeof(intptr_t);
+
+        void *truePtr = System::malloc(totalBytes);
+
+        if (truePtr == 0) {
+            // malloc returned NULL
+            return NULL;
+        }
+
+        debugAssert(isValidHeapPointer(truePtr));
+#ifdef G3D_WIN32
+        // The blocks we return will not be valid Win32 debug heap
+        // pointers because they are offset
+        //  debugAssert(_CrtIsValidPointer((void*)truePtr, totalBytes, TRUE) );
+#endif
+
+        // The return pointer will be the next aligned location (we must at least
+        // leave space for the redirect pointer, however).
+        char *alignedPtr = ((char *) truePtr) + sizeof(intptr_t);
 
 #if 0
-    // 2^n - 1 has the form 1111... in binary.
-	uint32 bitMask = (alignment - 1);
+        // 2^n - 1 has the form 1111... in binary.
+        uint32 bitMask = (alignment - 1);
 
-	// Advance forward until we reach an aligned location.
-	while ((((intptr_t)alignedPtr) & bitMask) != 0) {
-		alignedPtr += sizeof(void*);
-	}
+        // Advance forward until we reach an aligned location.
+        while ((((intptr_t)alignedPtr) & bitMask) != 0) {
+            alignedPtr += sizeof(void*);
+        }
 #else
-    alignedPtr += alignment - (((intptr_t)alignedPtr) & (alignment - 1));
-    // assert((alignedPtr - truePtr) + bytes <= totalBytes);
+        alignedPtr += alignment - (((intptr_t) alignedPtr) & (alignment - 1));
+        // assert((alignedPtr - truePtr) + bytes <= totalBytes);
 #endif
 
-    debugAssert((alignedPtr - truePtr) + bytes <= totalBytes);
+        debugAssert((alignedPtr - truePtr) + bytes <= totalBytes);
 
-    // Immediately before the aligned location, write the true array location
-    // so that we can free it correctly.
-    intptr_t* redirectPtr = (intptr_t*)(alignedPtr - sizeof(intptr_t));
-    redirectPtr[0] = (intptr_t)truePtr;
+        // Immediately before the aligned location, write the true array location
+        // so that we can free it correctly.
+        intptr_t *redirectPtr = (intptr_t *) (alignedPtr - sizeof(intptr_t));
+        redirectPtr[0] = (intptr_t) truePtr;
 
-    debugAssert(isValidHeapPointer((void*)truePtr));
+        debugAssert(isValidHeapPointer((void *) truePtr));
 
-    #ifdef G3D_WIN32
-        debugAssert( _CrtIsValidPointer((void*)alignedPtr, bytes, TRUE) );
-    #endif
-    return (void *)alignedPtr;
-}
-
-
-void System::alignedFree(void* _ptr) {
-    if (_ptr == NULL) {
-        return;
+#ifdef G3D_WIN32
+        debugAssert(_CrtIsValidPointer((void *) alignedPtr, bytes, TRUE));
+#endif
+        return (void *) alignedPtr;
     }
 
-    size_t alignedPtr = (size_t)_ptr;
 
-    // Back up one word from the pointer the user passed in.
-    // We now have a pointer to a pointer to the true start
-    // of the memory block.
-    size_t* redirectPtr = (size_t*)(alignedPtr - sizeof(void *));
+    void System::alignedFree(void *_ptr) {
+        if (_ptr == NULL) {
+            return;
+        }
 
-    // Dereference that pointer so that ptr = true start
-    void* truePtr = (void*)redirectPtr[0];
+        size_t alignedPtr = (size_t) _ptr;
 
-    debugAssert(isValidHeapPointer((void*)truePtr));
-    System::free(truePtr);
-}
+        // Back up one word from the pointer the user passed in.
+        // We now have a pointer to a pointer to the true start
+        // of the memory block.
+        size_t *redirectPtr = (size_t *) (alignedPtr - sizeof(void *));
+
+        // Dereference that pointer so that ptr = true start
+        void *truePtr = (void *) redirectPtr[0];
+
+        debugAssert(isValidHeapPointer((void *) truePtr));
+        System::free(truePtr);
+    }
 
 
-void System::setEnv(const std::string& name, const std::string& value) {
-    std::string cmd = name + "=" + value;
+    void System::setEnv(const std::string &name, const std::string &value) {
+        std::string cmd = name + "=" + value;
 #   ifdef G3D_WIN32
         _putenv(cmd.c_str());
 #   else
         // Many linux implementations of putenv expect char*
         putenv(const_cast<char*>(cmd.c_str()));
 #   endif
-}
+    }
 
-const char* System::getEnv(const std::string& name) {
-    return getenv(name.c_str());
-}
+    const char *System::getEnv(const std::string &name) {
+        return getenv(name.c_str());
+    }
 
-static void var(TextOutput& t, const std::string& name, const std::string& val) {
-    t.writeSymbols(name,"=");
-    t.writeString(val);
-    t.writeNewline();
-}
-
-
-static void var(TextOutput& t, const std::string& name, const bool val) {
-    t.writeSymbols(name, "=", val ? "Yes" : "No");
-    t.writeNewline();
-}
+    static void var(TextOutput &t, const std::string &name, const std::string &val) {
+        t.writeSymbols(name, "=");
+        t.writeString(val);
+        t.writeNewline();
+    }
 
 
-static void var(TextOutput& t, const std::string& name, const int val) {
-    t.writeSymbols(name,"=");
-    t.writeNumber(val);
-    t.writeNewline();
-}
+    static void var(TextOutput &t, const std::string &name, const bool val) {
+        t.writeSymbols(name, "=", val ? "Yes" : "No");
+        t.writeNewline();
+    }
 
-void System::describeSystem(
-    std::string&        s) {
 
-    TextOutput t;
-    describeSystem(t);
-    t.commitString(s);
-}
+    static void var(TextOutput &t, const std::string &name, const int val) {
+        t.writeSymbols(name, "=");
+        t.writeNumber(val);
+        t.writeNewline();
+    }
 
-void System::describeSystem(
-    TextOutput& t) {
+    void System::describeSystem(
+            std::string &s) {
 
-    t.writeSymbols("OS", "{");
-    t.writeNewline();
-    t.pushIndent();
+        TextOutput t;
+        describeSystem(t);
+        t.commitString(s);
+    }
+
+    void System::describeSystem(
+            TextOutput &t) {
+
+        t.writeSymbols("OS", "{");
+        t.writeNewline();
+        t.pushIndent();
         var(t, "Name", System::operatingSystem());
-    t.popIndent();
-    t.writeSymbols("}");
-    t.writeNewline();
-    t.writeNewline();
+        t.popIndent();
+        t.writeSymbols("}");
+        t.writeNewline();
+        t.writeNewline();
 
-    t.writeSymbols("CPU", "{");
-    t.writeNewline();
-    t.pushIndent();
+        t.writeSymbols("CPU", "{");
+        t.writeNewline();
+        t.pushIndent();
         var(t, "Vendor", System::cpuVendor());
         var(t, "Architecture", System::cpuArchitecture());
         var(t, "hasCPUID", System::hasCPUID());
@@ -1658,24 +1670,24 @@ void System::describeSystem(
         var(t, "hasSSE2", System::hasSSE2());
         var(t, "has3DNow", System::has3DNow());
         var(t, "hasRDTSC", System::hasRDTSC());
-    t.popIndent();
-    t.writeSymbols("}");
-    t.writeNewline();
-    t.writeNewline();
-       
-    t.writeSymbols("G3D", "{");
-    t.writeNewline();
-    t.pushIndent();
+        t.popIndent();
+        t.writeSymbols("}");
+        t.writeNewline();
+        t.writeNewline();
+
+        t.writeSymbols("G3D", "{");
+        t.writeNewline();
+        t.pushIndent();
         var(t, "Link version", G3D_VER);
         var(t, "Compile version", System::version());
-    t.popIndent();
-    t.writeSymbols("}");
-    t.writeNewline();
-    t.writeNewline();
-}
+        t.popIndent();
+        t.writeSymbols("}");
+        t.writeNewline();
+        t.writeNewline();
+    }
 
-int System::cpuSpeedMHz() {
-    return _CPUSpeed;
-}
+    int System::cpuSpeedMHz() {
+        return _CPUSpeed;
+    }
 
 }  // namespace

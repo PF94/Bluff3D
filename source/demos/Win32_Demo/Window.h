@@ -25,35 +25,38 @@ class Window {
 
 public:
 
-   Window();
-   virtual ~Window();
+    Window();
 
-   virtual bool create(const std::string& name, int width, int height);
+    virtual ~Window();
 
-   void close();
-   void requestRedraw();
-   void run();
+    virtual bool create(const std::string &name, int width, int height);
 
-   HDC                  hDC;
+    void close();
 
-   int                  width;
-   int                  height;
+    void requestRedraw();
 
-   /**
-    Size width x height x 4
-    */
-   unsigned int*        buffer;
+    void run();
 
-   /**
-    Buffer bitmap info used for converting it to a DIB.
-    */
-   BITMAPINFO           bitmap_info;
+    HDC hDC;
 
-   HWND                 window;
+    int width;
+    int height;
+
+    /**
+     Size width x height x 4
+     */
+    unsigned int *buffer;
+
+    /**
+     Buffer bitmap info used for converting it to a DIB.
+     */
+    BITMAPINFO bitmap_info;
+
+    HWND window;
 
 private:
-   
-   static LRESULT WINAPI window_proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
+
+    static LRESULT WINAPI window_proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
 
 };
 

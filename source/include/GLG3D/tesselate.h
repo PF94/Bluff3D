@@ -27,7 +27,7 @@ namespace G3D {
  winding rule.  You may need to introduce a sliver polygon to cut
  holes out of the center.
  */
-void tesselateComplexPolygon(Array<Vector3>& input, Array<Triangle>& output);
+    void tesselateComplexPolygon(Array<Vector3> &input, Array<Triangle> &output);
 
 }
 

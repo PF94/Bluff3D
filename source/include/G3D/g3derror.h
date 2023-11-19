@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 #ifdef _MSC_VER
-    // disable: "C++ exception handler used"
+// disable: "C++ exception handler used"
 #   pragma warning (push)
 #   pragma warning (disable : 4530)
 #endif // _MSC_VER
@@ -53,23 +53,28 @@ namespace G3D {
 /**
  Return values from error().
  */
-enum ErrorConstant {IGNORE_ERROR, QUIT_ERROR};
+    enum ErrorConstant {
+        IGNORE_ERROR, QUIT_ERROR
+    };
 
 
-namespace _internal {
-ErrorConstant _utility_error(
-    const char* level,
-    const char* message,
-    bool        showPrompt,
-    const char* filename,
-    int line);
+    namespace _internal {
+        ErrorConstant _utility_error(
+                const char *level,
+                const char *message,
+                bool showPrompt,
+                const char *filename,
+                int line);
 
-ErrorConstant _utility_error(const char *level, const std::string &message, bool showPrompt, const char *filename, int line);
+        ErrorConstant
+        _utility_error(const char *level, const std::string &message, bool showPrompt, const char *filename, int line);
 
-ErrorConstant _utility_error(const std::string &level, const std::string &message, bool showPrompt,const char *filename, int line);
+        ErrorConstant
+        _utility_error(const std::string &level, const std::string &message, bool showPrompt, const char *filename,
+                       int line);
 
 
-} /* namespace */
+    } /* namespace */
 
 }; // namespace
 

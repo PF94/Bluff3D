@@ -5,7 +5,9 @@
 void testGChunk() {
     printf("GChunk ");
 
-    enum {HEADER, NAME, BODY, NUM, DATA};
+    enum {
+        HEADER, NAME, BODY, NUM, DATA
+    };
     {
         BinaryOutput b("file.dat", G3D_LITTLE_ENDIAN);
 
@@ -32,8 +34,8 @@ void testGChunk() {
             {
                 GChunk c(b, DATA, FLOAT32_BINFMT);
                 for (int i = 0; i < 10; ++i) {
-                    b.writeFloat32(sqrt((double)i));
-                }
+                        b.writeFloat32(sqrt((double) i));
+                    }
                 c.finish(b);
             }
             c.finish(b);
@@ -72,9 +74,9 @@ void testGChunk() {
                 GChunk c(b, DATA, FLOAT32_BINFMT);
                 debugAssert(c.count == 10);
                 for (int i = 0; i < 10; ++i) {
-                    alwaysAssertM(fuzzyEq(b.readFloat32(), sqrt((double)i)),
-                        "Data in chunk corrupted");
-                }
+                        alwaysAssertM(fuzzyEq(b.readFloat32(), sqrt((double) i)),
+                                      "Data in chunk corrupted");
+                    }
                 c.finish(b);
             }
             c.finish(b);

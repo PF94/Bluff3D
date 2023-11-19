@@ -18,27 +18,27 @@
 class Controls {
 public:
     /** Desired change in facing velocity in world frame. */
-    double              desiredYawVelocity;
+    double desiredYawVelocity;
 
     /** Desired change in position rate in world frame. */
-    Vector3             desiredVelocity;
+    Vector3 desiredVelocity;
 
     /** Initializes all values to zero */
     Controls();
 
-    inline bool operator==(const Controls& other) const {
-        return 
-            (desiredYawVelocity == other.desiredYawVelocity) &&
-            (desiredVelocity == other.desiredVelocity);
+    inline bool operator==(const Controls &other) const {
+        return
+                (desiredYawVelocity == other.desiredYawVelocity) &&
+                (desiredVelocity == other.desiredVelocity);
     }
 
-    inline bool operator!=(const Controls& other) const {
-        return ! (*this == other);
+    inline bool operator!=(const Controls &other) const {
+        return !(*this == other);
     }
 
-    void serialize(BinaryOutput&) const;
+    void serialize(BinaryOutput &) const;
 
-    void deserialize(BinaryInput&);
+    void deserialize(BinaryInput &);
 };
 
 
@@ -48,28 +48,32 @@ public:
 class Entity {
 public:
     typedef int ID;
-    enum {NO_ID = 0};
+    enum {
+        NO_ID = 0
+    };
 
-    enum ModelType {NONE = 0, HELICOPTER};
+    enum ModelType {
+        NONE = 0, HELICOPTER
+    };
 
     /**
       Time period over which positions are lerped between
       the client value and the server value when there
       is a discrepancy.
       */
-    static const RealTime     networkLerpTime;
+    static const RealTime networkLerpTime;
 
-    ID                  id;
+    ID id;
 
-    Color3              color;
+    Color3 color;
 
-    Pose                pose;
+    Pose pose;
 
-    ModelType           modelType;
+    ModelType modelType;
 
-    std::string         name;
+    std::string name;
 
-    PhysicsFrame        frame;
+    PhysicsFrame frame;
 
     /** The difference of the new and old values due to network
         synchronization.  Used in smoothCoordinateFrame.
@@ -83,24 +87,24 @@ public:
 
         Not used on the server side.  Not sent when the Entity
         is serialized. */
-    PhysicsFrame        oldDeltaFrame;
+    PhysicsFrame oldDeltaFrame;
 
     /** System::getTick() time at which oldFrame was frozen */
-    RealTime            oldFrameTime;
+    RealTime oldFrameTime;
 
-    Vector3             velocity;
+    Vector3 velocity;
 
     /** When the controls change, the orientation matrix can't change
-        immediately.  Tracked only for visualization.*/ 
-    Vector3             oldDesiredVelocity;
-    RealTime            oldDesiredVelocityTime;
+        immediately.  Tracked only for visualization.*/
+    Vector3 oldDesiredVelocity;
+    RealTime oldDesiredVelocityTime;
     /** Ephemeral.  Used for the 'tip' matrix */
-    Vector3             currentTiltVelocity;
+    Vector3 currentTiltVelocity;
 
     /** Rotation due to movement. Ephemeral; tracked only for visualization. */
-    Matrix3             tip;
+    Matrix3 tip;
 
-    Controls            controls;
+    Controls controls;
 
     Entity();
 
@@ -112,7 +116,7 @@ public:
     CoordinateFrame smoothCoordinateFrame(RealTime now = System::getTick()) const;
 
     /** Makes an update message that can be sent between client and server or vice versa. */
-    void makeStateMessage(class EntityStateMessage& msg) const;
+    void makeStateMessage(class EntityStateMessage &msg) const;
 
     virtual ~Entity() {}
 
@@ -120,19 +124,19 @@ public:
         (The server side only updates the controls, not the state.)
         If localID == id, the controls are not updated because this
         entity is being controlled locally. */
-    void clientUpdateFromStateMessage(class EntityStateMessage& msg, Entity::ID localID);
+    void clientUpdateFromStateMessage(class EntityStateMessage &msg, Entity::ID localID);
 
     void doSimulation(SimTime dt);
 
     /** Called from CreateEntityMessage::serialize */
-    virtual void serialize(BinaryOutput&) const;
+    virtual void serialize(BinaryOutput &) const;
 
-    virtual void deserialize(BinaryInput&);
+    virtual void deserialize(BinaryInput &);
 };
 
 
 typedef Table<Entity::ID, Entity> EntityTable;
 
-void simulateEntities(EntityTable& entityTable, SimTime dt);
+void simulateEntities(EntityTable &entityTable, SimTime dt);
 
 #endif

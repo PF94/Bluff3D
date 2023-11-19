@@ -9,7 +9,7 @@
 #include "graphics3D.h"
 
 #if G3D_VER < 60800
-    #error Requires G3D 6.08
+#error Requires G3D 6.08
 #endif
 
 #ifndef _MSC_VER
@@ -41,187 +41,191 @@ namespace G3D {
     }
  </pre>
  */
-class AVIReader {
-private:
+    class AVIReader {
+    private:
 
-    PAVIFILE        pAviFile;
-    
-    std::string     m_filename;
-    bool            m_ok;
-    std::string     m_error;
+        PAVIFILE pAviFile;
 
-    enum {MAX_AUDIO_STREAMS = 1,
-          MAX_VIDEO_STREAMS = 1};
+        std::string m_filename;
+        bool m_ok;
+        std::string m_error;
 
-    PAVISTREAM      pAudio[MAX_AUDIO_STREAMS];
-    PAVISTREAM      pVideo[MAX_VIDEO_STREAMS];
+        enum {
+            MAX_AUDIO_STREAMS = 1,
+            MAX_VIDEO_STREAMS = 1
+        };
 
-    int             nNumAudioStreams;
-    int             nNumVideoStreams;
+        PAVISTREAM pAudio[MAX_AUDIO_STREAMS];
+        PAVISTREAM pVideo[MAX_VIDEO_STREAMS];
 
-    PGETFRAME       pgf;
+        int nNumAudioStreams;
+        int nNumVideoStreams;
 
-    AVIFILEINFO     info;
+        PGETFRAME pgf;
 
-    int             m_numFrames;
+        AVIFILEINFO info;
 
-    int             m_width;
-    int             m_height;
+        int m_numFrames;
 
-    /** "fourCC" */
-    std::string     m_codec;
+        int m_width;
+        int m_height;
 
-public:
+        /** "fourCC" */
+        std::string m_codec;
 
-    AVIReader(const std::string& filename);
+    public:
 
-    ~AVIReader();
+        AVIReader(const std::string &filename);
 
-    const std::string& filename() const {
-        return m_filename;
-    }
+        ~AVIReader();
 
-    /** Overwrites any existing contents in im. 
-        See G3D::Texture::fromGImage to convert this to a texture
-        for rendering.
+        const std::string &filename() const {
+            return m_filename;
+        }
 
-        @param desiredChannels Must be 1 (grayscale), 3 (RGB), or 4 (RGBA, where A = 255)
-     */
-    void getFrame(int f, G3D::GImage& im, int desiredChannels = 4);
+        /** Overwrites any existing contents in im.
+            See G3D::Texture::fromGImage to convert this to a texture
+            for rendering.
 
-    bool ok() const {
-        return m_ok;
-    }
+            @param desiredChannels Must be 1 (grayscale), 3 (RGB), or 4 (RGBA, where A = 255)
+         */
+        void getFrame(int f, G3D::GImage &im, int desiredChannels = 4);
 
-    int numFrames() const {
-        return m_numFrames;
-    }
+        bool ok() const {
+            return m_ok;
+        }
 
-    const std::string& errorString() const {
-        return m_error;
-    }
+        int numFrames() const {
+            return m_numFrames;
+        }
 
-    /** "fourCC" */
-    const std::string& codec() const {
-        return m_codec;
-    }
+        const std::string &errorString() const {
+            return m_error;
+        }
 
-    int frameWidth() const {
-        return m_width;
-    }
+        /** "fourCC" */
+        const std::string &codec() const {
+            return m_codec;
+        }
 
-    int frameHeight() const {
-        return m_height;
-    }
-};
+        int frameWidth() const {
+            return m_width;
+        }
+
+        int frameHeight() const {
+            return m_height;
+        }
+    };
 
 
 /**
  Writes AVI files
  @cite http://www.wischik.com/lu/programmer/avi_utils.html
 */
-class AVIWriter {
-private:
-    
-    enum State {STATE_WRITING, STATE_COMMITTED, STATE_ABORTED, STATE_ERROR};
+    class AVIWriter {
+    private:
 
-    State           state;
+        enum State {
+            STATE_WRITING, STATE_COMMITTED, STATE_ABORTED, STATE_ERROR
+        };
 
-    bool            m_ok;
-    std::string     m_errorString;
-    std::string     m_filename;
-    std::string     m_codec;
+        State state;
 
-    PAVIFILE        pAviFile;
+        bool m_ok;
+        std::string m_errorString;
+        std::string m_filename;
+        std::string m_codec;
 
-    /** (.nChanels=0 if none was given).  Not used. */
-    WAVEFORMATEX    wfx;
+        PAVIFILE pAviFile;
 
-    /** Specified in CreateAvi, used when the video stream is first created */
-    int             m_period;
+        /** (.nChanels=0 if none was given).  Not used. */
+        WAVEFORMATEX wfx;
 
-    /** audio stream, not used */
-    PAVISTREAM      audio;
+        /** Specified in CreateAvi, used when the video stream is first created */
+        int m_period;
 
-    /** Created by createStreams */
-    PAVISTREAM      video;
+        /** audio stream, not used */
+        PAVISTREAM audio;
 
-    /** Created by createStreams */
-    PAVISTREAM      compressedVideo;
+        /** Created by createStreams */
+        PAVISTREAM video;
 
-    /**  which frame will be added next, which sample will be added next */
-    unsigned long   nframe, nsamp;
+        /** Created by createStreams */
+        PAVISTREAM compressedVideo;
 
-    int             m_width;
-    int             m_height;
+        /**  which frame will be added next, which sample will be added next */
+        unsigned long nframe, nsamp;
 
-    /** Size of a frame. */
-    size_t          frameBytes;
+        int m_width;
+        int m_height;
 
-    void createStreams(bool promptForCompressOptions);
+        /** Size of a frame. */
+        size_t frameBytes;
 
-    void setError(const std::string& errorString);
-    
-    /** Does not change the state */
-    void closeFile();
+        void createStreams(bool promptForCompressOptions);
 
-public:
+        void setError(const std::string &errorString);
 
-    /**
-     The compression codecs available depend on the drivers installed
-     on your machine.
+        /** Does not change the state */
+        void closeFile();
 
-     @param codec A string returned from AVIWriter::getCodecs.  Some popular ones are:
-       "MSVC" Microsoft video 1
-       "DIB " Uncompressed
-       "DIVX" DivX
-     */
-    AVIWriter(
-        const std::string&  filename, 
-        int                 width,
-        int                 height,
-        int                 period,
-        const std::string&  codec = "DIB ",
-        bool                promptForCompressOptions = false);
+    public:
 
-    /** Commit or abort must have been called before the destructor.*/
-    ~AVIWriter();
+        /**
+         The compression codecs available depend on the drivers installed
+         on your machine.
 
-    void commit();
+         @param codec A string returned from AVIWriter::getCodecs.  Some popular ones are:
+           "MSVC" Microsoft video 1
+           "DIB " Uncompressed
+           "DIVX" DivX
+         */
+        AVIWriter(
+                const std::string &filename,
+                int width,
+                int height,
+                int period,
+                const std::string &codec = "DIB ",
+                bool promptForCompressOptions = false);
 
-    void abort();
+        /** Commit or abort must have been called before the destructor.*/
+        ~AVIWriter();
 
-    /** Returns an array of the strings that may be passed to the constructor. */
-    static void getCodecs(Array<std::string>& comp);
+        void commit();
 
-    inline bool ok() const {
-        return m_ok;
-    }
+        void abort();
 
-    const std::string& errorString() const {
-        return m_errorString;
-    }
+        /** Returns an array of the strings that may be passed to the constructor. */
+        static void getCodecs(Array<std::string> &comp);
 
-    /** All frames must have the same dimensions and number of channels. */
-    void writeFrame(const GImage& im);
+        inline bool ok() const {
+            return m_ok;
+        }
 
-    const std::string& filename() const {
-        return m_filename;
-    }
+        const std::string &errorString() const {
+            return m_errorString;
+        }
 
-    /** "fourCC" */
-    inline const std::string& codec() const {
-        return m_codec;
-    }
+        /** All frames must have the same dimensions and number of channels. */
+        void writeFrame(const GImage &im);
 
-    inline const int width() const {
-        return m_width;
-    }
+        const std::string &filename() const {
+            return m_filename;
+        }
 
-    inline const int height() const {
-        return m_height;
-    }
-};
+        /** "fourCC" */
+        inline const std::string &codec() const {
+            return m_codec;
+        }
+
+        inline const int width() const {
+            return m_width;
+        }
+
+        inline const int height() const {
+            return m_height;
+        }
+    };
 
 }
 

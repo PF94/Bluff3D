@@ -24,7 +24,7 @@
 
 namespace G3D {
 
-typedef ReferenceCountedPointer<class Framebuffer> FramebufferRef;
+    typedef ReferenceCountedPointer<class Framebuffer> FramebufferRef;
 
 /**
  Abstraction of OpenGL's Framebuffer Object extension.  This is a fast and 
@@ -126,184 +126,189 @@ typedef ReferenceCountedPointer<class Framebuffer> FramebufferRef;
 
 	<B>BETA API</B> -- Subject to change
 */
-class Framebuffer : public ReferenceCountedObject {
-public:
-
-    /**
-	 Specifies the attachment to which a framebuffer-attachable-image
-	 (Renderbuffer or a Texture image) will be attached.  These mirror
-	 the OpenGL definition as do their values.
-	 */
-	enum AttachmentPoint {
-		COLOR_ATTACHMENT0  = 0x8CE0,
-        COLOR_ATTACHMENT1  = 0x8CE1,
-        COLOR_ATTACHMENT2  = 0x8CE2,
-        COLOR_ATTACHMENT3  = 0x8CE3,
-        COLOR_ATTACHMENT4  = 0x8CE4,
-        COLOR_ATTACHMENT5  = 0x8CE5,
-        COLOR_ATTACHMENT6  = 0x8CE6,
-        COLOR_ATTACHMENT7  = 0x8CE7,
-        COLOR_ATTACHMENT8  = 0x8CE8,
-        COLOR_ATTACHMENT9  = 0x8CE9,
-        COLOR_ATTACHMENT10 = 0x8CEA,
-        COLOR_ATTACHMENT11 = 0x8CEB,
-        COLOR_ATTACHMENT12 = 0x8CEC,
-        COLOR_ATTACHMENT13 = 0x8CED,
-        COLOR_ATTACHMENT14 = 0x8CEE,
-        COLOR_ATTACHMENT15 = 0x8CEF,
-        DEPTH_ATTACHMENT   = 0x8D00,
-		STENCIL_ATTACHMENT = 0x8D20};
-
-private:
-
-    class Attachment {
+    class Framebuffer : public ReferenceCountedObject {
     public:
-        enum Type {TEXTURE, RENDERBUFFER};
-        Type type;
 
-        RenderbufferRef             renderbuffer;
-        TextureRef                  texture;
+        /**
+         Specifies the attachment to which a framebuffer-attachable-image
+         (Renderbuffer or a Texture image) will be attached.  These mirror
+         the OpenGL definition as do their values.
+         */
+        enum AttachmentPoint {
+            COLOR_ATTACHMENT0 = 0x8CE0,
+            COLOR_ATTACHMENT1 = 0x8CE1,
+            COLOR_ATTACHMENT2 = 0x8CE2,
+            COLOR_ATTACHMENT3 = 0x8CE3,
+            COLOR_ATTACHMENT4 = 0x8CE4,
+            COLOR_ATTACHMENT5 = 0x8CE5,
+            COLOR_ATTACHMENT6 = 0x8CE6,
+            COLOR_ATTACHMENT7 = 0x8CE7,
+            COLOR_ATTACHMENT8 = 0x8CE8,
+            COLOR_ATTACHMENT9 = 0x8CE9,
+            COLOR_ATTACHMENT10 = 0x8CEA,
+            COLOR_ATTACHMENT11 = 0x8CEB,
+            COLOR_ATTACHMENT12 = 0x8CEC,
+            COLOR_ATTACHMENT13 = 0x8CED,
+            COLOR_ATTACHMENT14 = 0x8CEE,
+            COLOR_ATTACHMENT15 = 0x8CEF,
+            DEPTH_ATTACHMENT = 0x8D00,
+            STENCIL_ATTACHMENT = 0x8D20
+        };
 
-		/** True if the texture had autoMipMap on when it was set. */
-		bool						hadAutoMipMap;
+    private:
 
-        Attachment() {}
-        Attachment(const RenderbufferRef& r) : type(RENDERBUFFER), renderbuffer(r) {}
-        Attachment(const TextureRef& r) : type(TEXTURE), texture(r), hadAutoMipMap(r->parameters().autoMipMap) {
-			if (hadAutoMipMap) {
-				texture->setAutoMipMap(false);
-			}
-		}
-    };
+        class Attachment {
+        public:
+            enum Type {
+                TEXTURE, RENDERBUFFER
+            };
+            Type type;
 
-    /**
-     Slots are not specified if they correspond to NULL elements.
-     */
-    Table<AttachmentPoint, Attachment>  attachmentTable;
+            RenderbufferRef renderbuffer;
+            TextureRef texture;
 
-	/** OpenGL Object ID */
-	GLuint							framebufferID;
+            /** True if the texture had autoMipMap on when it was set. */
+            bool hadAutoMipMap;
 
-	/** Framebuffer name */
-	std::string                     m_name;
+            Attachment() {}
 
-	/** 
-	 Not yet implemented yet -- for non-gl error checking to pre-check
-	 for Framebuffer completeness.  Width & Height should also be
-	 implemented for this check.
-	*/
-    const class TextureFormat*      format;
+            Attachment(const RenderbufferRef &r) : type(RENDERBUFFER), renderbuffer(r) {}
 
-    /**
-     Framebuffer Height
-     */
-    GLuint                          m_height;
-    GLuint                          m_width;
+            Attachment(const TextureRef &r) : type(TEXTURE), texture(r), hadAutoMipMap(r->parameters().autoMipMap) {
+                if (hadAutoMipMap) {
+                    texture->setAutoMipMap(false);
+                }
+            }
+        };
 
-    /**
-     Number of currently bound attachments.  When this hits zero we can
-     add attachments with new sizes.
-     */
-    int                             numAttachments;
+        /**
+         Slots are not specified if they correspond to NULL elements.
+         */
+        Table<AttachmentPoint, Attachment> attachmentTable;
 
-	/** Default Constructor. */
-	Framebuffer(const std::string& name, GLuint framebufferID);
+        /** OpenGL Object ID */
+        GLuint framebufferID;
 
-	friend class RenderDevice;
+        /** Framebuffer name */
+        std::string m_name;
 
-    /**
-     Checks to see if the framebuffer is complete.  
+        /**
+         Not yet implemented yet -- for non-gl error checking to pre-check
+         for Framebuffer completeness.  Width & Height should also be
+         implemented for this check.
+        */
+        const class TextureFormat *format;
 
-     NOTE: This function is meant to be called by RenderDevice through currentFramebufferComplete.
-     The results are unpredictable if this function is directly called by the user.  
+        /**
+         Framebuffer Height
+         */
+        GLuint m_height;
+        GLuint m_width;
 
-     @param whyNot Defined when the test fails.  Will contain the reason for failure.
+        /**
+         Number of currently bound attachments.  When this hits zero we can
+         add attachments with new sizes.
+         */
+        int numAttachments;
 
-     @return true   If complete framebuffer.
-     @return false  If incomplete or error.
-     */
-	bool debugIsComplete(std::string& whyNot) const;
+        /** Default Constructor. */
+        Framebuffer(const std::string &name, GLuint framebufferID);
 
-public:
+        friend class RenderDevice;
+
+        /**
+         Checks to see if the framebuffer is complete.
+
+         NOTE: This function is meant to be called by RenderDevice through currentFramebufferComplete.
+         The results are unpredictable if this function is directly called by the user.
+
+         @param whyNot Defined when the test fails.  Will contain the reason for failure.
+
+         @return true   If complete framebuffer.
+         @return false  If incomplete or error.
+         */
+        bool debugIsComplete(std::string &whyNot) const;
+
+    public:
 
 
-	/** Reclaims OpenGL ID.  All buffers/textures are automatically detacted on destruction. */
-	~Framebuffer();
+        /** Reclaims OpenGL ID.  All buffers/textures are automatically detacted on destruction. */
+        ~Framebuffer();
 
-	/**
-	 Creates a framebuffer object from an OpenGL context.
+        /**
+         Creates a framebuffer object from an OpenGL context.
 
-	 @param name			Name of framebuffer
-	 @param framebufferID	OpenGL id of ramebuffer
-	 */
-	static FramebufferRef fromGLFramebuffer(const std::string& name, GLuint framebufferID);
+         @param name			Name of framebuffer
+         @param framebufferID	OpenGL id of ramebuffer
+         */
+        static FramebufferRef fromGLFramebuffer(const std::string &name, GLuint framebufferID);
 
-	/**
-	 Creates a framebuffer object from scratch.
+        /**
+         Creates a framebuffer object from scratch.
 
-	 @param name			Name of framebuffer
-	 */
-	static FramebufferRef create(const std::string& name);
+         @param name			Name of framebuffer
+         */
+        static FramebufferRef create(const std::string &name);
 
-    /** Overload used when setting attachment points to NULL */
-    void set(AttachmentPoint ap, const void* n);
+        /** Overload used when setting attachment points to NULL */
+        void set(AttachmentPoint ap, const void *n);
 
-	/**
-	 Set one of the attachment points to reference a texture.  Set to NULL to unset.
-	 Auto-mipmap will automatically be disabled on set.  It will be re-enabled when 
-	 the texture is unbound.
+        /**
+         Set one of the attachment points to reference a texture.  Set to NULL to unset.
+         Auto-mipmap will automatically be disabled on set.  It will be re-enabled when
+         the texture is unbound.
 
-	 Do not use a texture that is bound to the *current* framebuffer for rendering,
-	 however, you can render using a texture that is bound on a different frame buffer.
+         Do not use a texture that is bound to the *current* framebuffer for rendering,
+         however, you can render using a texture that is bound on a different frame buffer.
 
-	 @param texture		Texture to bind to the framebuffer.
-	 @param ap	Attachment point to bind texture to.
-	 */
-	void set(AttachmentPoint ap, const TextureRef& texture);
+         @param texture		Texture to bind to the framebuffer.
+         @param ap	Attachment point to bind texture to.
+         */
+        void set(AttachmentPoint ap, const TextureRef &texture);
 
-	/**
-	 Set one of the attachment points to reference a renderbuffer.  Set to NULL to unset.
+        /**
+         Set one of the attachment points to reference a renderbuffer.  Set to NULL to unset.
 
-	 @param renderbuffer	Renderbuffer to bind to the framebuffer
-	 @param slot		Attachment point to bind renderbuffer to.
-	 */
-	void set(AttachmentPoint ap, const RenderbufferRef& renderbuffer);
+         @param renderbuffer	Renderbuffer to bind to the framebuffer
+         @param slot		Attachment point to bind renderbuffer to.
+         */
+        void set(AttachmentPoint ap, const RenderbufferRef &renderbuffer);
 
-    /**
-     Gets the OpenGL ID of the framebuffer object.
-     */
-	inline unsigned int openGLID() const {
-        return framebufferID;
-    }
+        /**
+         Gets the OpenGL ID of the framebuffer object.
+         */
+        inline unsigned int openGLID() const {
+            return framebufferID;
+        }
 
-    /**
-     Gets the OpenGL ID of the framebuffer object.
-     */
-	inline unsigned int width() const {
-        return m_width;
-    }
+        /**
+         Gets the OpenGL ID of the framebuffer object.
+         */
+        inline unsigned int width() const {
+            return m_width;
+        }
 
-    /**
-     Gets the OpenGL ID of the framebuffer object.
-     */
-	inline unsigned int height() const {
-        return m_height;
-    }
+        /**
+         Gets the OpenGL ID of the framebuffer object.
+         */
+        inline unsigned int height() const {
+            return m_height;
+        }
 
-	inline Rect2D rect2DBounds() const {
-		return Rect2D::xywh(0.0f, 0.0f, (float)m_width, (float)m_height);
-	}
+        inline Rect2D rect2DBounds() const {
+            return Rect2D::xywh(0.0f, 0.0f, (float) m_width, (float) m_height);
+        }
 
-    inline const std::string& name() const {
-        return m_name;
-    }
+        inline const std::string &name() const {
+            return m_name;
+        }
 
-}; // class Framebuffer 
+    }; // class Framebuffer
 
 
 } //  G3D
 
-unsigned int hashCode(const G3D::Framebuffer::AttachmentPoint& a);
+unsigned int hashCode(const G3D::Framebuffer::AttachmentPoint &a);
 
 #endif // GLG3D_FRAMEBUFFER_H
 

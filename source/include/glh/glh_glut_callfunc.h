@@ -46,40 +46,39 @@ glh - is a platform-indepenedent C++ OpenGL helper library
 #include <string>
 
 #ifdef _WIN32
-#define GLH_FUNC extern "C" __declspec(dllexport) 
+#define GLH_FUNC extern "C" __declspec(dllexport)
 #else
 #define GLH_FUNC
 #endif
 
 
-namespace glh
-{
+namespace glh {
 
-	struct library_handle
-	{
+    struct library_handle {
 #ifdef _WIN32
-		bool init(const char * name)
-		{
-			lib = GetModuleHandle(name);
-			if(lib) return true;
-			std::string n(name);
-			n += ".exe";
-			lib = GetModuleHandle(n.c_str());
 
-			return lib != 0;
-		}
-		void call_func(const char k, int x, int y)
-		{
-			std::string entry_name("key__");
-			entry_name += k;
-			void (*entry)(int, int) = (void (*)(int, int))GetProcAddress(lib, entry_name.c_str());
-			if(entry)
-				(*entry)(x, y);
-		}
-		HMODULE lib;
+        bool init(const char *name) {
+            lib = GetModuleHandle(name);
+            if (lib) return true;
+            std::string n(name);
+            n += ".exe";
+            lib = GetModuleHandle(n.c_str());
+
+            return lib != 0;
+        }
+
+        void call_func(const char k, int x, int y) {
+            std::string entry_name("key__");
+            entry_name += k;
+            void (*entry)(int, int) = (void (*)(int, int)) GetProcAddress(lib, entry_name.c_str());
+            if (entry)
+                (*entry)(x, y);
+        }
+
+        HMODULE lib;
 #endif
-	};
-	
+    };
+
 }
 
 #endif

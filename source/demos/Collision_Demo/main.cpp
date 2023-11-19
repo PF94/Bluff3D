@@ -31,37 +31,38 @@
 #include "Scene.h"
 #include "Demo.h"
 
-GApp*                app            = NULL;
-VARAreaRef           varStatic      = NULL;
+GApp *app = NULL;
+VARAreaRef varStatic = NULL;
 
 class App : public GApp {
 protected:
     void main();
+
 public:
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 };
 
 
-const double                  maxFrameRate    = 30.5;
+const double maxFrameRate = 30.5;
 
 
-Demo::Demo(App* _app) : GApplet(_app), app(_app), gameTime(0) {
+Demo::Demo(App *_app) : GApplet(_app), app(_app), gameTime(0) {
     // Allocate the two VARAreas used in this demo
-    ::varStatic    = VARArea::create(1024 * 1024);
+    ::varStatic = VARArea::create(1024 * 1024);
     debugAssert(::varStatic.notNull());
 }
 
 
-void Demo::onInit()  {
+void Demo::onInit() {
     app->debugCamera.setPosition(Vector3(15, 20, 15));
-    app->debugCamera.lookAt(Vector3(-2,3,-5));
+    app->debugCamera.lookAt(Vector3(-2, 3, -5));
     app->debugController.setActive(false);
 
     debugAssertGLOk();
     buildScene();
     debugAssertGLOk();
-    
-    gameTime     = G3D::toSeconds(10, 00, 00, AM); 
+
+    gameTime = G3D::toSeconds(10, 00, 00, AM);
 
     setDesiredFrameRate(60);
     simStartTime = System::time();
@@ -70,7 +71,7 @@ void Demo::onInit()  {
 
 Demo::~Demo() {
     app->debugLog->printf("Static VAR peak size was  %d bytes.\n",
-                     varStatic->peakAllocatedSize());
+                          varStatic->peakAllocatedSize());
     ::varStatic = NULL;
 }
 
@@ -86,16 +87,16 @@ void Demo::onSimulation(RealTime rdt, SimTime sdt, SimTime idt) {
 }
 
 
-void Demo::onGraphics(RenderDevice* rd) {
+void Demo::onGraphics(RenderDevice *rd) {
     rd->pushState();
-    
-    rd->setProjectionAndCameraMatrix(app->debugCamera);
-        
-        LightingParameters lighting(gameTime);
-        lighting.lightDirection = (lighting.lightDirection + Vector3(0,0,.4f)).direction();
-        lighting.ambient = lighting.ambient + Color3(.3f,.3f,.4f);
 
-        scene.render(lighting);
+    rd->setProjectionAndCameraMatrix(app->debugCamera);
+
+    LightingParameters lighting(gameTime);
+    lighting.lightDirection = (lighting.lightDirection + Vector3(0, 0, .4f)).direction();
+    lighting.ambient = lighting.ambient + Color3(.3f, .3f, .4f);
+
+    scene.render(lighting);
     rd->popState();
 }
 
@@ -108,11 +109,11 @@ void App::main() {
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     app = new App(GAppSettings());
     app->run();
     Model::freeModels();

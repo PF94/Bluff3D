@@ -8,11 +8,12 @@
 
 #include "Object.h"
 #include "Model.h"
-extern GApp* app;
+
+extern GApp *app;
 
 void glSpecular() {
     // Material properties
-    static const float white[] = {1,1,1,1};
+    static const float white[] = {1, 1, 1, 1};
     glMaterialfv(GL_FRONT, GL_SPECULAR, white);
     glMaterialf(GL_FRONT, GL_SHININESS, 16.0f);
     glEnable(GL_COLOR_MATERIAL);
@@ -22,7 +23,7 @@ void glSpecular() {
 
 void glDiffuse() {
     // Material properties
-    static const float black[] = {0,0,0,1};
+    static const float black[] = {0, 0, 0, 1};
     glMaterialfv(GL_FRONT, GL_SPECULAR, black);
     glMaterialf(GL_FRONT, GL_SHININESS, 0.0f);
     glEnable(GL_COLOR_MATERIAL);
@@ -30,7 +31,7 @@ void glDiffuse() {
 }
 
 
-Object::Object(const Color3& _color) : color(_color) {
+Object::Object(const Color3 &_color) : color(_color) {
 }
 
 
@@ -42,9 +43,9 @@ Object::~Object() {
 
 
 GeneralObject::GeneralObject(
-    class Model*            _model,
-    const CoordinateFrame&  _cframe,
-    const Color3&           _color) : Object(_color), model(_model), cframe(_cframe) {
+        class Model *_model,
+        const CoordinateFrame &_cframe,
+        const Color3 &_color) : Object(_color), model(_model), cframe(_cframe) {
 }
 
 
@@ -57,14 +58,14 @@ void GeneralObject::render() const {
 
 
 GameTime GeneralObject::timeUntilCollisionWithMovingSphere(
-    const Sphere&       sphere,
-    const Vector3&      velocity,
-    GameTime            timeLimit,
-    Vector3&            outLocation,
-    Vector3&            outNormal) const {
+        const Sphere &sphere,
+        const Vector3 &velocity,
+        GameTime timeLimit,
+        Vector3 &outLocation,
+        Vector3 &outNormal) const {
 
     // Transform the sphere to object space
-    Sphere  s(cframe.toObjectSpace(sphere));
+    Sphere s(cframe.toObjectSpace(sphere));
     Vector3 v(cframe.vectorToObjectSpace(velocity));
 
     GameTime t = model->timeUntilCollisionWithMovingSphere(s, v, timeLimit, outLocation, outNormal);
@@ -74,7 +75,7 @@ GameTime GeneralObject::timeUntilCollisionWithMovingSphere(
 
         // There is no scaling in the coordinate frame, so we can
         // transform the normal using the vector routine.
-        outNormal   = cframe.vectorToWorldSpace(outNormal);
+        outNormal = cframe.vectorToWorldSpace(outNormal);
     }
 
     return t;
@@ -84,19 +85,20 @@ GameTime GeneralObject::timeUntilCollisionWithMovingSphere(
 ////////////////////////////////////////////////////////////////////////////
 
 
-SphereObject::SphereObject(const Sphere& s, const Color3& _color) :
-     Object(_color), sphere(s) {
+SphereObject::SphereObject(const Sphere &s, const Color3 &_color) :
+        Object(_color), sphere(s) {
 }
 
 
 GameTime SphereObject::timeUntilCollisionWithMovingSphere(
-    const Sphere&       movingSphere,
-    const Vector3&      velocity,
-    GameTime            timeLimit,
-    Vector3&            outLocation,
-    Vector3&            outNormal) const {
+        const Sphere &movingSphere,
+        const Vector3 &velocity,
+        GameTime timeLimit,
+        Vector3 &outLocation,
+        Vector3 &outNormal) const {
 
-    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedSphere(movingSphere, velocity, sphere, outLocation, outNormal);
+    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedSphere(movingSphere, velocity, sphere,
+                                                                             outLocation, outNormal);
 
     if (t > timeLimit) {
         return inf();
@@ -115,19 +117,20 @@ void SphereObject::render() const {
 ////////////////////////////////////////////////////////////////////////////
 
 
-CapsuleObject::CapsuleObject(const Capsule& c, const Color3& _color) :
-     Object(_color), capsule(c) {
+CapsuleObject::CapsuleObject(const Capsule &c, const Color3 &_color) :
+        Object(_color), capsule(c) {
 }
 
 
 GameTime CapsuleObject::timeUntilCollisionWithMovingSphere(
-    const Sphere&       movingSphere,
-    const Vector3&      velocity,
-    GameTime            timeLimit,
-    Vector3&            outLocation,
-    Vector3&            outNormal) const {
+        const Sphere &movingSphere,
+        const Vector3 &velocity,
+        GameTime timeLimit,
+        Vector3 &outLocation,
+        Vector3 &outNormal) const {
 
-    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedCapsule(movingSphere, velocity, capsule, outLocation, outNormal);
+    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedCapsule(movingSphere, velocity, capsule,
+                                                                              outLocation, outNormal);
 
     if (t > timeLimit) {
         return inf();
@@ -145,18 +148,19 @@ void CapsuleObject::render() const {
 ////////////////////////////////////////////////////////////////////////////
 
 
-BoxObject::BoxObject(const Box& b, const Color3& _color) : Object(_color), box(b) {
+BoxObject::BoxObject(const Box &b, const Color3 &_color) : Object(_color), box(b) {
 }
 
 
 GameTime BoxObject::timeUntilCollisionWithMovingSphere(
-    const Sphere&       sphere,
-    const Vector3&      velocity,
-    GameTime            timeLimit,
-    Vector3&            outLocation,
-    Vector3&            outNormal) const {
+        const Sphere &sphere,
+        const Vector3 &velocity,
+        GameTime timeLimit,
+        Vector3 &outLocation,
+        Vector3 &outNormal) const {
 
-    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedBox(sphere, velocity, box, outLocation, outNormal);
+    GameTime t = CollisionDetection::collisionTimeForMovingSphereFixedBox(sphere, velocity, box, outLocation,
+                                                                          outNormal);
 
     if (fuzzyLe(t, timeLimit)) {
         return t;
@@ -178,13 +182,13 @@ void BoxObject::render() const {
     app->renderDevice->setObjectToWorldMatrix(CoordinateFrame());
     app->renderDevice->beginPrimitive(RenderDevice::QUADS);
     for (int f = 0; f < 6; ++f) {
-        box.getFaceCorners(f, v0, v1, v2, v3);
-        app->renderDevice->setNormal((v1 - v0).cross(v3 - v0).direction());
-        app->renderDevice->sendVertex(v0);
-        app->renderDevice->sendVertex(v1);
-        app->renderDevice->sendVertex(v2);
-        app->renderDevice->sendVertex(v3);
-    }
+            box.getFaceCorners(f, v0, v1, v2, v3);
+            app->renderDevice->setNormal((v1 - v0).cross(v3 - v0).direction());
+            app->renderDevice->sendVertex(v0);
+            app->renderDevice->sendVertex(v1);
+            app->renderDevice->sendVertex(v2);
+            app->renderDevice->sendVertex(v3);
+        }
     app->renderDevice->endPrimitive();
 
     /* Messes up the shadow map for some reason.
@@ -198,8 +202,8 @@ void BoxObject::render() const {
 ////////////////////////////////////////////////////////////////////////////
 
 
-SimSphere::SimSphere(const Sphere& s, const Vector3& _velocity, const Color3& _color) :
-    SphereObject(s, _color), velocity(_velocity) {
+SimSphere::SimSphere(const Sphere &s, const Vector3 &_velocity, const Color3 &_color) :
+        SphereObject(s, _color), velocity(_velocity) {
 }
 
 

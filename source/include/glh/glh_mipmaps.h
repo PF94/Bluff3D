@@ -56,97 +56,90 @@
 #define GLH_MIPMAPS_H
 
 #ifdef _WIN32
+
 #  include <windows.h>
+
 #endif
 
 #include "GL/gl.h"
 
-namespace glh
-{
-	
-	template <class T> 
-	class tex_indexer2
-	{
-		public:
-			tex_indexer2(int width, int height, int tuple_size, T * data) :
-			  w(width), h(height), n(tuple_size), d(data) {}
+namespace glh {
 
-			T * operator()(int i, int j)
-			{ return d + n * (w * j + i); }
-		private:
-			int w, h, n;
-			T * d;
-	};
+    template<class T>
+    class tex_indexer2 {
+    public:
+        tex_indexer2(int width, int height, int tuple_size, T *data) :
+                w(width), h(height), n(tuple_size), d(data) {}
 
-	template <class T>
-	struct generic_filter
-	{
-		typedef T element_type;
+        T *operator()(int i, int j) { return d + n * (w * j + i); }
 
-		generic_filter(int tuplesize, GLenum gltype) :
-			gl_type(gltype), tuple_size(tuplesize) {}
+    private:
+        int w, h, n;
+        T *d;
+    };
 
-		void average( T * out,
-					  const T * a, const T * b, 
-					  const T * c, const T * d)
-		{
-			for(int i=0; i < tuple_size; i++)
-			{
-				double in = double(a[i]) + double(b[i]) + double(c[i]) + double(d[i]);
-				in /= 4;
-				out[i] = T(in);
-			}
-		}
+    template<class T>
+    struct generic_filter {
+        typedef T element_type;
 
-		const GLenum gl_type;
-		const int tuple_size;
-	};
+        generic_filter(int tuplesize, GLenum gltype) :
+                gl_type(gltype), tuple_size(tuplesize) {}
 
-	// fixme: supports non-square textures!
-	template <class F>
-	void build_2D_mipmaps( GLenum target, GLenum internal_format,
-						   GLsizei w, GLsizei h, GLenum format, 
-						   F filter, const void * vdata)
-	{
+        void average(T *out,
+                     const T *a, const T *b,
+                     const T *c, const T *d) {
+            for (int i = 0; i < tuple_size; i++) {
+                double in = double(a[i]) + double(b[i]) + double(c[i]) + double(d[i]);
+                in /= 4;
+                out[i] = T(in);
+            }
+        }
 
-		typedef typename F::element_type DataType;
-		const DataType * in_data = (const DataType *)vdata;
-		DataType * data = new DataType [w * h * filter.tuple_size];
+        const GLenum gl_type;
+        const int tuple_size;
+    };
 
-		glTexImage2D(target, 0, internal_format, w, h, 0, format, filter.gl_type, (const DataType *)vdata);
+    // fixme: supports non-square textures!
+    template<class F>
+    void build_2D_mipmaps(GLenum target, GLenum internal_format,
+                          GLsizei w, GLsizei h, GLenum format,
+                          F filter, const void *vdata) {
 
-		int level = 1;
-		if( w >= 2 ) w /= 2;
-		if( h >= 2 ) h /= 2;
-		bool done = false;
-		while(! done)
-		{
-			tex_indexer2<const DataType> bg(w*2, h*2, filter.tuple_size, in_data);
-			tex_indexer2<DataType> sm(w  , h  , filter.tuple_size, data);
-			for(int j=0; j < h; j++)
-			{
-				int J = j * 2;
-				for(int i=0; i < w; i++)
-				{
-					int I = i*2;
-					filter.average( sm(i,j),
-									bg(I  , J  ), bg(I+1, J  ),
-									bg(I  , J+1), bg(I+1, J+1));
-				}
-			}
-			
-			glTexImage2D(target, level, internal_format, w, h, 0, format, filter.gl_type, data);
+        typedef typename F::element_type DataType;
+        const DataType *in_data = (const DataType *) vdata;
+        DataType *data = new DataType[w * h * filter.tuple_size];
 
-			if(w == 1 && h == 1) done = true;
-			
-			if( w >= 2 ) w /= 2;
-			if( h >= 2 ) h /= 2;
-			level++;
-			in_data = data;
-		}
+        glTexImage2D(target, 0, internal_format, w, h, 0, format, filter.gl_type, (const DataType *) vdata);
 
-		delete [] data;
-	}
+        int level = 1;
+        if (w >= 2) w /= 2;
+        if (h >= 2) h /= 2;
+        bool done = false;
+        while (!done) {
+            tex_indexer2<const DataType> bg(w * 2, h * 2, filter.tuple_size, in_data);
+            tex_indexer2<DataType> sm(w, h, filter.tuple_size, data);
+            for (int j = 0; j < h; j++) {
+                int J = j * 2;
+                for (int i = 0; i < w; i++) {
+                    int I = i * 2;
+                    filter.average(sm(i, j),
+                                   bg(I, J), bg(I + 1, J),
+                                   bg(I, J + 1), bg(I + 1, J + 1));
+                }
+            }
+
+            glTexImage2D(target, level, internal_format, w, h, 0, format, filter.gl_type, data);
+
+            if (w == 1 && h == 1) done = true;
+
+            if (w >= 2) w /= 2;
+            if (h >= 2) h /= 2;
+            level++;
+            in_data = data;
+        }
+
+        delete[] data;
+    }
 
 }
 

@@ -40,44 +40,44 @@ namespace G3D {
     keyExists() should be used to validate a key before reading or writing
     to ensure that a debug assert or false return is for a different error.
 */
-class RegistryUtil {
+    class RegistryUtil {
 
-public:
-    /** returns true if the key exists */
-    static bool keyExists(const std::string& key);
+    public:
+        /** returns true if the key exists */
+        static bool keyExists(const std::string &key);
 
-    /** returns false if the key could not be read for any reason. */
-    static bool readInt32(const std::string& key, int32& valueData);
+        /** returns false if the key could not be read for any reason. */
+        static bool readInt32(const std::string &key, int32 &valueData);
 
-    /** 
-      Reads an arbitrary amount of data from a binary registry key.
-      returns false if the key could not be read for any reason.
-    
-      @beta
-      @param valueData pointer to the output buffer of sufficient size. Pass NULL as valueData in order to have available data size returned in dataSize.
-      @param dataSize size of the output buffer.  When NULL is passed for valueData, contains the size of available data on successful return.
-    */
-    static bool readBytes(const std::string& key, uint8* valueData, uint32& dataSize);
+        /**
+          Reads an arbitrary amount of data from a binary registry key.
+          returns false if the key could not be read for any reason.
 
-    /** returns false if the key could not be read for any reason. */
-    static bool readString(const std::string& key, std::string& valueData);
+          @beta
+          @param valueData pointer to the output buffer of sufficient size. Pass NULL as valueData in order to have available data size returned in dataSize.
+          @param dataSize size of the output buffer.  When NULL is passed for valueData, contains the size of available data on successful return.
+        */
+        static bool readBytes(const std::string &key, uint8 *valueData, uint32 &dataSize);
 
-    /** returns false if the key could not be written for any reason. */
-    static bool writeInt32(const std::string& key, int32 valueData);
+        /** returns false if the key could not be read for any reason. */
+        static bool readString(const std::string &key, std::string &valueData);
 
-    /** 
-      Writes an arbitrary amount of data to a binary registry key.
-      returns false if the key could not be written for any reason.
-    
-      @param valueData pointer to the input buffer
-      @param dataSize size of the input buffer that should be written
-    */
-    static bool writeBytes(const std::string& key, const uint8* valueData, uint32 dataSize);
+        /** returns false if the key could not be written for any reason. */
+        static bool writeInt32(const std::string &key, int32 valueData);
 
-    /** returns false if the key could not be written for any reason. */
-    static bool writeString(const std::string& key, const std::string& valueData);
+        /**
+          Writes an arbitrary amount of data to a binary registry key.
+          returns false if the key could not be written for any reason.
 
-};
+          @param valueData pointer to the input buffer
+          @param dataSize size of the input buffer that should be written
+        */
+        static bool writeBytes(const std::string &key, const uint8 *valueData, uint32 dataSize);
+
+        /** returns false if the key could not be written for any reason. */
+        static bool writeString(const std::string &key, const std::string &valueData);
+
+    };
 
 } // namespace G3D
 

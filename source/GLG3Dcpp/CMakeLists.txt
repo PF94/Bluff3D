@@ -49,7 +49,7 @@ add_library(GLG3D STATIC
 
 cmake_print_variables(PROJECT_SOURCE_DIR)
 
-target_include_directories( ${PROJECT_NAME}
+target_include_directories(${PROJECT_NAME}
         PUBLIC ${PROJECT_SOURCE_DIR}/../include ${SDL2_INCLUDE_DIR}
 )
 

@@ -25,43 +25,43 @@ namespace G3D {
 /**
  An infinite cone.
  */
-class Cone {
+    class Cone {
 
-private:
-    Vector3         tip;
-    Vector3         direction;
+    private:
+        Vector3 tip;
+        Vector3 direction;
 
-    /** Angle from the center line to the edge. */
-    float            angle;
+        /** Angle from the center line to the edge. */
+        float angle;
 
-public:
+    public:
 
-    /**
-     @param angle Angle from the center line to the edge, in radians
-     */
-    Cone(const Vector3& tip, const Vector3& direction, float angle);
+        /**
+         @param angle Angle from the center line to the edge, in radians
+         */
+        Cone(const Vector3 &tip, const Vector3 &direction, float angle);
 
-    /**
-     Forms the smallest cone that contains the box.  Undefined if
-     the tip is inside or on the box.
-     */
-    Cone(const Vector3& tip, const class Box& box);
+        /**
+         Forms the smallest cone that contains the box.  Undefined if
+         the tip is inside or on the box.
+         */
+        Cone(const Vector3 &tip, const class Box &box);
 
-    virtual ~Cone() {}
+        virtual ~Cone() {}
 
-    /**
-     Returns true if the cone touches, intersects, or contains b.
+        /**
+         Returns true if the cone touches, intersects, or contains b.
 
-     If c.intersects(s) and c.intersects(Sphere(s.center, s.radius * 2)
-     then the sphere s is entirely within cone c.
-     */
-    bool intersects(const class Sphere& s) const;
+         If c.intersects(s) and c.intersects(Sphere(s.center, s.radius * 2)
+         then the sphere s is entirely within cone c.
+         */
+        bool intersects(const class Sphere &s) const;
 
-    /**
-     True if v is a point inside the cone.
-     */
-    bool contains(const class Vector3& v) const;
-};
+        /**
+         True if v is a point inside the cone.
+         */
+        bool contains(const class Vector3 &v) const;
+    };
 
 } // namespace
 

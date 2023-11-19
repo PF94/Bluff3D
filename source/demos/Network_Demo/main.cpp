@@ -24,9 +24,9 @@
 #include "Client.h"
 #include "Server.h"
 
-App* app;
+App *app;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
 
     if (argc > 1) {
@@ -34,8 +34,8 @@ int main(int argc, char** argv) {
     }
 
     settings.window.fsaaSamples = 4;
-    settings.window.width       = 640;
-    settings.window.height      = 480;
+    settings.window.width = 640;
+    settings.window.height = 480;
 
     System::sleep(5);
     App(settings).run();
@@ -43,31 +43,31 @@ int main(int argc, char** argv) {
 }
 
 
-App::App(const GAppSettings& settings) : GApp(settings),
-    hostingServer(NULL),
-    discoverySettings("Demo Discovery Protocol", 1) {
+App::App(const GAppSettings &settings) : GApp(settings),
+                                         hostingServer(NULL),
+                                         discoverySettings("Demo Discovery Protocol", 1) {
 
     ::app = this;
 
     renderDevice->setCaption("G3D Network Demo");
 }
 
-void showError(const std::string& s1, const std::string& s2, RenderDevice* rd, GFontRef font);
+void showError(const std::string &s1, const std::string &s2, RenderDevice *rd, GFontRef font);
 
 void App::main() {
-	setDebugMode(true);
-	debugController.setActive(false);
-	debugShowRenderingStats = false;
+    setDebugMode(true);
+    debugController.setActive(false);
+    debugShowRenderingStats = false;
     debugQuitOnEscape = false;
 
     // Load objects here
-    sky  = Sky::create(renderDevice, dataDir + "sky/");
+    sky = Sky::create(renderDevice, dataDir + "sky/");
     font = GFont::fromFile(renderDevice, dataDir + "font/dominant.fnt");
 
     Browse browse(this);
     Client client(this);
 
-    while (! endProgram) {
+    while (!endProgram) {
         bool error = false;
 
         // First browse for a server (or start our own).
@@ -90,9 +90,9 @@ void App::main() {
                 client.selectedServer.address = NetAddress(myAddresses[0].ip(), GAME_PORT);
             } else {
                 showError(
-                    "Unable to create a server.",
-                    "(Maybe there is already a server running on this machine.)",
-                    renderDevice, font);
+                        "Unable to create a server.",
+                        "(Maybe there is already a server running on this machine.)",
+                        renderDevice, font);
                 error = true;
             }
         } else {
@@ -101,7 +101,7 @@ void App::main() {
             client.selectedServer.address = NetAddress(client.selectedServer.address.ip(), GAME_PORT);
         }
 
-        if (! error) {
+        if (!error) {
             // Now enter the world as a client (our own server runs in the background)
             client.run();
         }
@@ -117,17 +117,17 @@ void App::main() {
 }
 
 
-void showError(const std::string& s1, const std::string& s2, RenderDevice* rd, GFontRef font) {
+void showError(const std::string &s1, const std::string &s2, RenderDevice *rd, GFontRef font) {
     RealTime t0 = System::time();
 
     double w = rd->width();
     while (System::time() < t0 + 4) {
         rd->beginFrame();
-            rd->clear();
-            rd->push2D();
-                font->draw2D(rd, s1, Vector2(w/2, 100), 30, Color3::cyan(), Color3::black(), GFont::XALIGN_CENTER);
-                font->draw2D(rd, s2, Vector2(w/2, 200), 20, Color3::cyan(), Color3::black(), GFont::XALIGN_CENTER);
-            rd->pop2D();
+        rd->clear();
+        rd->push2D();
+        font->draw2D(rd, s1, Vector2(w / 2, 100), 30, Color3::cyan(), Color3::black(), GFont::XALIGN_CENTER);
+        font->draw2D(rd, s2, Vector2(w / 2, 200), 20, Color3::cyan(), Color3::black(), GFont::XALIGN_CENTER);
+        rd->pop2D();
         rd->endFrame();
     }
 }

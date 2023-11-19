@@ -25,19 +25,18 @@
 # include <exception>
 #endif
 
-namespace boost
-{
+namespace boost {
 
 #ifdef BOOST_NO_EXCEPTIONS
 
-void throw_exception(std::exception const & e); // user defined
+    void throw_exception(std::exception const & e); // user defined
 
 #else
 
-template<class E> inline void throw_exception(E const & e)
-{
-    throw e;
-}
+    template<class E>
+    inline void throw_exception(E const &e) {
+        throw e;
+    }
 
 #endif
 

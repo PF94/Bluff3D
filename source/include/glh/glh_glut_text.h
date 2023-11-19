@@ -47,144 +47,126 @@ glh - is a platform-indepenedent C++ OpenGL helper library
 #include "glh_text.h"
 #include "GL/glut.h"
 
-namespace glh
-{
-	
-	struct glut_stroke_roman : font
-	{
-		glut_stroke_roman() : initialized(false) {}
+namespace glh {
 
-        virtual ~glut_stroke_roman() { } 
-        
-        struct glyph
-		{
-			float width;
-			display_list dl;
-		};
-		
-		
-		// get font metrics
-		virtual float get_ascent()
-		{  return 119.05f; }
-		virtual float get_descent()
-		{  return  33.33f; }
-		virtual float get_width(int i)
-		{
-			if(32 <= i && i <= 127)
-			{
-				if(! initialized) init();
-				return glyphs[i].width;
-			}
-			return 0;
-		}
-		
-		// draw
-		virtual void  render(int i)
-		{
-			if(32 <= i && i <= 127)
-			{
-				if(! initialized) init();
-				glyphs[i].dl.call_list();
-			}			
-		}
+    struct glut_stroke_roman : font {
+        glut_stroke_roman() : initialized(false) {}
 
-		virtual void initialize() { if(! initialized) init(); }
-		
-		bool initialized;
-		glyph glyphs[128];
-		
-	private:
-			
-		void init()
-		{
-			initialized = true;
-			GLfloat m[16];
-			glColorMask(0,0,0,0);
-			glDepthMask(0);
-			glStencilMask(0);
-			for(int i=32; i < 128; i++)
-			{
-				glPushMatrix();
-				glLoadIdentity();
+        virtual ~glut_stroke_roman() {}
 
-				// build display list
-				glyphs[i].dl.new_list(GL_COMPILE_AND_EXECUTE);
-				glutStrokeCharacter(GLUT_STROKE_ROMAN, i);
-				glyphs[i].dl.end_list();
-				// get *float* character width (glut only returns integer width)
-				glGetFloatv(GL_MODELVIEW_MATRIX, m);
-				glyphs[i].width = m[12];
+        struct glyph {
+            float width;
+            display_list dl;
+        };
 
-				glPopMatrix();
-			}
-			glColorMask(1,1,1,1);
-			glDepthMask(1);
-			glStencilMask(1);
-		}
 
-	};
-	
-	
-	struct glut_stroke_mono_roman : font
-	{
-		glut_stroke_mono_roman() : initialized(false) {}
-		
-        virtual ~glut_stroke_mono_roman() { }
-        
-		struct glyph
-		{
-			display_list dl;
-		};
-		
-		
-		// get font metrics
-		virtual float get_ascent()
-		{  return 119.05f; }
-		virtual float get_descent()
-		{  return  33.33f; }
-		virtual float get_width(int i)
-		{
-			if(32 <= i && i <= 127)
-			{
-				if(! initialized) init();
-				return 104.76;
-			}
-			return 0;
-		}
-		
-		// draw
-		virtual void  render(int i)
-		{
-			if(32 <= i && i <= 127)
-			{
-				if(! initialized) init();
-				glyphs[i].dl.call_list();
-			}			
-		}
+        // get font metrics
+        virtual float get_ascent() { return 119.05f; }
 
-		virtual void initialize() { if(! initialized) init(); }
-		
-		bool initialized;
-		glyph glyphs[128];
-		
-	private:
-			
-		void init()
-		{
-			initialized = true;
-			for(int i=32; i < 128; i++)
-			{
-				// build display list
-				glyphs[i].dl.new_list(GL_COMPILE);
-				glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, i);
-				glyphs[i].dl.end_list();
-			}
-		}
+        virtual float get_descent() { return 33.33f; }
 
-	};
-	
-	
-	
+        virtual float get_width(int i) {
+            if (32 <= i && i <= 127) {
+                if (!initialized) init();
+                return glyphs[i].width;
+            }
+            return 0;
+        }
+
+        // draw
+        virtual void render(int i) {
+            if (32 <= i && i <= 127) {
+                if (!initialized) init();
+                glyphs[i].dl.call_list();
+            }
+        }
+
+        virtual void initialize() { if (!initialized) init(); }
+
+        bool initialized;
+        glyph glyphs[128];
+
+    private:
+
+        void init() {
+            initialized = true;
+            GLfloat m[16];
+            glColorMask(0, 0, 0, 0);
+            glDepthMask(0);
+            glStencilMask(0);
+            for (int i = 32; i < 128; i++) {
+                glPushMatrix();
+                glLoadIdentity();
+
+                // build display list
+                glyphs[i].dl.new_list(GL_COMPILE_AND_EXECUTE);
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, i);
+                glyphs[i].dl.end_list();
+                // get *float* character width (glut only returns integer width)
+                glGetFloatv(GL_MODELVIEW_MATRIX, m);
+                glyphs[i].width = m[12];
+
+                glPopMatrix();
+            }
+            glColorMask(1, 1, 1, 1);
+            glDepthMask(1);
+            glStencilMask(1);
+        }
+
+    };
+
+
+    struct glut_stroke_mono_roman : font {
+        glut_stroke_mono_roman() : initialized(false) {}
+
+        virtual ~glut_stroke_mono_roman() {}
+
+        struct glyph {
+            display_list dl;
+        };
+
+
+        // get font metrics
+        virtual float get_ascent() { return 119.05f; }
+
+        virtual float get_descent() { return 33.33f; }
+
+        virtual float get_width(int i) {
+            if (32 <= i && i <= 127) {
+                if (!initialized) init();
+                return 104.76;
+            }
+            return 0;
+        }
+
+        // draw
+        virtual void render(int i) {
+            if (32 <= i && i <= 127) {
+                if (!initialized) init();
+                glyphs[i].dl.call_list();
+            }
+        }
+
+        virtual void initialize() { if (!initialized) init(); }
+
+        bool initialized;
+        glyph glyphs[128];
+
+    private:
+
+        void init() {
+            initialized = true;
+            for (int i = 32; i < 128; i++) {
+                // build display list
+                glyphs[i].dl.new_list(GL_COMPILE);
+                glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, i);
+                glyphs[i].dl.end_list();
+            }
+        }
+
+    };
+
+
 }
 
 #endif

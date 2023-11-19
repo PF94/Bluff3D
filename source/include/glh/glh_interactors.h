@@ -45,168 +45,150 @@
 
 #include <math.h>
 
-namespace glh
-{
+namespace glh {
 
-  class translator
-  {
-  public:
-	translator()
-	{
-	  scale = .01f;
-	  invert_increment = false;
-	  parent_rotation = 0;
-	}
+    class translator {
+    public:
+        translator() {
+            scale = .01f;
+            invert_increment = false;
+            parent_rotation = 0;
+        }
 
-	void pan  (int dx, int dy) { update(dx, dy,  0); }
-	void dolly(int dz)         { update( 0,  0, dz); }
+        void pan(int dx, int dy) { update(dx, dy, 0); }
 
-	void update(int dx, int dy, int dz)
-	{
-	  vec3f v(dx, dy, dz);
+        void dolly(int dz) { update(0, 0, dz); }
 
-	  // apply parent rotation
-	  if(parent_rotation != 0)
-		  parent_rotation->mult_vec(v);
+        void update(int dx, int dy, int dz) {
+            vec3f v(dx, dy, dz);
 
-	  if(invert_increment)
-		  t -= v * scale;
-	  else
-		  t += v * scale;
-	}
+            // apply parent rotation
+            if (parent_rotation != 0)
+                parent_rotation->mult_vec(v);
+
+            if (invert_increment)
+                t -= v * scale;
+            else
+                t += v * scale;
+        }
 
 
-	matrix4f get_transform()
-	{
-		matrix4f m;
-		m.set_translate(t);
-		return m;
-	}	
+        matrix4f get_transform() {
+            matrix4f m;
+            m.set_translate(t);
+            return m;
+        }
 
-	matrix4f get_inverse_transform()
-	{
-		matrix4f m;
-		m.set_translate(-t);
-		return m;
-	}	
+        matrix4f get_inverse_transform() {
+            matrix4f m;
+            m.set_translate(-t);
+            return m;
+        }
 
-	bool invert_increment;
-	const rotationf * parent_rotation;
-	vec3f t;
-	float scale;
-  };
+        bool invert_increment;
+        const rotationf *parent_rotation;
+        vec3f t;
+        float scale;
+    };
 
 
+    class trackball {
+    public:
+        trackball() {
+            r = rotationf(vec3f(0, 1, 0), 0);
+            centroid = vec3f(0, 0, 0);
+            scale = -.01f;
+            invert_increment = false;
+            parent_rotation = 0;
+            legacy_mode = false;
+        }
 
-  class trackball
-  {
-  public:
-	trackball()
-	{
-		r = rotationf(vec3f(0, 1, 0), 0);
-		centroid = vec3f(0,0,0);
-		scale = -.01f;
-		invert_increment = false;
-		parent_rotation = 0;
-		legacy_mode = false;
-	}
+        void rotate(int x0, int y0, int x1, int y1) { update(x0, y0, x1, y1); }
 
-	void rotate(int x0, int y0, int x1, int y1)
-	{ update(x0, y0, x1, y1); }
+        void update(int x0, int y0, int x1, int y1) {
+            int dx = x1 - x0;
+            int dy = y1 - y0;
+            if (dx == 0 && dy == 0) {
+                incr = rotationf();
+                return;
+            }
 
-	void update(int x0, int y0, int x1, int y1)
-	{
-		int dx = x1 - x0;
-		int dy = y1 - y0;
-        if(dx == 0 && dy == 0)
-		{
-			incr = rotationf();
-			return;
-		}
-		
-		if(legacy_mode)
-		{
-			vec3f v(dy, -dx, 0);
-			float len = v.normalize();
-			if(parent_rotation != 0)
-				parent_rotation->mult_vec(v);
-			//r.mult_dir(vec3f(v), v);
-			if(invert_increment)
-				incr.set_value(v, -len * scale);
-			else
-				incr.set_value(v, len * scale);
-		}
-		else
-		{
-			vec3f a(x0, y0, 0);
-			vec3f b(x1, y1, 0);
-			a -= offset;
-			b -= offset;
-			a /= radius;
-			b /= radius;
+            if (legacy_mode) {
+                vec3f v(dy, -dx, 0);
+                float len = v.normalize();
+                if (parent_rotation != 0)
+                    parent_rotation->mult_vec(v);
+                //r.mult_dir(vec3f(v), v);
+                if (invert_increment)
+                    incr.set_value(v, -len * scale);
+                else
+                    incr.set_value(v, len * scale);
+            } else {
+                vec3f a(x0, y0, 0);
+                vec3f b(x1, y1, 0);
+                a -= offset;
+                b -= offset;
+                a /= radius;
+                b /= radius;
 
-			float tmpscale = 1;
-			a[2] = pow(2, -0.5 * a.length());
-			a.normalize();
-			b[2] = pow(2, -0.5 * b.length());
-			b.normalize();
+                float tmpscale = 1;
+                a[2] = pow(2, -0.5 * a.length());
+                a.normalize();
+                b[2] = pow(2, -0.5 * b.length());
+                b.normalize();
 
 
+                vec3f axis = a.cross(b);
+                axis.normalize();
 
-			vec3f axis = a.cross(b);
-			axis.normalize();
+                float angle = acos(a.dot(b));
 
-			float angle = acos(a.dot(b));
+                if (parent_rotation != 0) parent_rotation->mult_vec(axis);
 
-			if(parent_rotation != 0) parent_rotation->mult_vec(axis);
+                if (invert_increment)
+                    incr.set_value(axis, -angle * tmpscale);
+                else
+                    incr.set_value(axis, angle * tmpscale);
 
-			if(invert_increment)
-				incr.set_value(axis, -angle * tmpscale);
-			else
-				incr.set_value(axis, angle * tmpscale);
-				
-		}
+            }
 
-		// fixme: shouldn't operator*() preserve 'r' in this case? 
-		if(incr[3] != 0)
-			r = incr * r;
-	}
+            // fixme: shouldn't operator*() preserve 'r' in this case?
+            if (incr[3] != 0)
+                r = incr * r;
+        }
 
-	void increment_rotation()
-	{
-		// fixme: shouldn't operator*() preserve 'r' in this case? 
-		if(incr[3] != 0)
-			r = incr * r;
-	}
+        void increment_rotation() {
+            // fixme: shouldn't operator*() preserve 'r' in this case?
+            if (incr[3] != 0)
+                r = incr * r;
+        }
 
-	matrix4f get_transform()
-	{
-		matrix4f mt, mr, minvt;
-		mt.set_translate(centroid);
-		r.get_value(mr);
-		minvt.set_translate(-centroid);
-		return mt * mr * minvt;
-	}
+        matrix4f get_transform() {
+            matrix4f mt, mr, minvt;
+            mt.set_translate(centroid);
+            r.get_value(mr);
+            minvt.set_translate(-centroid);
+            return mt * mr * minvt;
+        }
 
-	matrix4f get_inverse_transform()
-	{
-		matrix4f mt, mr, minvt;
-		mt.set_translate(centroid);
-		r.inverse().get_value(mr);
-		minvt.set_translate(-centroid);
-		return mt * mr * minvt;
-	}
+        matrix4f get_inverse_transform() {
+            matrix4f mt, mr, minvt;
+            mt.set_translate(centroid);
+            r.inverse().get_value(mr);
+            minvt.set_translate(-centroid);
+            return mt * mr * minvt;
+        }
 
-	bool invert_increment;
-	const rotationf * parent_rotation;
-	rotationf r;
-	vec3f centroid;
-	float scale;
-	bool legacy_mode;
-	rotationf incr;
-	float radius;
-	vec3f offset;
-  }; 
+        bool invert_increment;
+        const rotationf *parent_rotation;
+        rotationf r;
+        vec3f centroid;
+        float scale;
+        bool legacy_mode;
+        rotationf incr;
+        float radius;
+        vec3f offset;
+    };
 
 }
 

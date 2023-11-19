@@ -31,12 +31,12 @@ namespace G3D {
   @cite Font setting code by Kurt Miller, kurt@flipcode.com
   @deprecated
  */
-int G3D_DEPRECATED prompt(
-    const char*     windowTitle,
-    const char*     promptx,
-    const char**    choice,
-    int             numChoices,
-    bool            useGui);
+    int G3D_DEPRECATED prompt(
+            const char *windowTitle,
+            const char *promptx,
+            const char **choice,
+            int numChoices,
+            bool useGui);
 
 /**
   Prints a prompt and waits for user input.  The return value is
@@ -45,14 +45,14 @@ int G3D_DEPRECATED prompt(
   <P>Uses GUI under Win32, stdout prompt otherwise.
   @deprecated
  */
-inline int G3D_DEPRECATED prompt(
-    const char*     windowTitle,
-    const char*     promptx,
-    const char**    choice,
-    int             numChoices) {
+    inline int G3D_DEPRECATED prompt(
+            const char *windowTitle,
+            const char *promptx,
+            const char **choice,
+            int numChoices) {
 
-    return prompt(windowTitle, promptx, choice, numChoices, true);
-}
+        return prompt(windowTitle, promptx, choice, numChoices, true);
+    }
 
 
 /**
@@ -62,9 +62,9 @@ inline int G3D_DEPRECATED prompt(
  immediately.  If you use SDL, use SDL 1.2.5, which does not have that
  problem.
  */
-void G3D_DEPRECATED msgBox(
-    const std::string& message,
-    const std::string& title="Message");
+    void G3D_DEPRECATED msgBox(
+            const std::string &message,
+            const std::string &title = "Message");
 
 
 }; // namespace

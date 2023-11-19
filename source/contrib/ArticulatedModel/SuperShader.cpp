@@ -9,39 +9,39 @@
 #include "G3D/fileutils.h"
 
 void SuperShader::Material::enforceDiffuseMask() {
-    if (! changed) {
+    if (!changed) {
         return;
     }
 
-    if (diffuse.map.notNull() && ! diffuse.map->opaque()) {
+    if (diffuse.map.notNull() && !diffuse.map->opaque()) {
         // There is a mask.  Extract it.
 
         TextureRef mask = diffuse.map->alphaOnlyVersion();
 
         static const int numComponents = 5;
-        Component* component[numComponents] = {&emit, &specular, &specularExponent, &transmit, &reflect};
+        Component *component[numComponents] = {&emit, &specular, &specularExponent, &transmit, &reflect};
 
         // Spread the mask to other channels that are not black
         for (int i = 0; i < numComponents; ++i) {
-            if (! component[i]->isBlack()) {
-                if (component[i]->map.isNull()) {
-                    // Add a new map that is the mask
-                    component[i]->map = mask;
-                } else {
-                    // TODO: merge instead of replacing!
-                    component[i]->map = mask;
+                if (!component[i]->isBlack()) {
+                    if (component[i]->map.isNull()) {
+                        // Add a new map that is the mask
+                        component[i]->map = mask;
+                    } else {
+                        // TODO: merge instead of replacing!
+                        component[i]->map = mask;
+                    }
                 }
             }
-        }
     }
 
     changed = false;
 }
 
 void SuperShader::configureShader(
-    const LightingRef&              lighting,
-    const Material&                 material,
-    VertexAndPixelShader::ArgList&  args) {
+        const LightingRef &lighting,
+        const Material &material,
+        VertexAndPixelShader::ArgList &args) {
     // Material arguments
     // TODO: remove
     static TextureRef defaultNormalMap;
@@ -49,132 +49,132 @@ void SuperShader::configureShader(
     static TextureRef _whiteMap;
 
     static TextureRef _whiteCubeMap;
-    
+
     if (material.diffuse.constant != Color3::black()) {
-        args.set("diffuseConstant",         material.diffuse.constant);
+        args.set("diffuseConstant", material.diffuse.constant);
         if (material.diffuse.map.notNull()) {
-            args.set("diffuseMap",              material.diffuse.map);
+            args.set("diffuseMap", material.diffuse.map);
         }
     }
 
 
     if (material.specular.constant != Color3::black()) {
-        args.set("specularConstant",        material.specular.constant);
+        args.set("specularConstant", material.specular.constant);
 
         if (material.specular.map.notNull()) {
-            args.set("specularMap",             material.specular.map);
+            args.set("specularMap", material.specular.map);
         }
     }
 
     // If specular exponent is black we get into trouble-- pow(x, 0) doesn't work right in shaders for some reason
-    args.set("specularExponentConstant",Color3::white().max(material.specularExponent.constant));
+    args.set("specularExponentConstant", Color3::white().max(material.specularExponent.constant));
 
     if (material.specularExponent.map.notNull()) {
-        args.set("specularExponentMap",     material.specularExponent.map);
+        args.set("specularExponentMap", material.specularExponent.map);
     }
 
     if (material.reflect.constant != Color3::black()) {
-        args.set("reflectConstant",         material.reflect.constant);
+        args.set("reflectConstant", material.reflect.constant);
 
         if (material.reflect.map.notNull()) {
-            args.set("reflectMap",              material.reflect.map);
+            args.set("reflectMap", material.reflect.map);
         }
     }
 
     if (material.emit.constant != Color3::black()) {
-        args.set("emitConstant",            material.emit.constant);
+        args.set("emitConstant", material.emit.constant);
 
         if (material.emit.map.notNull()) {
-            args.set("emitMap",             material.emit.map);
+            args.set("emitMap", material.emit.map);
         }
     }
 
     if (material.normalBumpMap.notNull() && (material.bumpMapScale != 0)) {
-        args.set("normalBumpMap",       material.normalBumpMap);
-        args.set("bumpMapScale",        material.bumpMapScale);
+        args.set("normalBumpMap", material.normalBumpMap);
+        args.set("bumpMapScale", material.bumpMapScale);
     }
 
     ///////////////////////////////////////////////////
     // Lighting Args
 
-    args.set("ambientTop",      lighting->ambientTop);
-    args.set("ambientBottom",   lighting->ambientBottom);
+    args.set("ambientTop", lighting->ambientTop);
+    args.set("ambientBottom", lighting->ambientBottom);
 
     if (lighting->lightArray.size() > 0) {
-        args.set("lightPosition",   lighting->lightArray[0].position);
-        args.set("lightColor",      lighting->lightArray[0].color);
+        args.set("lightPosition", lighting->lightArray[0].position);
+        args.set("lightColor", lighting->lightArray[0].color);
     } else {
-        args.set("lightPosition",   Vector4(0,1,0,0));
-        args.set("lightColor",      Color3::black());
+        args.set("lightPosition", Vector4(0, 1, 0, 0));
+        args.set("lightColor", Color3::black());
     }
 
     // Only set the evt map if we need it
-    if (! material.reflect.isBlack()) {
+    if (!material.reflect.isBlack()) {
         args.set("environmentConstant", lighting->environmentMapColor);
         if (lighting->environmentMap.notNull()) {
-            args.set("environmentMap",  lighting->environmentMap);
+            args.set("environmentMap", lighting->environmentMap);
         } else {
-            args.set("environmentMap",  _whiteCubeMap);
+            args.set("environmentMap", _whiteCubeMap);
         }
     }
 }
 
 
 void SuperShader::configureShadowShader(
-    const GLight&                   light, 
-    const Matrix4&                  lightMVP, 
-    const TextureRef&               shadowMap,
-    const Material&                 material,
-    VertexAndPixelShader::ArgList&  args) {
-    
+        const GLight &light,
+        const Matrix4 &lightMVP,
+        const TextureRef &shadowMap,
+        const Material &material,
+        VertexAndPixelShader::ArgList &args) {
+
     // TODO: don't even set fields that have no corresponding map
     if (material.diffuse.map.notNull()) {
-        args.set("diffuseMap",          material.diffuse.map);
+        args.set("diffuseMap", material.diffuse.map);
     }
 
     // TODO: bind only the constants that are used
-    args.set("diffuseConstant",         material.diffuse.constant);
+    args.set("diffuseConstant", material.diffuse.constant);
 
     if (material.specular.map.notNull()) {
-        args.set("specularMap",         material.specular.map);
+        args.set("specularMap", material.specular.map);
     }
-    args.set("specularConstant",        material.specular.constant);
+    args.set("specularConstant", material.specular.constant);
 
     if (material.specularExponent.map.notNull()) {
-        args.set("specularExponentMap",     material.specularExponent.map);
+        args.set("specularExponentMap", material.specularExponent.map);
     }
-    args.set("specularExponentConstant",material.specularExponent.constant);
+    args.set("specularExponentConstant", material.specularExponent.constant);
 
     if (material.normalBumpMap.notNull() && (material.bumpMapScale != 0)) {
-        args.set("normalBumpMap",       material.normalBumpMap);
-        args.set("bumpMapScale",        material.bumpMapScale);
+        args.set("normalBumpMap", material.normalBumpMap);
+        args.set("bumpMapScale", material.bumpMapScale);
     }
 
     ///////////////////////////////////////////////////
     // Lighting Args
 
-    args.set("lightPosition",   Vector4(light.position.xyz().direction(),0));
-    args.set("lightColor",      light.color);
+    args.set("lightPosition", Vector4(light.position.xyz().direction(), 0));
+    args.set("lightColor", light.color);
 
     // Shadow map setup
-    args.set("shadowMap",       shadowMap);
+    args.set("shadowMap", shadowMap);
 
     // Bias the shadow map so that we don't get acne
     static const Matrix4 bias(
-        0.5f, 0.0f, 0.0f, 0.5f,
-        0.0f, 0.5f, 0.0f, 0.5f,
-        0.0f, 0.0f, 0.5f, 0.5f - 0.003f,
-        0.0f, 0.0f, 0.0f, 1.0f);
+            0.5f, 0.0f, 0.0f, 0.5f,
+            0.0f, 0.5f, 0.0f, 0.5f,
+            0.0f, 0.0f, 0.5f, 0.5f - 0.003f,
+            0.0f, 0.0f, 0.0f, 1.0f);
 
-    args.set("lightMVP",        bias * lightMVP);
+    args.set("lightMVP", bias * lightMVP);
 }
 
 /** Loads the specified text file, using an internal cache to avoid 
     extraneous disk access. */
-static const std::string& loadShaderCode(const std::string& filename) {
+static const std::string &loadShaderCode(const std::string &filename) {
     static Table<std::string, std::string> shaderTextCache;
 
-    if (! shaderTextCache.containsKey(filename)) {
+    if (!shaderTextCache.containsKey(filename)) {
         shaderTextCache.set(filename, readFileAsString(filename));
     }
 
@@ -187,24 +187,24 @@ static const std::string& loadShaderCode(const std::string& filename) {
  ".glsl.vrt" extensions, and <I>defines</I> is a string to prepend to the 
  beginning of both vertex and pixel shaders.
  */
-static ShaderRef loadShader(const std::string& baseName, const std::string& defines) {
+static ShaderRef loadShader(const std::string &baseName, const std::string &defines) {
     debugAssert(fileExists(baseName + ".glsl.vrt"));
 
-    const std::string& vertexShader = loadShaderCode(baseName + ".glsl.vrt");
-    const std::string& pixelShader  = loadShaderCode(baseName + ".glsl.frg");
+    const std::string &vertexShader = loadShaderCode(baseName + ".glsl.vrt");
+    const std::string &pixelShader = loadShaderCode(baseName + ".glsl.frg");
 
     ShaderRef s = Shader::fromStrings(
-        baseName + ".glsl.vrt", 
-        defines + vertexShader, 
-        baseName + ".glsl.frg",
-        defines + pixelShader);
+            baseName + ".glsl.vrt",
+            defines + vertexShader,
+            baseName + ".glsl.frg",
+            defines + pixelShader);
 
     return s;
 }
 
 
-SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
- 
+SuperShader::Cache::Pair SuperShader::getShader(const Material &material) {
+
     // First check the cache
     Cache::Pair p = cache.getSimilar(material);
 
@@ -213,10 +213,10 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
         // Not found in cache; load from disk
         std::string path = "";
 
-        static const std::string shadowName    = "ShadowMappedLightPass";
+        static const std::string shadowName = "ShadowMappedLightPass";
         static const std::string nonShadowName = "NonShadowedPass";
 
-        if (! fileExists(path + shadowName + ".glsl.vrt")) {
+        if (!fileExists(path + shadowName + ".glsl.vrt")) {
             if (fileExists("data/" + shadowName + ".glsl.vrt")) {
                 path = "data/";
             } else if (fileExists("../" + shadowName + ".glsl.vrt")) {
@@ -249,7 +249,7 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
                 if (material.specular.constant != Color3::white()) {
                     defines += "#define SPECULARCONSTANT\n";
                 }
-            } else  {
+            } else {
                 defines += "#define SPECULARCONSTANT\n";
             }
         }
@@ -262,7 +262,7 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
                 if (material.specularExponent.constant != Color3::white()) {
                     defines += "#define SPECULAREXPONENTCONSTANT\n";
                 }
-            } else  {
+            } else {
                 defines += "#define SPECULAREXPONENTCONSTANT\n";
             }
         }
@@ -275,7 +275,7 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
                 if (material.emit.constant != Color3::white()) {
                     defines += "#define EMITCONSTANT\n";
                 }
-            } else  {
+            } else {
                 defines += "#define EMITCONSTANT\n";
             }
         }
@@ -288,7 +288,7 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
                 if (material.reflect.constant != Color3::white()) {
                     defines += "#define REFLECTCONSTANT\n";
                 }
-            } else  {
+            } else {
                 defines += "#define REFLECTCONSTANT\n";
 
                 if (material.reflect.constant == Color3::white()) {
@@ -301,10 +301,10 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
             defines += "#define NORMALBUMPMAP\n";
         }
 
-            // TODO... other terms
+        // TODO... other terms
 
-        p.nonShadowedShader  = loadShader(path + nonShadowName, defines);
-        p.shadowMappedShader = loadShader(path + shadowName,    defines);
+        p.nonShadowedShader = loadShader(path + nonShadowName, defines);
+        p.shadowMappedShader = loadShader(path + shadowName, defines);
 
         p.nonShadowedShader->args.set("backside", 1.0);
         p.shadowMappedShader->args.set("backside", 1.0);
@@ -317,14 +317,14 @@ SuperShader::Cache::Pair SuperShader::getShader(const Material& material) {
 
 
 void SuperShader::createShaders(
-    const Material& material, 
-    ShaderRef& nonShadowedShader, 
-    ShaderRef& shadowMappedShader) {
+        const Material &material,
+        ShaderRef &nonShadowedShader,
+        ShaderRef &shadowMappedShader) {
 
-    Cache::Pair p       = getShader(material);
+    Cache::Pair p = getShader(material);
 
-    nonShadowedShader   = p.nonShadowedShader;
-    shadowMappedShader  = p.shadowMappedShader;
+    nonShadowedShader = p.nonShadowedShader;
+    shadowMappedShader = p.shadowMappedShader;
 
 /*
     // TODO: remove
@@ -374,31 +374,31 @@ void SuperShader::createShaders(
 ////////////////////////////////////////////////////////////////////////////
 SuperShader::Cache SuperShader::cache;
 
-void SuperShader::Cache::add(const Material& mat, const Cache::Pair& p) {
+void SuperShader::Cache::add(const Material &mat, const Cache::Pair &p) {
     materialArray.append(mat);
     shaderArray.append(p);
 }
 
 
-SuperShader::Cache::Pair SuperShader::Cache::getSimilar(const Material& mat) const {
+SuperShader::Cache::Pair SuperShader::Cache::getSimilar(const Material &mat) const {
     for (int m = 0; m < materialArray.size(); ++m) {
-        if (materialArray[m].similarTo(mat)) {
-            return shaderArray[m];
+            if (materialArray[m].similarTo(mat)) {
+                return shaderArray[m];
+            }
         }
-    }
 
     return Pair();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
-bool SuperShader::Material::similarTo(const Material& other) const {
+bool SuperShader::Material::similarTo(const Material &other) const {
     return
-        diffuse.similarTo(other.diffuse) &&
-        emit.similarTo(other.emit) &&
-        specular.similarTo(other.specular) &&
-        specularExponent.similarTo(other.specularExponent) &&
-        transmit.similarTo(other.transmit) &&
-        reflect.similarTo(other.reflect) &&
-        (normalBumpMap.isNull() == other.normalBumpMap.isNull());
+            diffuse.similarTo(other.diffuse) &&
+            emit.similarTo(other.emit) &&
+            specular.similarTo(other.specular) &&
+            specularExponent.similarTo(other.specularExponent) &&
+            transmit.similarTo(other.transmit) &&
+            reflect.similarTo(other.reflect) &&
+            (normalBumpMap.isNull() == other.normalBumpMap.isNull());
 }

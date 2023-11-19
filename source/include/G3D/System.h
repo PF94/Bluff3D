@@ -33,14 +33,14 @@ namespace G3D {
  and some hard-coded paths on the Brown University file
  system.
  */
-std::string demoFindData(bool errorIfNotFound = true);
+    std::string demoFindData(bool errorIfNotFound = true);
 
 /** G3D, SDL, and IJG libraries require license documentation
     to be distributed with your program.  This generates the
     string that must appear in your documentation. 
     <B>Your program can be commercial, closed-source</B> under
     any license you want.*/
-std::string license();
+    std::string license();
 
 
 /**
@@ -52,7 +52,7 @@ std::string license();
  Based on http://www.gamedev.net/reference/programming/features/crc32/
  @deprecated Use Crypto::crc32
 */
-uint32 G3D_DEPRECATED crc32(const void* bytes, size_t numBytes);
+    uint32 G3D_DEPRECATED crc32(const void *bytes, size_t numBytes);
 
 /**
  OS and processor abstraction.  The first time any method is called the processor
@@ -71,248 +71,250 @@ uint32 G3D_DEPRECATED crc32(const void* bytes, size_t numBytes);
          accurate than getTick)
 
  */
-class System {
-public:
+    class System {
+    public:
 
-	/** Called automatically by the other System routines.*/
-	static void init();
+        /** Called automatically by the other System routines.*/
+        static void init();
 
-	/** */
-	static bool hasMMX();
+        /** */
+        static bool hasMMX();
 
-	/** */
-	static bool hasCPUID();
-	
-	/** */
-	static bool hasSSE();
-	
-	/** */
-	static bool hasSSE2();
-	
-	/** */
-	static bool has3DNow();
+        /** */
+        static bool hasCPUID();
 
-	
-	/** */
-    static bool hasRDTSC();
+        /** */
+        static bool hasSSE();
 
-	static const std::string& cpuVendor();
-	
-	/** e.g. "Windows", "GNU/Linux" */
-    static const std::string& operatingSystem();
+        /** */
+        static bool hasSSE2();
 
-	/** */
-    static const std::string& cpuArchitecture();
+        /** */
+        static bool has3DNow();
 
-    /**
-     Returns the endianness of this machine.
-     */
-    static G3DEndian machineEndian();
 
-    /**
-     Guarantees that the start of the array is aligned to the 
-     specified number of bytes.
-     */
-    static void* alignedMalloc(size_t bytes, size_t alignment);
+        /** */
+        static bool hasRDTSC();
 
-    /**
-     Uses pooled storage to optimize small allocations (1 byte to 5 kilobytes).  
-     Can be 10x to 100x faster than calling ::malloc or new.
+        static const std::string &cpuVendor();
 
-     The result must be freed with free.
+        /** e.g. "Windows", "GNU/Linux" */
+        static const std::string &operatingSystem();
 
-     Threadsafe on Win32.
+        /** */
+        static const std::string &cpuArchitecture();
 
-     @sa calloc realloc OutOfMemoryCallback free
-     */
-    static void* malloc(size_t bytes);
+        /**
+         Returns the endianness of this machine.
+         */
+        static G3DEndian machineEndian();
 
-    static void* calloc(size_t n, size_t x);
+        /**
+         Guarantees that the start of the array is aligned to the
+         specified number of bytes.
+         */
+        static void *alignedMalloc(size_t bytes, size_t alignment);
 
-    /**
-     @param size Size of memory that the system was trying to allocate
-     @param recoverable If true, the system will attempt to allocate again
-            if the callback returns true.  If false, malloc is going to return 
-            NULL and this invocation is just to notify the application.
-     @return Return true to force malloc to attempt allocation again if the
-            error was recoverable.
-     */
-    typedef bool (*OutOfMemoryCallback)(size_t size, bool recoverable);
+        /**
+         Uses pooled storage to optimize small allocations (1 byte to 5 kilobytes).
+         Can be 10x to 100x faster than calling ::malloc or new.
 
-    /**
-     When System::malloc fails to allocate memory because the system is
-     out of memory, it invokes this handler (if it is not NULL).
-     The argument to the callback is the amount of memory that malloc
-     was trying to allocate when it ran out.  If the callback returns
-     true, System::malloc will attempt to allocate the memory again.
-     If the callback returns false, then System::malloc will return NULL.
+         The result must be freed with free.
 
-     You can use outOfMemoryCallback to free data structures or to 
-     register the failure.
-     */
-    static OutOfMemoryCallback outOfMemoryCallback;
+         Threadsafe on Win32.
 
-    /**
-     Version of realloc that works with System::malloc.
-     */
-    static void* realloc(void* block, size_t bytes);
+         @sa calloc realloc OutOfMemoryCallback free
+         */
+        static void *malloc(size_t bytes);
 
-    /** Returns a string describing how well System::malloc is using its internal pooled storage.
-        "heap" memory was slow to allocate; the other data sizes are comparatively fast.*/
-    static std::string mallocPerformance();
-    static void resetMallocPerformanceCounters();
+        static void *calloc(size_t n, size_t x);
 
-    /** 
-       Returns a string describing the current usage of the buffer pools used for
-       optimizing System::malloc.
-     */
-    static std::string mallocStatus();
+        /**
+         @param size Size of memory that the system was trying to allocate
+         @param recoverable If true, the system will attempt to allocate again
+                if the callback returns true.  If false, malloc is going to return
+                NULL and this invocation is just to notify the application.
+         @return Return true to force malloc to attempt allocation again if the
+                error was recoverable.
+         */
+        typedef bool (*OutOfMemoryCallback)(size_t size, bool recoverable);
 
-    /**
-     Free data allocated with System::malloc.
+        /**
+         When System::malloc fails to allocate memory because the system is
+         out of memory, it invokes this handler (if it is not NULL).
+         The argument to the callback is the amount of memory that malloc
+         was trying to allocate when it ran out.  If the callback returns
+         true, System::malloc will attempt to allocate the memory again.
+         If the callback returns false, then System::malloc will return NULL.
 
-     Threadsafe on Win32.
-     */
-    static void free(void* p);
+         You can use outOfMemoryCallback to free data structures or to
+         register the failure.
+         */
+        static OutOfMemoryCallback outOfMemoryCallback;
 
-    /**
-     Frees memory allocated with alignedMalloc.
-     */
-    static void alignedFree(void* ptr);
+        /**
+         Version of realloc that works with System::malloc.
+         */
+        static void *realloc(void *block, size_t bytes);
 
-	/** An implementation of memcpy that may be up to 2x as fast as the C library
-	    one on some processors.  Guaranteed to have the same behavior as memcpy
-		in all cases. */
-	static void memcpy(void* dst, const void* src, size_t numBytes);
+        /** Returns a string describing how well System::malloc is using its internal pooled storage.
+            "heap" memory was slow to allocate; the other data sizes are comparatively fast.*/
+        static std::string mallocPerformance();
 
-	/** An implementation of memset that may be up to 2x as fast as the C library
-	    one on some processors.  Guaranteed to have the same behavior as memset
-		in all cases. */
-	static void memset(void* dst, uint8 value, size_t numBytes);
+        static void resetMallocPerformanceCounters();
 
-    /**
-     Returns the fully qualified filename for the currently running executable.
+        /**
+           Returns a string describing the current usage of the buffer pools used for
+           optimizing System::malloc.
+         */
+        static std::string mallocStatus();
 
-     This is more reliable than arg[0], which may be intentionally set
-     to an incorrect value by a calling program, relative to a now
-     non-current directory, or obfuscated by sym-links.
+        /**
+         Free data allocated with System::malloc.
 
-     @cite Linux version written by Nicolai Haehnle <prefect_@gmx.net>, http://www.flipcode.com/cgi-bin/msg.cgi?showThread=COTD-getexename&forum=cotd&id=-1
-     */
-    static std::string currentProgramFilename();
+         Threadsafe on Win32.
+         */
+        static void free(void *p);
 
-    /** G3D Version string */
-    static const std::string& version();
+        /**
+         Frees memory allocated with alignedMalloc.
+         */
+        static void alignedFree(void *ptr);
 
-    /** 
-      Either Debug or Release, depending on whether _DEBUG was defined at compile-time for the library.
-      */
-    static const std::string& build();
+        /** An implementation of memcpy that may be up to 2x as fast as the C library
+            one on some processors.  Guaranteed to have the same behavior as memcpy
+            in all cases. */
+        static void memcpy(void *dst, const void *src, size_t numBytes);
 
-    /**
-     Causes the current thread to yield for the specified duration
-     and consume almost no CPU.
-     The sleep will be extremely precise; it uses System::time() 
-     to calibrate the exact yeild time.
-     */
-    static void sleep(RealTime t);
+        /** An implementation of memset that may be up to 2x as fast as the C library
+            one on some processors.  Guaranteed to have the same behavior as memset
+            in all cases. */
+        static void memset(void *dst, uint8 value, size_t numBytes);
 
-    /**
-     Clears the console.
-     Console programs only.
-     */
-    static void consoleClearScreen();
+        /**
+         Returns the fully qualified filename for the currently running executable.
 
-    /**
-     Returns true if a key is waiting.
-     Console programs only.
-     */
-    static bool consoleKeyPressed();
-    
-    /**
-     Blocks until a key is read (use consoleKeyPressed to determine if
-     a key is waiting to be read) then returns the character code for
-     that key.
-     */
-    static int consoleReadKey();
+         This is more reliable than arg[0], which may be intentionally set
+         to an incorrect value by a calling program, relative to a now
+         non-current directory, or obfuscated by sym-links.
 
-    /**
-     Returns a highly accurate time in milliseconds that
-     is relative to an arbitrary per-platform baseline
-     (e.g. the time the program started)
-     
-     Use differences in two tick times to measure
-     events to a high degree of precision (e.g. for profiling,
-     frame rate counting).
+         @cite Linux version written by Nicolai Haehnle <prefect_@gmx.net>, http://www.flipcode.com/cgi-bin/msg.cgi?showThread=COTD-getexename&forum=cotd&id=-1
+         */
+        static std::string currentProgramFilename();
 
-     This is as accurate as System::getCycleCount, but returns a time
-     in seconds instead of cycles.
-     @deprecated Call time();
-     */
-    static RealTime getTick();
+        /** G3D Version string */
+        static const std::string &version();
 
-    /**
-     @deprecated Call time();
-     */
-    static RealTime getLocalTime();
+        /**
+          Either Debug or Release, depending on whether _DEBUG was defined at compile-time for the library.
+          */
+        static const std::string &build();
 
-    /**
-     The actual time (measured in seconds since
-     Jan 1 1970 midnight).
-     
-     Adjusted for local timezone and daylight savings
-     time.   This is as accurate and fast as getCycleCount().
-    */
-    static RealTime time() {
-        return getLocalTime();
-    }
+        /**
+         Causes the current thread to yield for the specified duration
+         and consume almost no CPU.
+         The sleep will be extremely precise; it uses System::time()
+         to calibrate the exact yeild time.
+         */
+        static void sleep(RealTime t);
 
-    /**
-     To count the number of cycles a given operation takes:
+        /**
+         Clears the console.
+         Console programs only.
+         */
+        static void consoleClearScreen();
 
-     <PRE>
-     unsigned long count;
-     System::beginCycleCount(count);
-     ...
-     System::endCycleCount(count);
-     // count now contains the cycle count for the intervening operation.
+        /**
+         Returns true if a key is waiting.
+         Console programs only.
+         */
+        static bool consoleKeyPressed();
 
-     */
-    static void beginCycleCount(uint64& cycleCount);
-    static void endCycleCount(uint64& cycleCount);
+        /**
+         Blocks until a key is read (use consoleKeyPressed to determine if
+         a key is waiting to be read) then returns the character code for
+         that key.
+         */
+        static int consoleReadKey();
 
-    static uint64 getCycleCount();
+        /**
+         Returns a highly accurate time in milliseconds that
+         is relative to an arbitrary per-platform baseline
+         (e.g. the time the program started)
 
-    /** Set an environment variable for the current process */
-    static void setEnv(const std::string& name, const std::string& value);
-	
-    /** Get an environment variable for the current process.  Returns NULL if the variable doesn't exist. */
-    static const char* getEnv(const std::string& name);
+         Use differences in two tick times to measure
+         events to a high degree of precision (e.g. for profiling,
+         frame rate counting).
 
-    /**
-     Prints a human-readable description of this machine
-     to the text output stream.  Either argument may be NULL.
-     */
-    static void describeSystem(
-        class TextOutput& t);
+         This is as accurate as System::getCycleCount, but returns a time
+         in seconds instead of cycles.
+         @deprecated Call time();
+         */
+        static RealTime getTick();
 
-    static void describeSystem(
-        std::string&        s);
+        /**
+         @deprecated Call time();
+         */
+        static RealTime getLocalTime();
 
-    /** Returns the speed of processor 0 in MHz. 
-        Always returns 0 on linux.*/
-    static int cpuSpeedMHz();
+        /**
+         The actual time (measured in seconds since
+         Jan 1 1970 midnight).
 
-private:
-    /**
-	 (CKO) Note: Not sure why these are specifically needed
-	 for OS X. I made them private though.
-	*/
+         Adjusted for local timezone and daylight savings
+         time.   This is as accurate and fast as getCycleCount().
+        */
+        static RealTime time() {
+            return getLocalTime();
+        }
+
+        /**
+         To count the number of cycles a given operation takes:
+
+         <PRE>
+         unsigned long count;
+         System::beginCycleCount(count);
+         ...
+         System::endCycleCount(count);
+         // count now contains the cycle count for the intervening operation.
+
+         */
+        static void beginCycleCount(uint64 &cycleCount);
+
+        static void endCycleCount(uint64 &cycleCount);
+
+        static uint64 getCycleCount();
+
+        /** Set an environment variable for the current process */
+        static void setEnv(const std::string &name, const std::string &value);
+
+        /** Get an environment variable for the current process.  Returns NULL if the variable doesn't exist. */
+        static const char *getEnv(const std::string &name);
+
+        /**
+         Prints a human-readable description of this machine
+         to the text output stream.  Either argument may be NULL.
+         */
+        static void describeSystem(
+                class TextOutput &t);
+
+        static void describeSystem(
+                std::string &s);
+
+        /** Returns the speed of processor 0 in MHz.
+            Always returns 0 on linux.*/
+        static int cpuSpeedMHz();
+
+    private:
+        /**
+         (CKO) Note: Not sure why these are specifically needed
+         for OS X. I made them private though.
+        */
 #   ifdef G3D_OSX
-		static long m_OSXCPUSpeed; //In Cycles/Second
-		static double m_secondsPerNS;
+        static long m_OSXCPUSpeed; //In Cycles/Second
+        static double m_secondsPerNS;
 #   endif
-};
+    };
 
 
 #ifdef _MSC_VER
@@ -337,46 +339,46 @@ private:
         uint32 timehi, timelo;
 
         __asm__ __volatile__ (
-            "rdtsc            "
-            : "=a" (timelo),
-              "=d" (timehi)
-            : );
+                "rdtsc            "
+                : "=a" (timelo),
+        "=d" (timehi)
+                : );
 
-        return ((uint64)timehi << 32) + (uint64)timelo;
+        return ((uint64) timehi << 32) + (uint64) timelo;
     }
 
 #elif defined(G3D_OSX)
 
     inline uint64 System::getCycleCount() {
-		//Note:  To put off extra processing until the end, this does not 
-		//return the actual clock cycle count.  It is a bus cycle count.
-		//When endCycleCount() is called, it converts the two into a difference
-		//of clock cycles
-		
+        //Note:  To put off extra processing until the end, this does not
+        //return the actual clock cycle count.  It is a bus cycle count.
+        //When endCycleCount() is called, it converts the two into a difference
+        //of clock cycles
+
         return (uint64) UnsignedWideToUInt64(UpTime());
-		//return (uint64) mach_absolute_time();
+        //return (uint64) mach_absolute_time();
     }
 
 #endif
 
-inline void System::beginCycleCount(uint64& cycleCount) {
-    cycleCount = getCycleCount();
-}
+    inline void System::beginCycleCount(uint64 &cycleCount) {
+        cycleCount = getCycleCount();
+    }
 
 
-inline void System::endCycleCount(uint64& cycleCount) {
-	#ifndef G3D_OSX
-		cycleCount = getCycleCount() - cycleCount;
-	#else
-		AbsoluteTime end = UpTime();
-		init();
-		Nanoseconds diffNS = 
+    inline void System::endCycleCount(uint64 &cycleCount) {
+#ifndef G3D_OSX
+        cycleCount = getCycleCount() - cycleCount;
+#else
+        AbsoluteTime end = UpTime();
+        init();
+        Nanoseconds diffNS =
             AbsoluteDeltaToNanoseconds(end, UInt64ToUnsignedWide(cycleCount));
-		cycleCount = 
+        cycleCount =
             (uint64) ((double) (System::m_OSXCPUSpeed) * 
                       (double) UnsignedWideToUInt64(diffNS) * m_secondsPerNS);
-	#endif
-}
+#endif
+    }
 
 
 } // namespace

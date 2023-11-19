@@ -17,22 +17,22 @@
  */
 class Model {
 protected:
-	VAR					                varVertex;
-	VAR					                varNormal;
+    VAR varVertex;
+    VAR varNormal;
 
-    Sphere                              boundingSphere;
-    Box                                 boundingBox;
+    Sphere boundingSphere;
+    Box boundingBox;
 
-	Array<uint32>		                index;
+    Array<uint32> index;
 
-    Array<Triangle>                     collisionTriangle;
+    Array<Triangle> collisionTriangle;
 
     /**
      A table memoizing already loaded models.
      */
-    static Table<std::string, Model*>  table;
+    static Table<std::string, Model *> table;
 
-    Model(const std::string& filename);
+    Model(const std::string &filename);
 
 public:
 
@@ -43,9 +43,10 @@ public:
     static void freeModels();
 
     /** Do not include the DATA_DIR */
-    static Model* getModel(const std::string& filename);
+    static Model *getModel(const std::string &filename);
 
     virtual ~Model() {}
+
     void render() const;
 
     /**
@@ -57,11 +58,11 @@ public:
      @param outNormal   The surface normal at outLocation
      */
     GameTime timeUntilCollisionWithMovingSphere(
-        const Sphere&       sphere,
-        const Vector3&      velocity,
-        GameTime            timeLimit,
-        Vector3&            outLocation,
-        Vector3&            outNormal) const;
+            const Sphere &sphere,
+            const Vector3 &velocity,
+            GameTime timeLimit,
+            Vector3 &outLocation,
+            Vector3 &outNormal) const;
 };
 
 #endif //MODEL_H

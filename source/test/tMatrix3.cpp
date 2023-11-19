@@ -2,14 +2,14 @@
 
 static void mul(float (&A)[3][3], float (&B)[3][3], float (&C)[3][3]) {
     for (int r = 0; r < 3; ++r) {
-        for (int c = 0; c < 3; ++c) {
-            float sum = 0;
-            for (int i = 0; i < 3; ++i) {
-                sum += A[r][i] * B[i][c];
-            }
-            C[r][c] = sum;
+            for (int c = 0; c < 3; ++c) {
+                    float sum = 0;
+                    for (int i = 0; i < 3; ++i) {
+                            sum += A[r][i] * B[i][c];
+                        }
+                    C[r][c] = sum;
+                }
         }
-    }
 }
 
 
@@ -39,10 +39,10 @@ void testMatrix3() {
     {
         Matrix3 M = Matrix3::identity();
         for (int i = 0; i < 3; ++i) {
-            for (int j = 0; j < 3; ++j) {
-                M[i][j] = random(0, 1);
+                for (int j = 0; j < 3; ++j) {
+                        M[i][j] = random(0, 1);
+                    }
             }
-        }
 
         Vector3 v = Vector3::random();
 
@@ -77,33 +77,33 @@ void perfMatrix3() {
     int i;
     System::beginCycleCount(overhead);
     for (i = n - 1; i >= 0; --i) {
-    }
+        }
     System::endCycleCount(overhead);
 
     System::beginCycleCount(raw);
     for (i = n - 1; i >= 0; --i) {
-        C = A.transpose();
-        F = D.transpose();
-        C = B.transpose();
-    }
+            C = A.transpose();
+            F = D.transpose();
+            C = B.transpose();
+        }
     System::endCycleCount(raw);
 
     System::beginCycleCount(opt);
     for (i = n - 1; i >= 0; --i) {
-        Matrix3::transpose(A, C);
-        Matrix3::transpose(D, F);
-        Matrix3::transpose(B, C);
-    }
+            Matrix3::transpose(A, C);
+            Matrix3::transpose(D, F);
+            Matrix3::transpose(B, C);
+        }
     System::endCycleCount(opt);
 
     raw -= overhead;
     opt -= overhead;
 
     printf(" Transpose Performance                       outcome\n");
-    printf("     transpose(A, C): %g cycles/mul       %s\n\n", 
-        (double)opt / (3*n), (opt/(3*n) < 400) ? " ok " : "FAIL");
-    printf("   C = A.transpose(): %g cycles/mul       %s\n", 
-        (double)raw / (3*n), (raw/(3*n) < 150) ? " ok " : "FAIL");
+    printf("     transpose(A, C): %g cycles/mul       %s\n\n",
+           (double) opt / (3 * n), (opt / (3 * n) < 400) ? " ok " : "FAIL");
+    printf("   C = A.transpose(): %g cycles/mul       %s\n",
+           (double) raw / (3 * n), (raw / (3 * n) < 150) ? " ok " : "FAIL");
     printf("\n");
     /////////////////////////////////
 
@@ -111,39 +111,41 @@ void perfMatrix3() {
     printf(" Matrix-Matrix Multiplication\n");
     System::beginCycleCount(raw);
     for (i = n - 1; i >= 0; --i) {
-        C = A * B;
-        F = D * E;
-        C = A * D;
-    }
+            C = A * B;
+            F = D * E;
+            C = A * D;
+        }
     System::endCycleCount(raw);
 
     System::beginCycleCount(opt);
     for (i = n - 1; i >= 0; --i) {
-        Matrix3::mul(A, B, C);
-        Matrix3::mul(D, E, F);
-        Matrix3::mul(A, D, C);
-    }
+            Matrix3::mul(A, B, C);
+            Matrix3::mul(D, E, F);
+            Matrix3::mul(A, D, C);
+        }
     System::endCycleCount(opt);
 
-    
+
     {
         float A[3][3], B[3][3], C[3][3], D[3][3], E[3][3], F[3][3];
 
         System::beginCycleCount(naive);
         for (i = n - 1; i >= 0; --i) {
-            mul(A, B, C);
-            mul(D, E, F);
-            mul(A, D, C);
-        }
+                mul(A, B, C);
+                mul(D, E, F);
+                mul(A, D, C);
+            }
         System::endCycleCount(naive);
     }
 
     raw -= overhead;
     opt -= overhead;
-    
-    printf("  mul(A, B, C)          %g cycles/mul     %s\n", (double)opt / (3*n), (opt/(3*n) < 250) ? " ok " : "FAIL");
-    printf("     C = A * B          %g cycles/mul     %s\n", (double)raw / (3*n), (raw/(3*n) < 500) ? " ok " : "FAIL");
-    printf("  naive for-loops       %g cycles/mul\n", (double)naive / (3*n));
+
+    printf("  mul(A, B, C)          %g cycles/mul     %s\n", (double) opt / (3 * n),
+           (opt / (3 * n) < 250) ? " ok " : "FAIL");
+    printf("     C = A * B          %g cycles/mul     %s\n", (double) raw / (3 * n),
+           (raw / (3 * n) < 500) ? " ok " : "FAIL");
+    printf("  naive for-loops       %g cycles/mul\n", (double) naive / (3 * n));
 
     printf("\n\n");
 }

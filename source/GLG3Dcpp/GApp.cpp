@@ -26,7 +26,7 @@ namespace G3D {
 
 /** Attempt to write license file */
     static void writeLicense() {
-        FILE* f = fopen("g3d-license.txt", "wt");
+        FILE *f = fopen("g3d-license.txt", "wt");
         if (f != NULL) {
             fprintf(f, "%s", license().c_str());
             fclose(f);
@@ -34,10 +34,10 @@ namespace G3D {
     }
 
 
-    GApp::GApp(const Settings& settings, GWindow* window) {
-        debugLog          = NULL;
-        debugFont         = NULL;
-        endProgram        = false;
+    GApp::GApp(const Settings &settings, GWindow *window) {
+        debugLog = NULL;
+        debugFont = NULL;
+        endProgram = false;
         _debugControllerWasActive = false;
         m_moduleManager = GModuleManager::create();
 
@@ -48,11 +48,11 @@ namespace G3D {
         }
 
 
-        if (settings.writeLicenseFile && ! fileExists("g3d-license.txt")) {
+        if (settings.writeLicenseFile && !fileExists("g3d-license.txt")) {
             writeLicense();
         }
 
-        debugLog	 = new Log(settings.logFilename);
+        debugLog = new Log(settings.logFilename);
         renderDevice = new RenderDevice();
 
         if (window != NULL) {
@@ -80,7 +80,7 @@ namespace G3D {
         {
             TextOutput t;
 
-            t.writeSymbols("System","{");
+            t.writeSymbols("System", "{");
             t.pushIndent();
             t.writeNewline();
             System::describeSystem(t);
@@ -100,7 +100,7 @@ namespace G3D {
             debugLog->printf("%s\n", s.c_str());
         }
 
-        debugCamera  = GCamera();
+        debugCamera = GCamera();
 
         debugAssertGLOk();
         loadFont(settings.debugFontName);
@@ -116,21 +116,21 @@ namespace G3D {
         debugCamera.setPosition(debugController.getPosition());
         debugCamera.lookAt(Vector3::zero());
 
-        autoResize                  = true;
-        _debugMode                  = false;
-        debugShowText               = true;
-        debugQuitOnEscape           = true;
-        debugTabSwitchCamera        = true;
-        debugShowRenderingStats     = true;
-        catchCommonExceptions       = true;
+        autoResize = true;
+        _debugMode = false;
+        debugShowText = true;
+        debugQuitOnEscape = true;
+        debugTabSwitchCamera = true;
+        debugShowRenderingStats = true;
+        catchCommonExceptions = true;
 
         debugAssertGLOk();
     }
 
 
-    void GApp::loadFont(const std::string& fontName) {
+    void GApp::loadFont(const std::string &fontName) {
         std::string filename = fontName;
-        if (! fileExists(filename)) {
+        if (!fileExists(filename)) {
 
             if (fileExists(dataDir + filename)) {
                 filename = dataDir + filename;
@@ -159,7 +159,7 @@ namespace G3D {
 
 
     void GApp::setDebugMode(bool b) {
-        if (! b) {
+        if (!b) {
             _debugControllerWasActive = debugMode();
         } else {
             debugController.setActive(_debugControllerWasActive);
@@ -168,7 +168,7 @@ namespace G3D {
     }
 
 
-    void GApp::debugPrintf(const char* fmt ...) {
+    void GApp::debugPrintf(const char *fmt ...) {
         if (debugMode() && debugShowText) {
 
             va_list argList;
@@ -211,19 +211,19 @@ namespace G3D {
         if (catchCommonExceptions) {
             try {
                 main();
-            } catch (const char* e) {
+            } catch (const char *e) {
                 alwaysAssertM(false, e);
-            } catch (const GImage::Error& e) {
+            } catch (const GImage::Error &e) {
                 alwaysAssertM(false, e.reason + "\n" + e.filename);
-            } catch (const std::string& s) {
+            } catch (const std::string &s) {
                 alwaysAssertM(false, s);
-            } catch (const TextInput::WrongTokenType& t) {
+            } catch (const TextInput::WrongTokenType &t) {
                 alwaysAssertM(false, t.message);
-            } catch (const TextInput::WrongSymbol& t) {
+            } catch (const TextInput::WrongSymbol &t) {
                 alwaysAssertM(false, t.message);
-            } catch (const VertexAndPixelShader::ArgumentError& e) {
+            } catch (const VertexAndPixelShader::ArgumentError &e) {
                 alwaysAssertM(false, e.message);
-            } catch (const LightweightConduit::PacketSizeException& e) {
+            } catch (const LightweightConduit::PacketSizeException &e) {
                 alwaysAssertM(false, e.message);
             }
         } else {
@@ -233,11 +233,11 @@ namespace G3D {
 
 
     void GApp::renderDebugInfo() {
-        if (debugMode() && ! debugFont.isNull()) {
+        if (debugMode() && !debugFont.isNull()) {
             // Capture these values before we render debug output
-            int majGL  = renderDevice->debugNumMajorOpenGLStateChanges();
+            int majGL = renderDevice->debugNumMajorOpenGLStateChanges();
             int majAll = renderDevice->debugNumMajorStateChanges();
-            int minGL  = renderDevice->debugNumMinorOpenGLStateChanges();
+            int minGL = renderDevice->debugNumMinorOpenGLStateChanges();
             int minAll = renderDevice->debugNumMinorStateChanges();
             int pushCalls = renderDevice->debugNumPushStateCalls();
 
@@ -310,19 +310,19 @@ namespace G3D {
         }
     }
 
-    void GApp::addModule(const GModuleRef& module, GModuleManager::EventPriority priority) {
+    void GApp::addModule(const GModuleRef &module, GModuleManager::EventPriority priority) {
         m_moduleManager->add(module, priority);
     }
 
 
-    void GApp::removeModule(const GModuleRef& module) {
+    void GApp::removeModule(const GModuleRef &module) {
         m_moduleManager->remove(module);
     }
 
 //////////////////////////////////////////////
 
 
-    GApplet::GApplet(GApp* _app) :
+    GApplet::GApplet(GApp *_app) :
             app(_app),
             lastWaitTime(System::time()),
             m_desiredFrameRate(inf()),
@@ -335,7 +335,7 @@ namespace G3D {
     }
 
 
-    bool GApplet::onEvent(const GEvent& event) {
+    bool GApplet::onEvent(const GEvent &event) {
         processEvent(event); // TODO: Remove when deprecated
 
         return GModuleManager::onEvent(event, app->m_moduleManager, m_moduleManager);
@@ -343,8 +343,8 @@ namespace G3D {
 
 
     void GApplet::getPosedModel(
-            Array<PosedModelRef>& posedArray,
-            Array<PosedModel2DRef>& posed2DArray) {
+            Array<PosedModelRef> &posedArray,
+            Array<PosedModel2DRef> &posed2DArray) {
 
         m_moduleManager->getPosedModel(posedArray, posed2DArray);
         app->m_moduleManager->getPosedModel(posedArray, posed2DArray);
@@ -352,16 +352,16 @@ namespace G3D {
     }
 
 
-    void GApplet::onGraphics(RenderDevice* rd) {
-        (void)rd;
+    void GApplet::onGraphics(RenderDevice *rd) {
+        (void) rd;
         doGraphics();
     }
 
 
     void GApplet::doGraphics() {
-        Array<PosedModelRef>        posedArray;
-        Array<PosedModel2DRef>      posed2DArray;
-        Array<PosedModelRef>        opaque, transparent;
+        Array<PosedModelRef> posedArray;
+        Array<PosedModel2DRef> posed2DArray;
+        Array<PosedModelRef> opaque, transparent;
 
         // By default, render the installed modules
         getPosedModel(posedArray, posed2DArray);
@@ -397,12 +397,12 @@ namespace G3D {
     }
 
 
-    void GApplet::addModule(const GModuleRef& module, GModuleManager::EventPriority priority) {
+    void GApplet::addModule(const GModuleRef &module, GModuleManager::EventPriority priority) {
         m_moduleManager->add(module, priority);
     }
 
 
-    void GApplet::removeModule(const GModuleRef& module) {
+    void GApplet::removeModule(const GModuleRef &module) {
         m_moduleManager->remove(module);
     }
 
@@ -448,8 +448,8 @@ namespace G3D {
 
         double rate = simTimeRate();
         RealTime rdt = timeStep;
-        SimTime  sdt = timeStep * rate;
-        SimTime  idt = desiredFrameDuration() * rate;
+        SimTime sdt = timeStep * rate;
+        SimTime idt = desiredFrameDuration() * rate;
 
         onSimulation(rdt, sdt, idt);
         app->m_moduleManager->onSimulation(rdt, sdt, idt);
@@ -531,7 +531,7 @@ namespace G3D {
             // Main loop
             do {
                 oneFrame();
-            } while (! app->endProgram && ! endApplet);
+            } while (!app->endProgram && !endApplet);
 
             endRun();
         }
@@ -550,7 +550,7 @@ namespace G3D {
                 continue;
             }
 
-            switch(event.type) {
+            switch (event.type) {
                 case SDL_QUIT:
                     app->endProgram = true;
                     endApplet = true;
@@ -579,11 +579,11 @@ namespace G3D {
                         case SDLK_TAB:
                             // Make sure it wasn't ALT-TAB that was pressed !
                             if (app->debugMode() && app->debugTabSwitchCamera &&
-                                ! (app->userInput->keyDown(SDLK_RALT) ||
-                                   app->userInput->keyDown(SDLK_LALT))) {
+                                !(app->userInput->keyDown(SDLK_RALT) ||
+                                  app->userInput->keyDown(SDLK_LALT))) {
 
                                 app->debugController.setActive
-                                        (! app->debugController.active());
+                                        (!app->debugController.active());
                             }
                             break;
 

@@ -19,71 +19,77 @@
 
 namespace G3D {
 
-class Line;
-class AABox;
+    class Line;
+
+    class AABox;
+
 /**
  Right cylinder
  */
-class Cylinder {
-private:
-	Vector3			p1;
-	Vector3			p2;
+    class Cylinder {
+    private:
+        Vector3 p1;
+        Vector3 p2;
 
-	float           mRadius;
+        float mRadius;
 
-public:
+    public:
 
-    /** Uninitialized */
-    Cylinder();
-    Cylinder(class BinaryInput& b);
-	Cylinder(const Vector3& _p1, const Vector3& _p2, float _r);
-	void serialize(class BinaryOutput& b) const;
-	void deserialize(class BinaryInput& b);
-	
-	/** The line down the center of the Cylinder */
-	Line getAxis() const;
+        /** Uninitialized */
+        Cylinder();
 
-    /** 
-      A reference frame in which the center of mass is at the origin and
-      the Y-axis is the cylinder's axis.  If the cylinder is transformed, this reference frame
-      may freely rotate around its axis.*/
-    void getReferenceFrame(class CoordinateFrame& cframe) const;
+        Cylinder(class BinaryInput &b);
 
-	Vector3 getPoint1() const;
+        Cylinder(const Vector3 &_p1, const Vector3 &_p2, float _r);
 
-	Vector3 getPoint2() const;
+        void serialize(class BinaryOutput &b) const;
 
-    /**
-     Returns true if the point is inside the Cylinder or on its surface.
-     */
-    bool contains(const Vector3& p) const;
+        void deserialize(class BinaryInput &b);
 
-    float area() const;
+        /** The line down the center of the Cylinder */
+        Line getAxis() const;
 
-    float volume() const;
+        /**
+          A reference frame in which the center of mass is at the origin and
+          the Y-axis is the cylinder's axis.  If the cylinder is transformed, this reference frame
+          may freely rotate around its axis.*/
+        void getReferenceFrame(class CoordinateFrame &cframe) const;
 
-    float radius() const; 
+        Vector3 getPoint1() const;
 
-    /** Center of mass */
-    inline Vector3 center() const {
-        return (p1 + p2) / 2.0f;
-    }
+        Vector3 getPoint2() const;
 
-    inline float height() const {
-        return (p1 - p2).magnitude();
-    }
+        /**
+         Returns true if the point is inside the Cylinder or on its surface.
+         */
+        bool contains(const Vector3 &p) const;
 
-    /**
-     Get close axis aligned bounding box.
-     With vertical world orientation, the top and bottom might not be very tight. */
-    void getBounds(AABox& out) const;
+        float area() const;
 
-    /** Random world space point with outward facing normal. */
-    void getRandomSurfacePoint(Vector3& P, Vector3& N) const;
+        float volume() const;
 
-    /** Point selected uniformly at random over the volume. */
-    Vector3 randomInteriorPoint() const;
-};
+        float radius() const;
+
+        /** Center of mass */
+        inline Vector3 center() const {
+            return (p1 + p2) / 2.0f;
+        }
+
+        inline float height() const {
+            return (p1 - p2).magnitude();
+        }
+
+        /**
+         Get close axis aligned bounding box.
+         With vertical world orientation, the top and bottom might not be very tight. */
+        void getBounds(AABox &out) const;
+
+        /** Random world space point with outward facing normal. */
+        void getRandomSurfacePoint(Vector3 &P, Vector3 &N) const;
+
+        /** Point selected uniformly at random over the volume. */
+        Vector3 randomInteriorPoint() const;
+    };
 
 } // namespace
 

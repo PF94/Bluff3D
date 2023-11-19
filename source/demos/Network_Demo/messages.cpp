@@ -10,7 +10,7 @@
 #include "Entity.h"
 
 
-void EntityStateMessage::serialize(BinaryOutput& b) const {
+void EntityStateMessage::serialize(BinaryOutput &b) const {
     b.writeInt32(id);
     controls.serialize(b);
     frame.serialize(b);
@@ -18,7 +18,7 @@ void EntityStateMessage::serialize(BinaryOutput& b) const {
 }
 
 
-void EntityStateMessage::deserialize(BinaryInput& b) {
+void EntityStateMessage::deserialize(BinaryInput &b) {
     id = b.readInt32();
     controls.deserialize(b);
     frame.deserialize(b);

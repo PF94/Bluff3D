@@ -36,57 +36,57 @@ namespace G3D {
   @param controlY  YType must support multiplication and addition.
   @param numControl The number of control points.
  */
-template<class XType, class YType>
-YType linearSpline(double x, const XType* controlX, const YType* controlY, int numControl) {
-    debugAssert(numControl >= 1);
+    template<class XType, class YType>
+    YType linearSpline(double x, const XType *controlX, const YType *controlY, int numControl) {
+        debugAssert(numControl >= 1);
 
-    // Off the beginning
-    if ((numControl == 1) || (x < controlX[0])) {
-        return controlY[0];
-    }
-
-    for (int i = 1; i < numControl; ++i) {
-        if (x < controlX[i]) {
-            const double alpha = (double)(controlX[i] - x) / (controlX[i] - controlX[i - 1]);
-            return controlY[i] * (1 - alpha) + controlY[i - 1] * alpha;
+        // Off the beginning
+        if ((numControl == 1) || (x < controlX[0])) {
+            return controlY[0];
         }
+
+        for (int i = 1; i < numControl; ++i) {
+                if (x < controlX[i]) {
+                    const double alpha = (double) (controlX[i] - x) / (controlX[i] - controlX[i - 1]);
+                    return controlY[i] * (1 - alpha) + controlY[i - 1] * alpha;
+                }
+            }
+
+        // Off the end
+        return controlY[numControl - 1];
     }
 
-    // Off the end
-    return controlY[numControl - 1];
-}
 
- 
+    template<class YType>
+    YType cyclicCatmullRomSpline(
+            double t,
+            const YType *controlY,
+            int numPoints) {
 
-template<class YType> YType cyclicCatmullRomSpline(
-    double       t,
-    const YType* controlY,
-    int          numPoints) {
+        debugAssert(numPoints >= 3);
 
-    debugAssert(numPoints >= 3);
+        t = wrap(t, numPoints);
 
-    t = wrap(t, numPoints);
+        // Find the indices of adjacent control points
+        int i = iFloor(t);
 
-    // Find the indices of adjacent control points    
-    int i = iFloor(t);
-    
-    // Compute the distance from the control point
-    t = t - i;
+        // Compute the distance from the control point
+        t = t - i;
 
-    // Shift back one point for correct indexing
-    i += numPoints - 1;
+        // Shift back one point for correct indexing
+        i += numPoints - 1;
 
-    // Pick up four control points
-    const YType& P0 = controlY[(i + 0) % numPoints];
-    const YType& P1 = controlY[(i + 1) % numPoints];
-    const YType& P2 = controlY[(i + 2) % numPoints];
-    const YType& P3 = controlY[(i + 3) % numPoints];
+        // Pick up four control points
+        const YType &P0 = controlY[(i + 0) % numPoints];
+        const YType &P1 = controlY[(i + 1) % numPoints];
+        const YType &P2 = controlY[(i + 2) % numPoints];
+        const YType &P3 = controlY[(i + 3) % numPoints];
 
-    return 0.5 * ((2 * P1) + 
-                  (-P0 + P2) * t +
-                  (2*P0 - 5*P1 + 4*P2 - P3) * t*t +
-                  (-P0 + 3*P1- 3*P2 + P3) * t*t*t);
-}
+        return 0.5 * ((2 * P1) +
+                      (-P0 + P2) * t +
+                      (2 * P0 - 5 * P1 + 4 * P2 - P3) * t * t +
+                      (-P0 + 3 * P1 - 3 * P2 + P3) * t * t * t);
+    }
 
 /**
  A cubic spline with regularly spaced 
@@ -99,13 +99,14 @@ template<class YType> YType cyclicCatmullRomSpline(
 
  @cite http://www.mvps.org/directx/articles/catmull/
 */
-template<class YType> YType cyclicCatmullRomSpline(
-    double       t,
-    const Array<YType>&  controlY) {
+    template<class YType>
+    YType cyclicCatmullRomSpline(
+            double t,
+            const Array<YType> &controlY) {
 
-    int numPoints = controlY.size();
-    return cyclicCatmullRomSpline(t, controlY.getCArray(), numPoints);
-}
+        int numPoints = controlY.size();
+        return cyclicCatmullRomSpline(t, controlY.getCArray(), numPoints);
+    }
 
 }
 

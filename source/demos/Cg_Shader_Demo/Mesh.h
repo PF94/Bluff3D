@@ -6,54 +6,54 @@
 class Mesh {
 public:
 
-    Array<Vector3>          vertexArray;
-    Array<Vector2>          texCoordArray;
+    Array<Vector3> vertexArray;
+    Array<Vector2> texCoordArray;
 
-    Array<Vector3>          normalArray;
-    Array<Vector3>          tangentArray;
-    Array<Vector3>          binormalArray;
+    Array<Vector3> normalArray;
+    Array<Vector3> tangentArray;
+    Array<Vector3> binormalArray;
 
-    Array<int>              indexArray;
-    Array<MeshAlg::Face>    faceArray;
+    Array<int> indexArray;
+    Array<MeshAlg::Face> faceArray;
 
-    Array<MeshAlg::Edge>    edgeArray;
+    Array<MeshAlg::Edge> edgeArray;
 
-    Array< Array<int> >     adjacentFaceArray;
-    Array<Vector3>          faceNormalArray;
+    Array<Array<int> > adjacentFaceArray;
+    Array<Vector3> faceNormalArray;
 
     Mesh() {
         vertexArray.resize(4);
         texCoordArray.resize(4);
-        
-        vertexArray[0]   = Vector3(-2, 1, -2);
-        texCoordArray[0] = Vector2(0, 0); 
 
-        vertexArray[1]   = Vector3(-2, 1,  2);
-        texCoordArray[1] = Vector2(0, 1); 
+        vertexArray[0] = Vector3(-2, 1, -2);
+        texCoordArray[0] = Vector2(0, 0);
 
-        vertexArray[2]   = Vector3( 2, 1,  2);
-        texCoordArray[2] = Vector2(1, 1); 
+        vertexArray[1] = Vector3(-2, 1, 2);
+        texCoordArray[1] = Vector2(0, 1);
 
-        vertexArray[3]   = Vector3( 2, 1, -2);
-        texCoordArray[3] = Vector2(1, 0); 
+        vertexArray[2] = Vector3(2, 1, 2);
+        texCoordArray[2] = Vector2(1, 1);
+
+        vertexArray[3] = Vector3(2, 1, -2);
+        texCoordArray[3] = Vector2(1, 0);
 
         indexArray.append(0, 1, 2);
         indexArray.append(0, 2, 3);
 
         MeshAlg::computeAdjacency(vertexArray, indexArray,
-            faceArray, edgeArray, adjacentFaceArray);
+                                  faceArray, edgeArray, adjacentFaceArray);
 
         MeshAlg::computeNormals(vertexArray, faceArray,
-            adjacentFaceArray, normalArray, faceNormalArray);
+                                adjacentFaceArray, normalArray, faceNormalArray);
 
         MeshAlg::computeTangentSpaceBasis(vertexArray, texCoordArray,
-            normalArray, faceArray, tangentArray, binormalArray);
+                                          normalArray, faceArray, tangentArray, binormalArray);
     }
 
 
-    void render(RenderDevice* rd) {
+    void render(RenderDevice *rd) {
         rd->beginPrimitive(RenderDevice::TRIANGLES);
-            for (int i = 0; i < indexArray.size(); ++i) {
+        for (int i = 0; i < indexArray.size(); ++i) {
                 int v = indexArray[i];
                 rd->setTexCoord(0, texCoordArray[v]);
                 rd->setNormal(normalArray[v]);

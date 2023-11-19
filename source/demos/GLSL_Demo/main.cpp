@@ -7,25 +7,25 @@
 
 #include "header.h"
 
-int main(int argc, char** argv) {
-	GAppSettings settings;
+int main(int argc, char **argv) {
+    GAppSettings settings;
     settings.window.fsaaSamples = 4;
-	settings.window.width = 800;
-	settings.window.height = 600;
+    settings.window.width = 800;
+    settings.window.height = 600;
     settings.useNetwork = false;
-	App(settings).run();
-	return 0;
+    App(settings).run();
+    return 0;
 }
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
     window()->setCaption("GLSL Demo");
 }
 
 
-static TextureRef loadBumpAsNormalMap(const std::string& filename) {
-	GImage normal;
-	computeNormalMap(GImage(filename), normal, true, true);
-	return Texture::fromGImage(filename, normal);
+static TextureRef loadBumpAsNormalMap(const std::string &filename) {
+    GImage normal;
+    computeNormalMap(GImage(filename), normal, true, true);
+    return Texture::fromGImage(filename, normal);
 }
 
 void App::main() {
@@ -38,7 +38,7 @@ void App::main() {
 
     // Find the path to our runtime files
     std::string path = "GLSL_Demo/";
-    if (! fileExists(path + "bump.frag")) {
+    if (!fileExists(path + "bump.frag")) {
         path = "";
     }
 
@@ -48,6 +48,6 @@ void App::main() {
     normalBumpMap = loadBumpAsNormalMap(path + "rockwall-bump.tga");
     debugLog->println("Launching Viewer\n");
 
-	Viewer(this).run();
+    Viewer(this).run();
 }
 

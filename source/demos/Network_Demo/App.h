@@ -18,23 +18,23 @@ protected:
 
 public:
 
-    SkyRef              sky;
+    SkyRef sky;
 
-    GFontRef            font;
+    GFontRef font;
 
     /** NULL if not hosting.  Client is responsible
         for calling doSimulation and doNetwork
         on the hostingServer when it is non-null.
      */
-    class Server*       hostingServer;
+    class Server *hostingServer;
 
-    DiscoverySettings   discoverySettings;
+    DiscoverySettings discoverySettings;
 
-    App(const GAppSettings& settings);
+    App(const GAppSettings &settings);
 };
 
 /** Used for debugging */
-extern App*         app;
+extern App *app;
 
 #endif
 

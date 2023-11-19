@@ -19,10 +19,11 @@
 
 namespace G3D {
 
-class RenderDevice;
-class UserInput;
+    class RenderDevice;
 
-typedef ReferenceCountedPointer<class GModule> GModuleRef;
+    class UserInput;
+
+    typedef ReferenceCountedPointer<class GModule> GModuleRef;
 
 /**
  Interface for 2D or 3D objects that experience standard
@@ -35,31 +36,31 @@ typedef ReferenceCountedPointer<class GModule> GModuleRef;
 
  @beta
  */
-class GModule : public ReferenceCountedObject {
-public:
+    class GModule : public ReferenceCountedObject {
+    public:
 
-    /** 
-     Appends a posed model for this object to the array, if it has a graphic representation.
-     The posed model appended is allowed to reference the agent and is allowed to mutate
-     if the agent is mutated. 
-     */
-    virtual void getPosedModel(
-        Array<PosedModelRef>& posedArray,
-        Array<PosedModel2DRef>& posed2DArray) = 0;
+        /**
+         Appends a posed model for this object to the array, if it has a graphic representation.
+         The posed model appended is allowed to reference the agent and is allowed to mutate
+         if the agent is mutated.
+         */
+        virtual void getPosedModel(
+                Array<PosedModelRef> &posedArray,
+                Array<PosedModel2DRef> &posed2DArray) = 0;
 
-    virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt) = 0;
+        virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt) = 0;
 
-    /** Returning true consumes the event and prevents other GModules from seeing it. */
-    virtual bool onEvent(const GEvent& event) = 0;
+        /** Returning true consumes the event and prevents other GModules from seeing it. */
+        virtual bool onEvent(const GEvent &event) = 0;
 
-    virtual void onUserInput(UserInput* ui) = 0;
+        virtual void onUserInput(UserInput *ui) = 0;
 
-    virtual void onNetwork() = 0;
+        virtual void onNetwork() = 0;
 
-    virtual void onLogic() = 0;
-};
+        virtual void onLogic() = 0;
+    };
 
-typedef ReferenceCountedPointer<class GModuleManager> GModuleManagerRef;
+    typedef ReferenceCountedPointer<class GModuleManager> GModuleManagerRef;
 
 /**
  Manages a group of GModules.  This is used internally by GApp and GApplet
@@ -68,92 +69,96 @@ typedef ReferenceCountedPointer<class GModuleManager> GModuleManagerRef;
 
  You can use GModules without this class.
  */
-class GModuleManager : public GModule {
-public:
-
-    enum EventPriority {LOW_PRIORITY, NORMAL_PRIORITY, HIGH_PRIORITY, NUM_PRIORITY};
-
-private:
-    
-    /** Module index is the priority */
-    Array<GModuleRef>   m_moduleArray[NUM_PRIORITY];
-
-    class Add {
+    class GModuleManager : public GModule {
     public:
-        GModuleRef      module;
-        EventPriority   priority;
-        Add() {}
-        Add(const GModuleRef& m, EventPriority p) : module(m), priority(p) {}
+
+        enum EventPriority {
+            LOW_PRIORITY, NORMAL_PRIORITY, HIGH_PRIORITY, NUM_PRIORITY
+        };
+
+    private:
+
+        /** Module index is the priority */
+        Array<GModuleRef> m_moduleArray[NUM_PRIORITY];
+
+        class Add {
+        public:
+            GModuleRef module;
+            EventPriority priority;
+
+            Add() {}
+
+            Add(const GModuleRef &m, EventPriority p) : module(m), priority(p) {}
+        };
+
+        Array<Add> m_addList;
+
+        Array<GModuleRef> m_removeList;
+
+        /** Number of elements. */
+        int m_size;
+
+        bool m_locked;
+
+        /** If true, when the lock is lifted all objects should be removed. */
+        bool m_removeAll;
+
+        GModuleManager();
+
+    public:
+
+        static GModuleManagerRef create();
+
+        /**
+          Between beginLock and endLock, add and remove operations are delayed so that
+          iteration is safe.  Locks may not be executed recursively; only one level of
+          locking is allowed.
+          */
+        void beginLock();
+
+        void endLock();
+
+        /**
+            If a lock is in effect, the add may be delayed until the unlock.
+
+            Priorities should generally not be used; they are largely for supporting
+            debugging components at HIGH_PRIORITY that intercept events before they
+            can hit the regular infrastructure.
+          */
+        void add(const GModuleRef &m, EventPriority p = NORMAL_PRIORITY);
+
+        /**
+           If a lock is in effect the remove will be delayed until the unlock.
+         */
+        void remove(const GModuleRef &m);
+
+        /**
+         Removes all.
+         */
+        void clear();
+
+        int size() const;
+
+        /** Runs the event handles of each manager interlaced, as if all the modules from a were in b.*/
+        static bool onEvent(const GEvent &event, GModuleManagerRef &a, GModuleManagerRef &b);
+
+        const GModuleRef &operator[](int i) const;
+
+        /** Calls getPosedModel on all children.*/
+        virtual void getPosedModel(
+                Array<PosedModelRef> &posedArray,
+                Array<PosedModel2DRef> &posed2DArray);
+
+        virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
+
+        virtual bool onEvent(const GEvent &event);
+
+        virtual void onUserInput(UserInput *ui);
+
+        virtual void onNetwork();
+
+        virtual void onLogic();
     };
-
-    Array<Add>          m_addList;
-
-    Array<GModuleRef>   m_removeList;
-
-    /** Number of elements. */
-    int                 m_size;
-
-    bool                m_locked;
-
-    /** If true, when the lock is lifted all objects should be removed. */
-    bool                m_removeAll;
-
-    GModuleManager();
-
-public:
-
-    static GModuleManagerRef create();
-
-    /** 
-      Between beginLock and endLock, add and remove operations are delayed so that 
-      iteration is safe.  Locks may not be executed recursively; only one level of
-      locking is allowed.
-      */
-    void beginLock();
-
-    void endLock();
-
-    /** 
-        If a lock is in effect, the add may be delayed until the unlock.
-
-        Priorities should generally not be used; they are largely for supporting
-        debugging components at HIGH_PRIORITY that intercept events before they
-        can hit the regular infrastructure.
-      */
-    void add(const GModuleRef& m, EventPriority p = NORMAL_PRIORITY);
-
-    /**
-       If a lock is in effect the remove will be delayed until the unlock.
-     */
-    void remove(const GModuleRef& m);
-
-    /**
-     Removes all.
-     */
-    void clear();
-
-    int size() const;
-
-    /** Runs the event handles of each manager interlaced, as if all the modules from a were in b.*/
-    static bool onEvent(const GEvent& event, GModuleManagerRef& a, GModuleManagerRef& b);
-
-    const GModuleRef& operator[](int i) const;
-
-    /** Calls getPosedModel on all children.*/
-    virtual void getPosedModel(
-        Array<PosedModelRef>& posedArray, 
-        Array<PosedModel2DRef>& posed2DArray);
-
-    virtual void onSimulation(RealTime rdt, SimTime sdt, SimTime idt);
-
-    virtual bool onEvent(const GEvent& event);
-
-    virtual void onUserInput(UserInput* ui);
-
-    virtual void onNetwork();
-
-    virtual void onLogic();
-};
 
 
 /**
@@ -162,13 +167,13 @@ public:
  G3D::ThirdPersonManipulator,
  G3D::FirstPersonManipulator
  */
-class Manipulator : public GModule {
-public:
+    class Manipulator : public GModule {
+    public:
 
-    virtual void getFrame(CoordinateFrame& c) const = 0;
+        virtual void getFrame(CoordinateFrame &c) const = 0;
 
-    virtual CoordinateFrame frame() const = 0;
-};
+        virtual CoordinateFrame frame() const = 0;
+    };
 
 
 } // G3D

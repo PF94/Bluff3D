@@ -9,17 +9,20 @@
 #include "../include/G3DAll.h"
 
 #if G3D_VER < 60900
-    #error Requires G3D 6.09
+#error Requires G3D 6.09
 #endif
 
 #include "Report.h"
 #include "App.h"
+
 #ifdef G3D_WIN32
+
 #   include <direct.h>
+
 #endif
 
 #define FAST
- 
+
 static const float gfxMeterVersion = 0.9f;
 
 int CPU_speed_in_MHz();
@@ -36,20 +39,20 @@ int CPU_speed_in_MHz();
  First array element is low coherence, second is high coherence
  */
 void measureVertexPerformance(
-    GWindow* w,     
-    int&   numTris,
-    float  beginEndFPS[2],
-    float  drawElementsRAMFPS[2], 
-    float  drawElementsVBOFPS[2], 
-    float  drawElementsVBO16FPS[2], 
-    float  drawElementsVBOIFPS[2],
-    float  drawElementsVBOPeakFPS[2],
-    float& drawArraysVBOPeakFPS);
+        GWindow *w,
+        int &numTris,
+        float beginEndFPS[2],
+        float drawElementsRAMFPS[2],
+        float drawElementsVBOFPS[2],
+        float drawElementsVBO16FPS[2],
+        float drawElementsVBOIFPS[2],
+        float drawElementsVBOPeakFPS[2],
+        float &drawArraysVBOPeakFPS);
 
 void shaderVersions(
-    std::string& regStr,
-    std::string& asmStr,
-    std::string& glslStr);
+        std::string &regStr,
+        std::string &asmStr,
+        std::string &glslStr);
 
 
 void App::showSplashScreen() {
@@ -61,20 +64,20 @@ void App::showSplashScreen() {
     }
 
     renderDevice->push2D();
-    
-        renderDevice->setColorClearValue(Color3::white());
-        renderDevice->clear();
 
-        int s = gfxMeterTexture->getTexelWidth();
-        int w = 800, h = 600;
-        renderDevice->setTexture(0, gfxMeterTexture);
-        Draw::rect2D(Rect2D::xywh(w/2-s/2,h/2-s/2,s,s), renderDevice);
+    renderDevice->setColorClearValue(Color3::white());
+    renderDevice->clear();
 
-        // Second time through, render some text
-        if (reportFont.notNull()) {
-            reportFont->draw2D(renderDevice, "Profiling your system...", Vector2(w/2, h/2+s/2 + 10), 
-                19, Color3::black(), Color4::clear(), GFont::XALIGN_CENTER);
-        }
+    int s = gfxMeterTexture->getTexelWidth();
+    int w = 800, h = 600;
+    renderDevice->setTexture(0, gfxMeterTexture);
+    Draw::rect2D(Rect2D::xywh(w / 2 - s / 2, h / 2 - s / 2, s, s), renderDevice);
+
+    // Second time through, render some text
+    if (reportFont.notNull()) {
+        reportFont->draw2D(renderDevice, "Profiling your system...", Vector2(w / 2, h / 2 + s / 2 + 10),
+                           19, Color3::black(), Color4::clear(), GFont::XALIGN_CENTER);
+    }
 
     renderDevice->pop2D();
     window()->swapGLBuffers();
@@ -82,8 +85,8 @@ void App::showSplashScreen() {
 
 
 void App::main() {
-	setDebugMode(false);
-	debugController.setActive(false);
+    setDebugMode(false);
+    debugController.setActive(false);
 
     //window()->swapGLBuffers();while(true);
 
@@ -115,20 +118,20 @@ void App::main() {
         }
 
 #       ifdef G3D_WIN32
-            double speed = CPU_speed_in_MHz() * 1e6;
-            if (speed > 1e9) {
-                chipSpeed = format("%.1f GHz", speed / 1e9);
-            } else if (speed > 10e6) {
-                chipSpeed = format("%.1f MHz", speed / 1e6);
-            }
-            // Probably a bad result if speed is less than 1 MHz
+        double speed = CPU_speed_in_MHz() * 1e6;
+        if (speed > 1e9) {
+            chipSpeed = format("%.1f GHz", speed / 1e9);
+        } else if (speed > 10e6) {
+            chipSpeed = format("%.1f MHz", speed / 1e6);
+        }
+        // Probably a bad result if speed is less than 1 MHz
 #       endif
     }
 
     // Choose os logo
     {
         std::string filename = "";
-        std::string os = System::operatingSystem ();
+        std::string os = System::operatingSystem();
 
         if (beginsWith(os, "Windows 5.0")) {
             filename = "win2k.jpg";
@@ -183,7 +186,7 @@ void App::main() {
 #   endif
 
     countBugs();
-    
+
     // Load objects here
     sky = NULL;//Sky::create(NULL, dataDir + "sky/");
 
@@ -198,13 +201,13 @@ void App::countBugs() {
     if (GLCaps::hasBug_glMultiTexCoord3fvARB()) {
         ++bugCount;
         Log::common()->printf("   Detected glMultiTexCoord3fvARB bug\n\n");
-    } 
-    
+    }
+
 
     if (GLCaps::hasBug_normalMapTexGen()) {
         ++bugCount;
         Log::common()->printf("   Detected normalMapTexGen bug\n\n");
-    } 
+    }
 
     if (GLCaps::hasBug_slowVBO()) {
         ++bugCount;
@@ -229,8 +232,8 @@ void App::countBugs() {
     if (GLCaps::hasBug_mipmapGeneration()) {
         ++bugCount;
         Log::common()->printf("   Detected mipmapGeneration bug\n\n");
-    } 
-    
+    }
+
 }
 
 
@@ -245,21 +248,21 @@ void App::computeFeatureRating() {
         featureRating = 60;
 
     } else if ((glslShader != "None") &&
-        GLCaps::supports("GL_ARB_shadow") &&
-        GLCaps::supports("GL_EXT_stencil_wrap")) {
+               GLCaps::supports("GL_ARB_shadow") &&
+               GLCaps::supports("GL_EXT_stencil_wrap")) {
 
         // R800 w/ good drivers
         featureRating = 50;
 
     } else if ((asmShader != "None") &&
-        GLCaps::supports("GL_ARB_shadow") &&
-        GLCaps::supports("GL_EXT_stencil_wrap")) {
+               GLCaps::supports("GL_ARB_shadow") &&
+               GLCaps::supports("GL_EXT_stencil_wrap")) {
 
         // NV30
         featureRating = 40;
 
     } else if ((asmShader != "None") &&
-        GLCaps::supports("GL_EXT_stencil_wrap")) {
+               GLCaps::supports("GL_EXT_stencil_wrap")) {
 
         featureRating = 35;
 
@@ -269,15 +272,15 @@ void App::computeFeatureRating() {
         featureRating = 30;
 
     } else if ((combineShader != "None") &&
-        GLCaps::supports_GL_ARB_multitexture() &&
-        GLCaps::supports_GL_ARB_texture_cube_map()) {
+               GLCaps::supports_GL_ARB_multitexture() &&
+               GLCaps::supports_GL_ARB_texture_cube_map()) {
 
         // PS 1.4 card
         featureRating = 20;
 
     } else if (
-        GLCaps::supports_GL_ARB_multitexture() &&
-        GLCaps::supports_GL_ARB_texture_cube_map()) {
+            GLCaps::supports_GL_ARB_multitexture() &&
+            GLCaps::supports_GL_ARB_texture_cube_map()) {
 
         featureRating = 15;
 
@@ -291,12 +294,12 @@ void App::computeFeatureRating() {
     }
 }
 
-App::App(const GAppSettings& settings) : GApp(settings) {
+App::App(const GAppSettings &settings) : GApp(settings) {
 
     window()->setCaption(format("gfx-meter %03.1f", gfxMeterVersion));
 
 #   ifndef FAST
-        showSplashScreen();
+    showSplashScreen();
 #   endif
 
     if (reportFont.isNull()) {
@@ -312,9 +315,9 @@ App::~App() {
 }
 
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     GAppSettings settings;
-    
+
     settings.useNetwork = false;
     settings.window.fsaaSamples = 4;
     settings.dataDir = "./";

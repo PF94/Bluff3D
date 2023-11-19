@@ -15,10 +15,10 @@
 #include "Entity.h"
 
 enum MessageType {
-    NO_MSG                  = 0,
-    SignOnMessage_MSG       = 2000,
+    NO_MSG = 0,
+    SignOnMessage_MSG = 2000,
     CreateEntityMessage_MSG = 2001,
-    EntityStateMessage_MSG  = 2002,
+    EntityStateMessage_MSG = 2002,
 };
 
 
@@ -30,21 +30,22 @@ public:
     /**
      The ID assigned to the player.
      */
-    Entity::ID                               id;
+    Entity::ID id;
 
     SignOnMessage() : id(Entity::NO_ID) {}
+
     SignOnMessage(Entity::ID _id) : id(_id) {}
+
     virtual ~SignOnMessage() {}
 
-    virtual void serialize(BinaryOutput& b) const {
+    virtual void serialize(BinaryOutput &b) const {
         b.writeInt32(id);
     }
 
-    virtual void deserialize(BinaryInput& b) {
+    virtual void deserialize(BinaryInput &b) {
         id = b.readInt32();
     }
 };
-
 
 
 /**
@@ -56,16 +57,16 @@ class EntityStateMessage {
 public:
 
     /** ID of the object for which these controls apply */
-    Entity::ID                  id;
-    Controls                    controls;
-    PhysicsFrame                frame;
-    Vector3                     velocity;
+    Entity::ID id;
+    Controls controls;
+    PhysicsFrame frame;
+    Vector3 velocity;
 
     virtual ~EntityStateMessage() {}
 
-    virtual void serialize(BinaryOutput& b) const;
+    virtual void serialize(BinaryOutput &b) const;
 
-    virtual void deserialize(BinaryInput& b);
+    virtual void deserialize(BinaryInput &b);
 
 };
 

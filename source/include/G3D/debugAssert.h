@@ -35,16 +35,16 @@
 #endif
 
 #ifdef G3D_LINUX
-    // Needed so we can define a global display
-    // pointer for debugAssert.
-    #include <X11/Xlib.h>
-    #include <X11/Xutil.h>
-    #include <X11/Xatom.h>
+// Needed so we can define a global display
+// pointer for debugAssert.
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
 #endif
 
 #ifdef G3D_OSX
-    // Need this for DebugStr()
-    #import <CoreServices/CoreServices.h>
+// Need this for DebugStr()
+#import <CoreServices/CoreServices.h>
 #endif
 
 
@@ -74,13 +74,13 @@
  */
 
 namespace G3D {
-typedef bool (*AssertionHook)(
-    const char* _expression,
-    const std::string& message,
-    const char* filename,
-    int lineNumber,
-    bool& ignoreAlways,
-    bool useGuiPrompt);
+    typedef bool (*AssertionHook)(
+            const char *_expression,
+            const std::string &message,
+            const char *filename,
+            int lineNumber,
+            bool &ignoreAlways,
+            bool useGuiPrompt);
 
 
 /** 
@@ -88,22 +88,23 @@ typedef bool (*AssertionHook)(
   The initial value is G3D::_internal::_handleDebugAssert_.  G3D will invoke
   rawBreak if the hook returns true.  If NULL, assertions are not handled.
 */
-void setAssertionHook(AssertionHook hook);
+    void setAssertionHook(AssertionHook hook);
 
-AssertionHook assertionHook();
+    AssertionHook assertionHook();
 
 /**
  Called by alwaysAssertM in case of failure in release mode.  If returns
  true then the program exits with -1 (you can replace this with your own
  version that throws an exception or has other failure modes).
  */
-void setFailureHook(AssertionHook hook);
-AssertionHook failureHook();
+    void setFailureHook(AssertionHook hook);
 
-namespace _internal {
-    extern AssertionHook _debugHook;
-    extern AssertionHook _failureHook;
-} // internal
+    AssertionHook failureHook();
+
+    namespace _internal {
+        extern AssertionHook _debugHook;
+        extern AssertionHook _failureHook;
+    } // internal
 } // G3D
 
 /**
@@ -113,33 +114,33 @@ namespace _internal {
 
 #ifdef G3D_DEBUG
 
-    #ifndef G3D_OSX
-        #if defined(_MSC_VER) 
-            #if (_MSC_VER >= 1300)
-                #define rawBreak()  DebugBreak();
-            #else
-                // MSVC6
-                #define rawBreak()  _asm { int 3 };
-            #endif
-        #else
-            // GCC on Windows
-            #define rawBreak() __asm__ __volatile__ ( "int $3" ); 
-        #endif
-    #else
-        #define rawBreak() DebugStr("\pG3D: Invoking breakpoint in debugger."); /* XCode must be set to break on Debugger()/DebugStr() */
-    #endif
+#ifndef G3D_OSX
+#if defined(_MSC_VER)
+#if (_MSC_VER >= 1300)
+#define rawBreak()  DebugBreak();
+#else
+// MSVC6
+#define rawBreak()  _asm { int 3 };
+#endif
+#else
+// GCC on Windows
+#define rawBreak() __asm__ __volatile__ ( "int $3" );
+#endif
+#else
+#define rawBreak() DebugStr("\pG3D: Invoking breakpoint in debugger."); /* XCode must be set to break on Debugger()/DebugStr() */
+#endif
 
 
-    #define debugBreak() G3D::_internal::_releaseInputGrab_(); rawBreak(); G3D::_internal::_restoreInputGrab_();
-    #define debugAssert(exp) debugAssertM(exp, "Debug assertion failure")
+#define debugBreak() G3D::_internal::_releaseInputGrab_(); rawBreak(); G3D::_internal::_restoreInputGrab_();
+#define debugAssert(exp) debugAssertM(exp, "Debug assertion failure")
 
-    #ifdef G3D_DEBUG_NOGUI
-        #define __debugPromptShowDialog__ false
-    #else
-        #define __debugPromptShowDialog__ true
-    #endif
+#ifdef G3D_DEBUG_NOGUI
+#define __debugPromptShowDialog__ false
+#else
+#define __debugPromptShowDialog__ true
+#endif
 
-    #define debugAssertM(exp, message) do { \
+#define debugAssertM(exp, message) do { \
         static bool __debugAssertIgnoreAlways__ = false; \
         if (!__debugAssertIgnoreAlways__ && !(exp)) { \
             G3D::_internal::_releaseInputGrab_(); \
@@ -151,23 +152,23 @@ namespace _internal {
         } \
     } while (0)
 
-    #define alwaysAssertM debugAssertM
+#define alwaysAssertM debugAssertM
 
 #else  // Release
-    #ifdef G3D_DEBUG_NOGUI
-        #define __debugPromptShowDialog__ false
-    #else
-        #define __debugPromptShowDialog__ true
-    #endif
+#ifdef G3D_DEBUG_NOGUI
+#define __debugPromptShowDialog__ false
+#else
+#define __debugPromptShowDialog__ true
+#endif
 
-    // In the release build, just define away assertions.
-	#define rawBreak() do {} while (0)
-    #define debugAssert(exp) do {} while (0)
-    #define debugAssertM(exp, message) do {} while (0)
-    #define debugBreak() do {} while (0)
+// In the release build, just define away assertions.
+#define rawBreak() do {} while (0)
+#define debugAssert(exp) do {} while (0)
+#define debugAssertM(exp, message) do {} while (0)
+#define debugBreak() do {} while (0)
 
-    // But keep the 'always' assertions
-    #define alwaysAssertM(exp, message) { \
+// But keep the 'always' assertions
+#define alwaysAssertM(exp, message) { \
         static bool __alwaysAssertIgnoreAlways__ = false; \
         if (!__alwaysAssertIgnoreAlways__ && !(exp)) { \
             G3D::_internal::_releaseInputGrab_(); \
@@ -182,25 +183,25 @@ namespace _internal {
 #endif  // if debug
 
 
-
-namespace G3D {  namespace _internal {
+namespace G3D {
+    namespace _internal {
 
 #ifdef G3D_LINUX
-    /**
-     A pointer to the X11 display.  Initially NULL.  If set to a
-     non-null value (e.g. by SDLWindow), debugAssert attempts to use
-     this display to release the mouse/input grab when an assertion
-     fails.
-     */
-    extern Display*      x11Display;
+        /**
+         A pointer to the X11 display.  Initially NULL.  If set to a
+         non-null value (e.g. by SDLWindow), debugAssert attempts to use
+         this display to release the mouse/input grab when an assertion
+         fails.
+         */
+        extern Display*      x11Display;
 
-    /**
-     A pointer to the X11 window.  Initially NULL.  If set to a
-     non-null value (e.g. by SDLWindow), debugAssert attempts to use
-     this window to release the mouse/input grab when an assertion
-     fails.
-     */
-    extern Window        x11Window;
+        /**
+         A pointer to the X11 window.  Initially NULL.  If set to a
+         non-null value (e.g. by SDLWindow), debugAssert attempts to use
+         this window to release the mouse/input grab when an assertion
+         fails.
+         */
+        extern Window        x11Window;
 #endif
 
 /**
@@ -209,31 +210,32 @@ namespace G3D {  namespace _internal {
  ignoreAlways      - return result of pressing the ignore button.
  useGuiPrompt      - if true, shows a dialog
  */
-bool _handleDebugAssert_(
-    const char* expression,
-    const std::string& message,
-    const char* filename,
-    int         lineNumber,
-    bool&       ignoreAlways,
-    bool        useGuiPrompt);
+        bool _handleDebugAssert_(
+                const char *expression,
+                const std::string &message,
+                const char *filename,
+                int lineNumber,
+                bool &ignoreAlways,
+                bool useGuiPrompt);
 
-bool _handleErrorCheck_(
-    const char* expression,
-    const std::string& message,
-    const char* filename,
-    int         lineNumber,
-    bool&       ignoreAlways,
-    bool        useGuiPrompt);
+        bool _handleErrorCheck_(
+                const char *expression,
+                const std::string &message,
+                const char *filename,
+                int lineNumber,
+                bool &ignoreAlways,
+                bool useGuiPrompt);
 
 /** Attempts to give the user back their mouse and keyboard if they 
     were locked to the current window.  
     @internal*/
-void _releaseInputGrab_();
+        void _releaseInputGrab_();
 
 /** Attempts to restore the state before _releaseInputGrab_.  
     @internal*/
-void _restoreInputGrab_();
+        void _restoreInputGrab_();
 
-}; }; // namespace
+    };
+}; // namespace
 
 #endif

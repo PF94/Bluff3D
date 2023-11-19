@@ -9,25 +9,27 @@ static Table<int, int> sdlKeyMap;
 
 
 // wxWidgets event table
-BEGIN_EVENT_TABLE(wxG3DCanvas, wxGLCanvas)
-  EVT_KEY_DOWN( wxG3DCanvas::handleKeyDown )
-  EVT_KEY_UP( wxG3DCanvas::handleKeyUp )
-  EVT_LEFT_DOWN( wxG3DCanvas::handleMouseLeftDown )
-  EVT_LEFT_UP( wxG3DCanvas::handleMouseLeftUp )
-  EVT_RIGHT_DOWN( wxG3DCanvas::handleMouseRightDown )
-  EVT_RIGHT_UP( wxG3DCanvas::handleMouseRightUp )
-  EVT_MIDDLE_DOWN( wxG3DCanvas::handleMouseMiddleDown )
-  EVT_MIDDLE_UP( wxG3DCanvas::handleMouseMiddleUp )
-  EVT_MOTION( wxG3DCanvas::handleMouseMove )
-  EVT_MOVE( wxG3DCanvas::handleWindowMove )
-  EVT_CLOSE( wxG3DCanvas::handleWindowClose )
-  EVT_IDLE( wxG3DCanvas::handleIdle )
+BEGIN_EVENT_TABLE(wxG3DCanvas, wxGLCanvas
+)
+EVT_KEY_DOWN( wxG3DCanvas::handleKeyDown )
+EVT_KEY_UP( wxG3DCanvas::handleKeyUp )
+EVT_LEFT_DOWN( wxG3DCanvas::handleMouseLeftDown )
+EVT_LEFT_UP( wxG3DCanvas::handleMouseLeftUp )
+EVT_RIGHT_DOWN( wxG3DCanvas::handleMouseRightDown )
+EVT_RIGHT_UP( wxG3DCanvas::handleMouseRightUp )
+EVT_MIDDLE_DOWN( wxG3DCanvas::handleMouseMiddleDown )
+EVT_MIDDLE_UP( wxG3DCanvas::handleMouseMiddleUp )
+EVT_MOTION( wxG3DCanvas::handleMouseMove )
+EVT_MOVE( wxG3DCanvas::handleWindowMove )
+EVT_CLOSE( wxG3DCanvas::handleWindowClose )
+EVT_IDLE( wxG3DCanvas::handleIdle )
+
 END_EVENT_TABLE()
 
 
 void wxGWindow::makeAttribList(
-        const GWindowSettings&  settings,
-        Array<int>&             attribList) {
+        const GWindowSettings &settings,
+        Array<int> &attribList) {
 
     // The wx attrib list does not contain exclusively pairs; some options
     // are either present or absent (e.g. WX_GL_STEREO).
@@ -45,17 +47,17 @@ void wxGWindow::makeAttribList(
     attribList.append(WX_GL_MIN_GREEN, settings.rgbBits);
     attribList.append(WX_GL_MIN_BLUE, settings.rgbBits);
     attribList.append(WX_GL_MIN_ALPHA, settings.alphaBits);
-    attribList.append(WX_GL_DEPTH_SIZE, 
-        (settings.depthBits == 24 || settings.depthBits == -1) ? 
-        32 : settings.depthBits);
-    attribList.append(WX_GL_STENCIL_SIZE, settings.stencilBits); 
+    attribList.append(WX_GL_DEPTH_SIZE,
+                      (settings.depthBits == 24 || settings.depthBits == -1) ?
+                      32 : settings.depthBits);
+    attribList.append(WX_GL_STENCIL_SIZE, settings.stencilBits);
     attribList.append(0);
 }
 
 wxGWindow::wxGWindow(
-    const GWindowSettings&  _settings,
-    wxWindow*               parent,
-    wxWindowID              id)  : invisible(wxCURSOR_BLANK), arrow(wxCURSOR_ARROW) {
+        const GWindowSettings &_settings,
+        wxWindow *parent,
+        wxWindowID id) : invisible(wxCURSOR_BLANK), arrow(wxCURSOR_ARROW) {
 
     // For now a crude check to initialize once per process.
     if (sdlKeyMap.size() == 0) {
@@ -74,18 +76,18 @@ wxGWindow::wxGWindow(
     relativeX = 0;
     relativeY = 0;
 
-    window = new wxG3DCanvas( this,
-        parent, id, pos, size, 0, 
-        "WxWindow", attribList.getCArray(), 
-        wxNullPalette);
+    window = new wxG3DCanvas(this,
+                             parent, id, pos, size, 0,
+                             "WxWindow", attribList.getCArray(),
+                             wxNullPalette);
 
     glGetIntegerv(GL_DEPTH_BITS, &settings.depthBits);
     glGetIntegerv(GL_STENCIL_BITS, &settings.stencilBits);
 
     int redBits, greenBits, blueBits;
-    glGetIntegerv(GL_RED_BITS,   &redBits);
+    glGetIntegerv(GL_RED_BITS, &redBits);
     glGetIntegerv(GL_GREEN_BITS, &greenBits);
-    glGetIntegerv(GL_BLUE_BITS,  &blueBits);
+    glGetIntegerv(GL_BLUE_BITS, &blueBits);
 
     settings.rgbBits = iMin(redBits, iMin(greenBits, blueBits));
     glGetIntegerv(GL_ALPHA_BITS, &settings.alphaBits);
@@ -98,7 +100,7 @@ wxGWindow::wxGWindow(
         window->Center();
     }
 
-    if (! settings.visible) {
+    if (!settings.visible) {
         window->Hide();
     }
 
@@ -107,10 +109,10 @@ wxGWindow::wxGWindow(
 }
 
 
-wxGWindow::wxGWindow(wxG3DCanvas* canvas) : 
-    invisible(wxCURSOR_BLANK), 
-    arrow(wxCURSOR_ARROW), 
-    window(canvas) {
+wxGWindow::wxGWindow(wxG3DCanvas *canvas) :
+        invisible(wxCURSOR_BLANK),
+        arrow(wxCURSOR_ARROW),
+        window(canvas) {
 
     window->GetPosition(&settings.x, &settings.y);
     window->GetClientSize(&settings.width, &settings.height);
@@ -119,20 +121,20 @@ wxGWindow::wxGWindow(wxG3DCanvas* canvas) :
     clientX = settings.x;
     clientY = settings.y;
     relativeX = 0;
-    relativeY = 0;    
+    relativeY = 0;
 }
 
 
-std::string wxGWindow::getAPIVersion () const {
+std::string wxGWindow::getAPIVersion() const {
     return wxVERSION_STRING;
 }
 
-std::string wxGWindow::getAPIName () const {
+std::string wxGWindow::getAPIName() const {
     return "wxWindows";
 }
 
 /** The wxWindow represented by this object */
-wxG3DCanvas* wxGWindow::wxHandle() const {
+wxG3DCanvas *wxGWindow::wxHandle() const {
     return window;
 }
 
@@ -140,13 +142,13 @@ void wxGWindow::swapGLBuffers() {
     window->SwapBuffers();
 }
 
-void wxGWindow::getSettings(GWindowSettings& _settings) const {
-    wxGWindow* t = const_cast<wxGWindow*>(this);
+void wxGWindow::getSettings(GWindowSettings &_settings) const {
+    wxGWindow *t = const_cast<wxGWindow *>(this);
     window->GetPosition(&t->settings.x, &t->settings.y);
     _settings = settings;
 }
 
-int	wxGWindow::width() const {
+int wxGWindow::width() const {
     return settings.width;
 }
 
@@ -154,38 +156,38 @@ int wxGWindow::height() const {
     return settings.height;
 }
 
-Rect2D wxGWindow::dimensions () const {
-    wxGWindow* t = const_cast<wxGWindow*>(this);
+Rect2D wxGWindow::dimensions() const {
+    wxGWindow *t = const_cast<wxGWindow *>(this);
     window->GetPosition(&t->settings.x, &t->settings.y);
     window->GetClientSize(&t->settings.width, &t->settings.height);
     return Rect2D::xywh(settings.x, settings.y, settings.width, settings.height);
 }
 
-void wxGWindow::setDimensions (const Rect2D &dims) {
+void wxGWindow::setDimensions(const Rect2D &dims) {
     window->SetSize(dims.x0(), dims.y0(), dims.width(), dims.height());
 }
 
-void wxGWindow::setPosition (int x, int y) {
+void wxGWindow::setPosition(int x, int y) {
     window->Move(x, y);
 }
 
-bool wxGWindow::hasFocus () const {
+bool wxGWindow::hasFocus() const {
     return window->IsEnabled() && (wxWindow::FindFocus() == window);
 }
 
-void wxGWindow::setGammaRamp (const Array<uint16>& gammaRamp) {
+void wxGWindow::setGammaRamp(const Array<uint16> &gammaRamp) {
     // Ignore
 }
 
-void wxGWindow::setCaption (const std::string& caption) {
+void wxGWindow::setCaption(const std::string &caption) {
     window->SetTitle(caption.c_str());
 }
 
-int wxGWindow::numJoysticks () const {
+int wxGWindow::numJoysticks() const {
     return 0;
 }
 
-std::string wxGWindow::joystickName (unsigned int sticknum) {
+std::string wxGWindow::joystickName(unsigned int sticknum) {
     return "";
 }
 
@@ -193,7 +195,7 @@ std::string wxGWindow::caption() {
     return std::string(window->GetTitle());
 }
 
-void wxGWindow::notifyResize (int w, int h) {
+void wxGWindow::notifyResize(int w, int h) {
     window->GetPosition(&settings.x, &settings.y);
     window->GetClientSize(&settings.width, &settings.height);
 }
@@ -202,43 +204,43 @@ void wxGWindow::setRelativeMousePosition(double x, double y) {
     window->WarpPointer(x, y);
 }
 
-void wxGWindow::setRelativeMousePosition (const Vector2 &p) {
+void wxGWindow::setRelativeMousePosition(const Vector2 &p) {
     window->WarpPointer(p.x, p.y);
 }
 
-void wxGWindow::getRelativeMouseState (Vector2 &position, uint8 &mouseButtons) const {
-    
+void wxGWindow::getRelativeMouseState(Vector2 &position, uint8 &mouseButtons) const {
+
     int _x, _y;
     getRelativeMouseState(_x, _y, mouseButtons);
-    position.x = (float)_x;
-    position.y = (float)_y;
+    position.x = (float) _x;
+    position.y = (float) _y;
 }
 
-void wxGWindow::getRelativeMouseState (int &x, int &y, uint8 &mouseButtons) const {
-    
+void wxGWindow::getRelativeMouseState(int &x, int &y, uint8 &mouseButtons) const {
+
     x = relativeX;
     y = relativeY;
 
     // Clear mouseButtons and set each button bit.
-	mouseButtons = 0;
+    mouseButtons = 0;
     mouseButtons |= (buttons[0] ? 1 : 0) << 0;
     mouseButtons |= (buttons[1] ? 1 : 0) << 1;
     mouseButtons |= (buttons[2] ? 1 : 0) << 2;
 }
 
-void wxGWindow::getRelativeMouseState (double &x, double &y, uint8 &mouseButtons) const {
+void wxGWindow::getRelativeMouseState(double &x, double &y, uint8 &mouseButtons) const {
 
     int _x, _y;
     getRelativeMouseState(_x, _y, mouseButtons);
-    x = (double)_x;
-    y = (double)_y;
+    x = (double) _x;
+    y = (double) _y;
 }
 
-void wxGWindow::getJoystickState (unsigned int stickNum, Array< float > &axis, Array< bool > &button) {
+void wxGWindow::getJoystickState(unsigned int stickNum, Array<float> &axis, Array<bool> &button) {
     // Ignore
 }
 
-void wxGWindow::setInputCapture (bool c) {
+void wxGWindow::setInputCapture(bool c) {
     if (c) {
         window->CaptureMouse();
         setMouseVisible(false);
@@ -248,11 +250,11 @@ void wxGWindow::setInputCapture (bool c) {
     }
 }
 
-bool wxGWindow::inputCapture () const {
+bool wxGWindow::inputCapture() const {
     return window->HasCapture();
 }
 
-void wxGWindow::setMouseVisible (bool b) {
+void wxGWindow::setMouseVisible(bool b) {
     _mouseVisible = b;
     if (b) {
         window->SetCursor(arrow);
@@ -261,12 +263,12 @@ void wxGWindow::setMouseVisible (bool b) {
     }
 }
 
-bool wxGWindow::mouseVisible () const {
+bool wxGWindow::mouseVisible() const {
     return _mouseVisible;
 }
 
 
-bool wxGWindow::pollEvent(GEvent& e) {
+bool wxGWindow::pollEvent(GEvent &e) {
 
     if (keyboardEvents.length() > 0) {
         e = keyboardEvents.popFront();
@@ -284,16 +286,15 @@ static SDLKey wxKeyCodeToSDLCode(int w) {
         // Convert to lower case
         return (SDLKey)(w - 'A' + 'a');
     } else if ((w >= '0') && (w <= '9')) {
-        return (SDLKey)w;
+        return (SDLKey) w;
     } else if (sdlKeyMap.containsKey(w)) {
-        return (SDLKey)sdlKeyMap.get(w);
+        return (SDLKey) sdlKeyMap.get(w);
     } else {
-        return (SDLKey)0;
+        return (SDLKey) 0;
     }
 }
 
-void wxG3DCanvas::handleKeyUp(wxKeyEvent& event)
-{
+void wxG3DCanvas::handleKeyUp(wxKeyEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -301,7 +302,7 @@ void wxG3DCanvas::handleKeyUp(wxKeyEvent& event)
     GEvent e;
     e.key.type = SDL_KEYUP;
     e.key.state = SDL_RELEASED;
-    
+
     e.key.keysym.sym = wxKeyCodeToSDLCode(event.KeyCode());
 
 #if (wxUSE_UNICODE == 1)
@@ -323,7 +324,7 @@ void wxG3DCanvas::handleKeyUp(wxKeyEvent& event)
 }
 
 
-void wxG3DCanvas::handleKeyDown(wxKeyEvent& event) {
+void wxG3DCanvas::handleKeyDown(wxKeyEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -331,7 +332,7 @@ void wxG3DCanvas::handleKeyDown(wxKeyEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYDOWN;
     e.key.state = SDL_PRESSED;
-    
+
     e.key.keysym.sym = wxKeyCodeToSDLCode(event.KeyCode());
 
 #if (wxUSE_UNICODE == 1)
@@ -353,7 +354,7 @@ void wxG3DCanvas::handleKeyDown(wxKeyEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseLeftUp(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseLeftUp(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -361,7 +362,7 @@ void wxG3DCanvas::handleMouseLeftUp(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYUP;
     e.key.state = SDL_RELEASED;
-    e.key.keysym.sym = (SDLKey)SDL_LEFT_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_LEFT_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -373,7 +374,7 @@ void wxG3DCanvas::handleMouseLeftUp(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseLeftDown(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseLeftDown(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -381,7 +382,7 @@ void wxG3DCanvas::handleMouseLeftDown(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYDOWN;
     e.key.state = SDL_PRESSED;
-    e.key.keysym.sym = (SDLKey)SDL_LEFT_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_LEFT_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -394,7 +395,7 @@ void wxG3DCanvas::handleMouseLeftDown(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseRightUp(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseRightUp(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -402,7 +403,7 @@ void wxG3DCanvas::handleMouseRightUp(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYUP;
     e.key.state = SDL_RELEASED;
-    e.key.keysym.sym = (SDLKey)SDL_RIGHT_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_RIGHT_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -414,7 +415,7 @@ void wxG3DCanvas::handleMouseRightUp(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseRightDown(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseRightDown(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -422,7 +423,7 @@ void wxG3DCanvas::handleMouseRightDown(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYDOWN;
     e.key.state = SDL_PRESSED;
-    e.key.keysym.sym = (SDLKey)SDL_RIGHT_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_RIGHT_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -434,7 +435,7 @@ void wxG3DCanvas::handleMouseRightDown(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseMiddleUp(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseMiddleUp(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -442,7 +443,7 @@ void wxG3DCanvas::handleMouseMiddleUp(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYUP;
     e.key.state = SDL_RELEASED;
-    e.key.keysym.sym = (SDLKey)SDL_MIDDLE_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_MIDDLE_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -454,7 +455,7 @@ void wxG3DCanvas::handleMouseMiddleUp(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseMiddleDown(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseMiddleDown(wxMouseEvent &event) {
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();
     }
@@ -462,7 +463,7 @@ void wxG3DCanvas::handleMouseMiddleDown(wxMouseEvent& event) {
     GEvent e;
     e.key.type = SDL_KEYDOWN;
     e.key.state = SDL_PRESSED;
-    e.key.keysym.sym = (SDLKey)SDL_MIDDLE_MOUSE_KEY;
+    e.key.keysym.sym = (SDLKey) SDL_MIDDLE_MOUSE_KEY;
     e.key.keysym.unicode = ' ';
     e.key.keysym.scancode = 0;
     e.key.keysym.mod = KMOD_NONE;
@@ -474,7 +475,7 @@ void wxG3DCanvas::handleMouseMiddleDown(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleMouseMove(wxMouseEvent& event) {
+void wxG3DCanvas::handleMouseMove(wxMouseEvent &event) {
 
     _gWindow->relativeX = event.m_x;
     _gWindow->relativeY = event.m_y;
@@ -482,9 +483,9 @@ void wxG3DCanvas::handleMouseMove(wxMouseEvent& event) {
 }
 
 
-void wxG3DCanvas::handleWindowMove(wxMoveEvent& event) {
+void wxG3DCanvas::handleWindowMove(wxMoveEvent &event) {
 
-    wxPoint& point = event.GetPosition();
+    wxPoint &point = event.GetPosition();
     _gWindow->clientX = point.x;
     _gWindow->clientY = point.y;
 
@@ -494,7 +495,7 @@ void wxG3DCanvas::handleWindowMove(wxMoveEvent& event) {
 }
 
 
-void wxG3DCanvas::handleWindowClose(wxCloseEvent& event) {
+void wxG3DCanvas::handleWindowClose(wxCloseEvent &event) {
 
     if (_gWindow->keyboardEvents.length() > 200) {
         _gWindow->keyboardEvents.clear();

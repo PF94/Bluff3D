@@ -18,17 +18,18 @@
 #include <stdio.h>
 #include <cstdarg>
 #include <assert.h>
+
 #ifndef G3D_WIN32
-    // Don't include varargs.h for some random
-    // gcc reason
-    //#include <varargs.h>
-    #include <stdarg.h>
+// Don't include varargs.h for some random
+// gcc reason
+//#include <varargs.h>
+#include <stdarg.h>
 #endif
 
 #ifndef _MSC_VER
-    #ifndef __cdecl
-        #define __cdecl __attribute__((cdecl))
-    #endif
+#ifndef __cdecl
+#define __cdecl __attribute__((cdecl))
+#endif
 #endif
 
 namespace G3D {
@@ -40,16 +41,16 @@ namespace G3D {
   string is under 160 characters (not including terminator) and slower
   when the string is longer.
  */
-std::string   __cdecl format(
-    const char*                 fmt
-    ...) G3D_CHECK_PRINTF_ARGS;
+    std::string   __cdecl format(
+            const char *fmt
+            ...) G3D_CHECK_PRINTF_ARGS;
 
 /**
   Like format, but can be called with the argument list from a ... function.
  */
-std::string vformat(
-    const char*                 fmt,
-    va_list                     argPtr) G3D_CHECK_VPRINTF_ARGS;
+    std::string vformat(
+            const char *fmt,
+            va_list argPtr) G3D_CHECK_VPRINTF_ARGS;
 
 
 }; // namespace

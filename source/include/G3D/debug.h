@@ -14,8 +14,9 @@
 #define G3D_DEBUG_H
 
 #include "platform.h"
+
 #ifdef _MSC_VER
-    #include <crtdbg.h>
+#include <crtdbg.h>
 #endif
 
 #include "debugPrintf.h"
@@ -35,27 +36,27 @@ namespace G3D {
 /**
  Useful for debugging purposes.
  */
-inline bool isValidHeapPointer(const void* x) {
-    #ifdef _MSC_VER
+    inline bool isValidHeapPointer(const void *x) {
+#ifdef _MSC_VER
         return 
             (x != (void*)0xcccccccc) && (x != (void*)0xdeadbeef) && (x != (void*)0xfeeefeee);
-    #else
+#else
         return x != NULL;
-    #endif
-}
+#endif
+    }
 
 /**
  Returns true if the pointer is likely to be
  a valid pointer (instead of an arbitrary number). 
  Useful for debugging purposes.
  */
-inline bool isValidPointer(const void* x) {
-    #ifdef _MSC_VER
+    inline bool isValidPointer(const void *x) {
+#ifdef _MSC_VER
         return x != ((void*)0xcccccccc) && (x != (void*)0xdeadbeef) && (x != (void*)0xfeeefeee);
-    #else
+#else
         return x != NULL;
-    #endif
-}
+#endif
+    }
 
 #ifdef G3D_WIN32
 #   pragma warning(pop)
