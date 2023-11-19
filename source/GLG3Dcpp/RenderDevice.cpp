@@ -20,13 +20,7 @@
 #include "G3D/fileutils.h"
 #include <time.h>
 
-#ifdef G3D_WIN32
-
-#include "GLG3D/Win32Window.h"
-
-#else
 #include "GLG3D/SDLWindow.h"
-#endif
 
 #include "GLG3D/GLCaps.h"
 
@@ -209,11 +203,7 @@ namespace G3D {
             Log *log) {
 
         deleteWindow = true;
-#ifdef G3D_WIN32
-        return init(Win32Window::create(_settings), log);
-#else
         return init(new SDLWindow(_settings), log);
-#endif
     }
 
 
@@ -2172,9 +2162,9 @@ namespace G3D {
         minStateChange();
         if (color != state.lights.ambient) {
             float c[] =
-                    {color.r / lightSaturation,
-                     color.g / lightSaturation,
-                     color.b / lightSaturation,
+                    {static_cast<float>(color.r / lightSaturation),
+                     static_cast<float>(color.g / lightSaturation),
+                     static_cast<float>(color.b / lightSaturation),
                      1.0f};
 
             state.lights.changed = true;

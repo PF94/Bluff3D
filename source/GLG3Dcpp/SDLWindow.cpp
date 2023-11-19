@@ -173,6 +173,8 @@ static bool SDL_handleErrorCheck_(
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, settings.rgbBits);
         SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, settings.alphaBits);
         SDL_GL_SetAttribute(SDL_GL_STEREO, settings.stereo);
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
 
 #if SDL_FSAA
         if (settings.fsaaSamples > 1) {
@@ -192,6 +194,18 @@ static bool SDL_handleErrorCheck_(
         window = SDL_CreateWindow("Bluff3D Generic Title", 0, 0, settings.width, settings.height, flags);
 
         if (window == NULL) {
+            debugAssert(false);
+            Log::common()->printf("Unable to create SDL window: %s\n",
+                                  SDL_GetError());
+            error("Critical Error",
+                  format("Unable to create SDL window: %s\n",
+                         SDL_GetError()).c_str(), true);
+            SDL_Quit();
+            exit(2);
+        }
+
+        SDL_GLContext context = SDL_GL_CreateContext(window);
+        if (context == NULL) {
             debugAssert(false);
             Log::common()->printf("Unable to create OpenGL screen: %s\n",
                                   SDL_GetError());
@@ -237,13 +251,13 @@ static bool SDL_handleErrorCheck_(
         SDL_VERSION(&info.version);
         SDL_GetWindowWMInfo(window, &info);
 
+        SDL_GL_MakeCurrent(window, context);
+
         _glContext = glGetCurrentContext();
 
-        // TODO
-#if 0
 #if defined(G3D_WIN32)
         // Extract SDL HDC/HWND on Win32
-        _Win32HWND  = info.window;
+        _Win32HWND  = info.info.win.window;
         _Win32HDC   = wglGetCurrentDC();
 #elif defined(G3D_LINUX)
         // Extract SDL's internal Display pointer on Linux        
@@ -295,7 +309,6 @@ static bool SDL_handleErrorCheck_(
             }
             XMoveWindow(_X11Display, _X11WMWindow, x, y);
         }
-#endif
 #endif
 
         // Check for joysticks
@@ -555,7 +568,8 @@ static bool SDL_handleErrorCheck_(
                       "Icon data failed to load into SDL.");
 
         // Let SDL create mask from image data directly
-        SDL_SetWindowIcon(this->window, surface);
+        // this causes a segfault so fuck that for now
+        //SDL_SetWindowIcon(this->window, surface);
 
         SDL_FreeSurface(surface);
     }
