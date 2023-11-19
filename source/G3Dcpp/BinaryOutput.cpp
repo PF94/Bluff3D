@@ -12,11 +12,7 @@
 #include "G3D/fileutils.h"
 #include "G3D/stringutils.h"
 #include "G3D/Array.h"
-#ifdef G3D_WIN32
-  #include "../zlib/zlib.h"
-#else
-  #include <zlib.h>
-#endif
+#include <zlib.h>
 
 // Largest memory buffer that the system will use for writing to
 // disk.  After this (or if the system runs out of memory)

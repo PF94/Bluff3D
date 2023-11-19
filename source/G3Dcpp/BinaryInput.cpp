@@ -35,11 +35,7 @@
 #include "G3D/BinaryInput.h"
 #include "G3D/Array.h"
 #include "G3D/fileutils.h"
-#ifdef G3D_WIN32
-  #include "../zlib/zlib.h"
-#else
-  #include <zlib.h>
-#endif
+#include <zlib.h>
 
 namespace G3D {
 
