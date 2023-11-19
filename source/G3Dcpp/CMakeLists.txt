@@ -3,7 +3,7 @@ include(CMakePrintHelpers)
 
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
-find_package(SDL REQUIRED)
+find_package(SDL2 REQUIRED)
 
 add_library(G3D STATIC
         AABox.cpp
@@ -75,8 +75,8 @@ cmake_print_variables(PROJECT_SOURCE_DIR)
 
 target_include_directories( ${PROJECT_NAME}
         PUBLIC ${PROJECT_SOURCE_DIR}/../include
-        ${SDL_INCLUDE_DIR}
+        ${SDL2_INCLUDE_DIR}
         ${JPEG_INCLUDE_DIR}
 )
 
-target_link_libraries(G3D PUBLIC ${SDL_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)
+target_link_libraries(G3D PUBLIC ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)

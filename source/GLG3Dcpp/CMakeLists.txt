@@ -1,7 +1,7 @@
 project(GLG3D)
 include(CMakePrintHelpers)
 
-find_package(SDL REQUIRED)
+find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 add_library(GLG3D STATIC
@@ -50,7 +50,7 @@ add_library(GLG3D STATIC
 cmake_print_variables(PROJECT_SOURCE_DIR)
 
 target_include_directories( ${PROJECT_NAME}
-        PUBLIC ${PROJECT_SOURCE_DIR}/../include ${SDL_INCLUDE_DIR}
+        PUBLIC ${PROJECT_SOURCE_DIR}/../include ${SDL2_INCLUDE_DIR}
 )
 
-target_link_libraries(GLG3D PUBLIC ${SDL_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+target_link_libraries(GLG3D PUBLIC ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})

@@ -25,6 +25,8 @@
 #include <string>
 #include <memory>
 
+#include <SDL.h> // ???
+
 namespace G3D {
 
 // Forward declaration so directinput8.h is included in cpp
@@ -71,9 +73,9 @@ private:
 
     void injectSizeEvent(int width, int height) {
         GEvent e;
-        e.type = SDL_VIDEORESIZE;
-        e.resize.w = width;
-        e.resize.h = height;
+        e.type = SDL_WINDOWEVENT_RESIZED;
+        e.window.data1 = width;
+        e.window.data2 = height;
         sizeEventInjects.append(e);
     }
 

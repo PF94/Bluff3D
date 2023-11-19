@@ -44,6 +44,9 @@ namespace G3D {
 class SDLWindow : public GWindow {
 private:
 
+    /** The window itself */
+    SDL_Window*                 window;
+
     /** Window title */
     std::string                 _caption;
 
