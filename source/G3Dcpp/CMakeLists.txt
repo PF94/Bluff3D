@@ -82,4 +82,8 @@ target_include_directories(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/../imgui
 )
 
-target_link_libraries(G3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)
+if (WIN32)
+    target_link_libraries(G3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)
+else()
+    target_link_libraries(G3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES})
+endif()
