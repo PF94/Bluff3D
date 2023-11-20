@@ -28,6 +28,20 @@
    </TD></TR></TABLE>
 
    <P>
+   Changes in 6.10:
+    <UL>
+     <LI> Optimized G3D::CoordinateFrame::pointToObjectSpace to be fully inlined via left-multiplication
+     <LI> G3D::Matrix4::orthogonalProjection from a G3D::Rect2D
+     <LI> G3D::RenderDevice::swapBuffers
+	 <LI> G3D::AnyVal
+     <LI> G3D::ThirdPersonManipulator
+     <LI> Added support for GL_SGIS_texture_lod in Texture.
+     <LI> Fix: [ 1490655 ] MeshAlg::Edge::containVertex goes off the end of the array
+     <LI> Fix: [ 1511729 ] NVIDIA rectangle generates errors in mipmap code
+     <LI> Fix: [ 1507296 ] RenderDevice must swapBuffer on resize
+    </UL>
+
+   <P>
    Changes in 6.09:
    <UL>
     <LI> glDepthBoundsEXT

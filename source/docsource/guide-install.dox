@@ -103,9 +103,8 @@ Compiling and Linking <IMG SRC="forwardarrow.gif" BORDER=0 ALIGN=MIDDLE></A></I>
    </LI>
    
   <LI>
-   <B>For each project you create</B>, copy <CODE>SDL.dll</CODE>, <CODE>glut32.dll</CODE>, 
-      and <CODE>zlib1.dll</CODE>
-      to your program directory (or put them in Windows/System)
+   <B>For each project you create</B>, copy <CODE>SDL.dll</CODE>
+      to your program directory (or put it in Windows/System)
     </OL>
    </OL>
 

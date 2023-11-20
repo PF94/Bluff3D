@@ -455,6 +455,7 @@ namespace G3D {
 
 
     void RenderDevice::notifyResize(int w, int h) {
+        swapBuffers();
         _window->notifyResize(w, h);
     }
 
@@ -1301,8 +1302,7 @@ namespace G3D {
 
     void RenderDevice::beginFrame() {
         if (swapGLBuffersPending) {
-            _window->swapGLBuffers();
-            swapGLBuffersPending = false;
+            swapBuffers();
         }
 
         mDebugNumMajorOpenGLStateChanges = 0;
@@ -1318,6 +1318,13 @@ namespace G3D {
     }
 
 
+    void RenderDevice::swapBuffers() {
+        // Process the pending swap buffers call
+        _window->swapGLBuffers();
+        swapGLBuffersPending = false;
+    }
+
+
     void RenderDevice::setSwapBuffersAutomatically(bool b) {
         if (b == _swapBuffersAutomatically) {
             // Setting to current state; nothing to do.
@@ -1325,9 +1332,7 @@ namespace G3D {
         }
 
         if (swapGLBuffersPending) {
-            // Process the pending swap buffers call
-            _window->swapGLBuffers();
-            swapGLBuffersPending = false;
+            swapBuffers();
         }
 
         _swapBuffersAutomatically = b;

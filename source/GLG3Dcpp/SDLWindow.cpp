@@ -129,7 +129,7 @@ static bool SDL_handleErrorCheck_(
     SDLWindow::SDLWindow(const GWindowSettings &settings) {
 
         if (SDL_Init(SDL_INIT_NOPARACHUTE | SDL_INIT_VIDEO |
-                             SDL_INIT_GAMECONTROLLER) < 0) {
+                     SDL_INIT_GAMECONTROLLER) < 0) {
 
             fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
             debugPrintf("Unable to initialize SDL: %s\n", SDL_GetError());
@@ -261,8 +261,8 @@ static bool SDL_handleErrorCheck_(
 
 #if defined(G3D_WIN32)
         // Extract SDL HDC/HWND on Win32
-        _Win32HWND  = info.info.win.window;
-        _Win32HDC   = wglGetCurrentDC();
+        _Win32HWND = info.info.win.window;
+        _Win32HDC = wglGetCurrentDC();
 #elif defined(G3D_LINUX)
         // Extract SDL's internal Display pointer on Linux        
         _X11Display = info.info.x11.display;
@@ -285,7 +285,7 @@ static bool SDL_handleErrorCheck_(
 
         // Adjust window position
 #ifdef G3D_WIN32
-        if (! settings.fullScreen) {
+        if (!settings.fullScreen) {
             int W = screenWidth();
             int H = screenHeight();
             int x = iClamp(settings.x, 0, W);
@@ -315,6 +315,7 @@ static bool SDL_handleErrorCheck_(
         }
 #endif
 
+        controller = nullptr;
         updateSDL_GameController();
 
         // Check for joysticks
@@ -341,7 +342,7 @@ static bool SDL_handleErrorCheck_(
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
+        ImGuiIO &io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -404,14 +405,14 @@ static bool SDL_handleErrorCheck_(
         SDL_GameControllerUpdate();
 
         if (controller == nullptr) {
-        for (int i = 0; i < SDL_NumJoysticks(); i++) {
-                if (SDL_IsGameController(i)) {
-                    controller = SDL_GameControllerOpen(i);
-                    if (controller) {
-                        break;
+            for (int i = 0; i < SDL_NumJoysticks(); i++) {
+                    if (SDL_IsGameController(i)) {
+                        controller = SDL_GameControllerOpen(i);
+                        if (controller) {
+                            break;
+                        }
                     }
                 }
-            }
         }
 
         if (controller != nullptr && !SDL_GameControllerGetAttached(controller)) {

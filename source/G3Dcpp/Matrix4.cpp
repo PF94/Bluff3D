@@ -5,7 +5,7 @@
   @maintainer Morgan McGuire, matrix@graphics3d.com
 
   @created 2003-10-02
-  @edited  2006-01-05
+  @edited  2006-07-08
  */
 
 #include "G3D/platform.h"
@@ -14,6 +14,7 @@
 #include "G3D/BinaryInput.h"
 #include "G3D/BinaryOutput.h"
 #include "G3D/CoordinateFrame.h"
+#include "G3D/Rect2D.h"
 
 namespace G3D {
 
@@ -63,6 +64,14 @@ namespace G3D {
 
 
     Matrix4 Matrix4::orthogonalProjection(
+            const class Rect2D &rect,
+            float nearval,
+            float farval) {
+        return Matrix4::orthogonalProjection(rect.x0(), rect.x1(), rect.y1(), rect.y0(), nearval, farval);
+    }
+
+
+    Matrix4 Matrix4::orthogonalProjection(
             float left,
             float right,
             float bottom,
@@ -70,7 +79,9 @@ namespace G3D {
             float nearval,
             float farval) {
 
-        // Adapted from Mesa
+        // Adapted from Mesa.  Note that Microsoft (http://msdn.microsoft.com/library/default.asp?url=/library/en-us/opengl/glfunc03_8qnj.asp)
+        // and Linux (http://www.xfree86.org/current/glOrtho.3.html) have different matrices shown in their documentation.
+
         float x, y, z;
         float tx, ty, tz;
 

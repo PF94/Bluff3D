@@ -31,7 +31,7 @@
 
 #include <conio.h>
 #include <sys/timeb.h>
-#   include "G3D/RegistryUtil.h"
+#include "G3D/RegistryUtil.h"
 
 #elif defined(G3D_LINUX)
 
@@ -53,11 +53,13 @@
 #include <stdio.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/sysctl.h>
 #include <sys/select.h>
+#include <sys/time.h>
 #include <termios.h>
 #include <unistd.h>
-#include <sys/time.h>
 #include <pthread.h>
+#include <mach-o/arch.h>
 
 #include <sstream>
 #include <CoreServices/CoreServices.h>
@@ -139,6 +141,7 @@ namespace G3D {
     static bool _mmx = false;
     static bool _sse = false;
     static bool _sse2 = false;
+    static bool _sse3 = false;
     static bool _3dnow = false;
     static char _cpuVendorCstr[1024] = {'U', 'n', 'k', 'n', 'o', 'w', 'n', '\0'};
     static bool _cpuID = false;
@@ -158,8 +161,8 @@ namespace G3D {
     System::OutOfMemoryCallback                     System::outOfMemoryCallback = NULL;
 
 #ifdef G3D_OSX
-    long System::m_OSXCPUSpeed;
-    double System::m_secondsPerNS;
+    long											System::m_OSXCPUSpeed;
+    double											System::m_secondsPerNS;
 #endif
 
 /** The Real-World time of System::getTick() time 0.  Set by initTime */
@@ -203,6 +206,10 @@ namespace G3D {
         return _sse2;
     }
 
+    bool System::hasSSE3() {
+        init();
+        return _sse3;
+    }
 
     bool System::hasMMX() {
         init();
@@ -305,7 +312,7 @@ namespace G3D {
             // We read the standard CPUID level 0x00000000 which should
             // be available on every x86 processor.  This fills out
             // a string with the processor vendor tag.
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(G3D_OSX_INTEL)
             __asm {
                 push eax
                 push ebx
@@ -355,7 +362,7 @@ namespace G3D {
             maxSupportedCPUIDLevel = eaxreg & 0xFFFF;
 
             // Then we read the ext. CPUID level 0x80000000
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(G3D_OSX_INTEL)
             __asm {
                 push eax
                 push ebx
@@ -439,11 +446,11 @@ namespace G3D {
         }
 
         uint32 maxAddr = (uint32) (size_t) systemInfo.lpMaximumApplicationAddress;
-        sprintf(_cpuArchCstr, "%d x %d-bit %s processor @ %4.1 GHz",
+        sprintf(_cpuArchCstr, "%d x %d-bit %s processor",
                 systemInfo.dwNumberOfProcessors,
                 (int) (::log((double) maxAddr) / ::log(2.0) + 2.0),
-                arch,
-                _CPUSpeed / (1024.0 * 1024));
+                arch);
+//                    _CPUSpeed / (1024.0 * 1024));
 
         OSVERSIONINFO osVersionInfo;
         osVersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
@@ -490,31 +497,37 @@ namespace G3D {
         int minor = (macVersion >> 4) & 0xF;
         int revision = macVersion & 0xF;
 
-        sprintf(_operatingSystemCstr, "OS X %x.%x.%x", major, minor, revision); 
-                 
+        sprintf(_operatingSystemCstr, "OS X %x.%x.%x", major, minor, revision);
+
         //Clock Cycle Timing Information:
         Gestalt('pclk', &System::m_OSXCPUSpeed);
         _CPUSpeed = iRound((double)m_OSXCPUSpeed / (1024 * 1024));
         m_secondsPerNS = 1.0 / 1.0e9;
-        
-        //System Architecture:
-        SInt32 CPUtype;
-        Gestalt('cpuf', &CPUtype);
-        switch (CPUtype){
-        case 0x0108:
-            strcpy(_cpuArchCstr, "PPC G3");
-            strcpy(_cpuVendorCstr, "Motorola");
-            break;
-        case 0x010C:
-            strcpy(_cpuArchCstr, "PPC G4");
-            strcpy(_cpuVendorCstr, "Motorola");
-            break;
-        case 0x0139:
-            strcpy(_cpuArchCstr, "PPC G5");
-            strcpy(_cpuVendorCstr, "IBM");
-            break;
-        }
 
+        //System Architecture:
+        const NXArchInfo* pInfo = NXGetLocalArchInfo();
+
+        if(pInfo){
+            strcpy(_cpuArchCstr, pInfo->description);
+
+            switch(pInfo->cputype){
+            case CPU_TYPE_POWERPC:
+                switch(pInfo->cpusubtype){
+                case CPU_SUBTYPE_POWERPC_750:
+                case CPU_SUBTYPE_POWERPC_7400:
+                case CPU_SUBTYPE_POWERPC_7450:
+                    strcpy(_cpuVendorCstr, "Motorola");
+                    break;
+                case CPU_SUBTYPE_POWERPC_970:
+                    strcpy(_cpuVendorCstr, "IBM");
+                    break;
+                }
+                break;
+            case CPU_TYPE_I386:
+                strcpy(_cpuVendorCstr, "Intel");
+                break;
+            }
+        }
 #endif
 
         initTime();
@@ -529,7 +542,7 @@ namespace G3D {
         // We've to check if we can toggle the flag register bit 21.
         // If we can't the processor does not support the CPUID command.
 
-#   ifdef _MSC_VER
+#   if defined(_MSC_VER) || defined(G3D_OSX_INTEL)
         __asm {
                 push eax
                 push ebx
@@ -588,8 +601,8 @@ namespace G3D {
         // Invoking CPUID with '1' in EAX fills out edx with a bit string.
         // The bits of this value indicate the presence or absence of
         // useful processor features.
-#ifdef _MSC_VER
-        // Windows
+#if defined(_MSC_VER) || defined(G3D_OSX_INTEL)
+        // Windows or OSX Intel
 
             __asm {
             push eax
@@ -623,47 +636,44 @@ namespace G3D {
         features = 0;
 #endif
 
-        // FPU_FloatingPointUnit                                                        = checkBit(features, 0);
-        // VME_Virtual8086ModeEnhancements                                      = checkBit(features, 1);
-        // DE_DebuggingExtensions                                                       = checkBit(features, 2);
-        // PSE_PageSizeExtensions                                                       = checkBit(features, 3);
-        // TSC_TimeStampCounter                                                         = checkBit(features, 4);
-        // MSR_ModelSpecificRegisters                                           = checkBit(features, 5);
-        // PAE_PhysicalAddressExtension                                         = checkBit(features, 6);
-        // MCE_MachineCheckException                                            = checkBit(features, 7);
-        // CX8_COMPXCHG8B_Instruction                                           = checkBit(features, 8);
+        // FPU_FloatingPointUnit                                = checkBit(features, 0);
+        // VME_Virtual8086ModeEnhancements                      = checkBit(features, 1);
+        // DE_DebuggingExtensions                               = checkBit(features, 2);
+        // PSE_PageSizeExtensions                               = checkBit(features, 3);
+        // TSC_TimeStampCounter                                 = checkBit(features, 4);
+        // MSR_ModelSpecificRegisters                           = checkBit(features, 5);
+        // PAE_PhysicalAddressExtension                         = checkBit(features, 6);
+        // MCE_MachineCheckException                            = checkBit(features, 7);
+        // CX8_COMPXCHG8B_Instruction                           = checkBit(features, 8);
         // APIC_AdvancedProgrammableInterruptController         = checkBit(features, 9);
-        // APIC_ID                                                                                      = (ebxreg >> 24) & 0xFF;
-        // SEP_FastSystemCall                                                           = checkBit(features, 11);
-        // MTRR_MemoryTypeRangeRegisters                                        = checkBit(features, 12);
-        // PGE_PTE_GlobalFlag                                                           = checkBit(features, 13);
-        // MCA_MachineCheckArchitecture                                         = checkBit(features, 14);
+        // APIC_ID                                              = (ebxreg >> 24) & 0xFF;
+        // SEP_FastSystemCall                                   = checkBit(features, 11);
+        // MTRR_MemoryTypeRangeRegisters                        = checkBit(features, 12);
+        // PGE_PTE_GlobalFlag                                   = checkBit(features, 13);
+        // MCA_MachineCheckArchitecture                         = checkBit(features, 14);
         // CMOV_ConditionalMoveAndCompareInstructions           = checkBit(features, 15);
 
         // (According to SDL)
         _rdtsc = checkBit(features, 16);
-
-        // PSE36_36bitPageSizeExtension                                         = checkBit(features, 17);
-        // PN_ProcessorSerialNumber                                                     = checkBit(features, 18);
-        // CLFSH_CFLUSH_Instruction                                                     = checkBit(features, 19);
-        // CLFLUSH_InstructionCacheLineSize                                     = (ebxreg >> 8) & 0xFF;
-        // DS_DebugStore                                                                        = checkBit(features, 21);
-        // ACPI_ThermalMonitorAndClockControl                           = checkBit(features, 22);
+        // PSE36_36bitPageSizeExtension                          = checkBit(features, 17);
+        // PN_ProcessorSerialNumber                              = checkBit(features, 18);
+        // CLFSH_CFLUSH_Instruction                              = checkBit(features, 19);
+        // CLFLUSH_InstructionCacheLineSize                      = (ebxreg >> 8) & 0xFF;
+        // DS_DebugStore                                         = checkBit(features, 21);
+        // ACPI_ThermalMonitorAndClockControl                    = checkBit(features, 22);
         _mmx = checkBit(features, 23);
-        // FXSR_FastStreamingSIMD_ExtensionsSaveRestore         = checkBit(features, 24);
+        // FXSR_FastStreamingSIMD_ExtensionsSaveRestore          = checkBit(features, 24);
         _sse = checkBit(features, 25);
         _sse2 = checkBit(features, 26);
-        // SS_SelfSnoop                                                                         = checkBit(features, 27);
-        // HT_HyperThreading                                                            = checkBit(features, 28);
-        // HT_HyterThreadingSiblings = (ebxreg >> 16) & 0xFF;
-        // TM_ThermalMonitor                                                            = checkBit(features, 29);
-        // IA64_Intel64BitArchitecture                                          = checkBit(features, 30);
+        // SS_SelfSnoop                                          = checkBit(features, 27);
+        // HT_HyperThreading                                     = checkBit(features, 28);
+        // HT_HyterThreadingSiblings                             = (ebxreg >> 16) & 0xFF;
+        // TM_ThermalMonitor                                     = checkBit(features, 29);
+        // IA64_Intel64BitArchitecture                           = checkBit(features, 30);
         _3dnow = checkBit(features, 31);
     }
 
-
 #undef checkBit
-
 
 #if defined(SSE)
 
@@ -729,54 +739,54 @@ namespace G3D {
 
 //#if defined(G3D_WIN32) && defined(SSE)
 #if 0
-    /** Michael Herf's fast memcpy */
-    void memcpyMMX(void* dst, const void* src, int nbytes) {
+/** Michael Herf's fast memcpy */
+    void memcpyMMX(void *dst, const void *src, int nbytes) {
         int remainingBytes = nbytes;
 
         if (nbytes > 64) {
-                _asm {
-                        mov esi, src
-                        mov edi, dst
-                        mov ecx, nbytes
-                        shr ecx, 6 // 64 bytes per iteration
+            _asm{
+                    mov esi, src
+                    mov edi, dst
+                    mov ecx, nbytes
+                    shr ecx, 6 // 64 bytes per iteration 
 
-        loop1:
-                        movq mm1,  0[ESI] // Read in source data
-                        movq mm2,  8[ESI]
-                        movq mm3, 16[ESI]
-                        movq mm4, 24[ESI]
-                        movq mm5, 32[ESI]
-                        movq mm6, 40[ESI]
-                        movq mm7, 48[ESI]
-                        movq mm0, 56[ESI]
+                    loop1:
+                    movq mm1, 0[ESI] // Read in source data
+                    movq mm2, 8[ESI]
+                    movq mm3, 16[ESI]
+                    movq mm4, 24[ESI]
+                    movq mm5, 32[ESI]
+                    movq mm6, 40[ESI]
+                    movq mm7, 48[ESI]
+                    movq mm0, 56[ESI]
 
-                        movntq  0[EDI], mm1 // Non-temporal stores
-                        movntq  8[EDI], mm2
-                        movntq 16[EDI], mm3
-                        movntq 24[EDI], mm4
-                        movntq 32[EDI], mm5
-                        movntq 40[EDI], mm6
-                        movntq 48[EDI], mm7
-                        movntq 56[EDI], mm0
+                    movntq  0[EDI], mm1 // Non-temporal stores 
+                    movntq  8[EDI], mm2
+                    movntq 16[EDI], mm3
+                    movntq 24[EDI], mm4
+                    movntq 32[EDI], mm5
+                    movntq 40[EDI], mm6
+                    movntq 48[EDI], mm7
+                    movntq 56[EDI], mm0
 
-                        add esi, 64
-                        add edi, 64
-                        dec ecx
-                        jnz loop1
+                    add esi, 64
+                    add edi, 64
+                    dec ecx
+                    jnz loop1
 
-                        emms
-                }
-                remainingBytes -= ((nbytes >> 6) << 6);
+                    emms
+            }
+            remainingBytes -= ((nbytes >> 6) << 6);
         }
 
         if (remainingBytes > 0) {
             // Memcpy the rest
-            memcpy((uint8*)dst + (nbytes - remainingBytes), (const uint8*)src + (nbytes - remainingBytes), remainingBytes);
+            memcpy((uint8 *) dst + (nbytes - remainingBytes), (const uint8 *) src + (nbytes - remainingBytes),
+                   remainingBytes);
         }
     }
 
 #else
-
     // Fall back to memcpy
     void memcpyMMX(void *dst, const void *src, int nbytes) {
         memcpy(dst, src, nbytes);
@@ -799,9 +809,8 @@ namespace G3D {
 /** Michael Herf's fastest memset. n32 must be filled with the same
     character repeated. */
 #if 0
-    //#if defined(G3D_WIN32) && defined(SSE)
-
-    // On x86 processors, use MMX
+//#if defined(G3D_WIN32) && defined(SSE)
+// On x86 processors, use MMX
     void memfill(void *dst, int n32, unsigned long i) {
 
         int originalSize = i;
@@ -811,32 +820,32 @@ namespace G3D {
 
             bytesRemaining = i % 16;
             i -= bytesRemaining;
-                    __asm {
-                            movq mm0, n32
-                            punpckldq mm0, mm0
-                            mov edi, dst
+            __asm {
+                    movq mm0, n32
+                    punpckldq mm0, mm0
+                    mov edi, dst
 
                     loopwrite:
 
-                            movntq 0[edi], mm0
-                            movntq 8[edi], mm0
+                    movntq 0[edi], mm0
+                    movntq 8[edi], mm0
 
-                            add edi, 16
-                            sub i, 16
-                            jg loopwrite
+                    add edi, 16
+                    sub i, 16
+                    jg loopwrite
 
-                            emms
-                    }
+                    emms
+            }
         }
 
         if (bytesRemaining > 0) {
-            ::memset((uint8*)dst + (originalSize - bytesRemaining), n32, bytesRemaining);
+            ::memset((uint8 *) dst + (originalSize - bytesRemaining), n32, bytesRemaining);
         }
     }
 
 #else
 
-// For non x86 processors, we fall back to the standard memset
+    // For non x86 processors, we fall back to the standard memset
     void memfill(void *dst, int n32, unsigned long i) {
         ::memset(dst, n32, i);
     }

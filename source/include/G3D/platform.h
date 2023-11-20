@@ -16,7 +16,7 @@
  The version number of G3D in the form: MmmBB -> 
  version M.mm [beta BB]
  */
-#define G3D_VER 60900
+#define G3D_VER 61000
 
 #if defined(G3D_RELEASEDEBUG)
 #   define G3D_DEBUGRELEASE
@@ -98,13 +98,17 @@
 
 
 #ifdef G3D_OSX
-#ifndef __GNUC__
-#error G3D only supports the gcc compiler on OS X.
-#endif
-
-#ifndef __POWERPC__
-#error G3D only supports PowerPC processors on OS X.
-#endif
+    #ifndef __GNUC__
+        #error G3D only supports the gcc compiler on OS X.
+    #endif
+	
+	#if defined(__i386__)
+		#define G3D_OSX_INTEL
+	#elif defined(__PPC__)
+		#define G3D_OSX_PPC
+	#else
+		#define G3D_OSX_UNKNOWN
+	#endif
 
 #   ifndef __cdecl
 #       define __cdecl __attribute__((cdecl))

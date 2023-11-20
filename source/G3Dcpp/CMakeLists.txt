@@ -7,6 +7,7 @@ find_package(SDL2 REQUIRED)
 
 add_library(G3D STATIC
         AABox.cpp
+        AnyVal.cpp
         BinaryFormat.cpp
         BinaryInput.cpp
         BinaryOutput.cpp

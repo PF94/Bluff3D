@@ -33,6 +33,7 @@
     G3D::GModule,
     G3D::GModuleManager
     G3D::Manipulator,
+    G3D::ThirdPersonManipulator,
     G3D::UserInput
   <BR>
   See also demo code
@@ -259,6 +260,7 @@
         STR
 
      <LI><B>Data structures</B> &nbsp; &nbsp;
+	    G3D::AnyVal,
         G3D::AABSPTree,
 		G3D::Array,
 		G3D::Queue,

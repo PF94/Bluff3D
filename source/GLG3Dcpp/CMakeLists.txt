@@ -40,6 +40,7 @@ add_library(GLG3D STATIC
         Texture.cpp
         TextureFormat.cpp
         TextureManager.cpp
+        ThirdPersonManipulator.cpp
         UserInput.cpp
         VAR.cpp
         VARArea.cpp

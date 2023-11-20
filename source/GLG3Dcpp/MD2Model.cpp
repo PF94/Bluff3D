@@ -637,14 +637,13 @@ namespace G3D {
         const PackedGeometry &frame1 = keyFrame[i1];
 
         // To use SSE both the compiler and the processor must support it
-        //#if defined(SSE) && defined(G3D_WIN32)
-#if 0
+#if defined(SSE) && defined(G3D_WIN32)
         bool useSSE = System::hasSSE();
 #else
         bool useSSE = false;
 #endif
 
-        if (!useSSE) {
+        //if (!useSSE) {
             const Vector3 *v0 = frame0.vertexArray.getCArray();
             const Vector3 *v1 = frame1.vertexArray.getCArray();
 
@@ -660,104 +659,103 @@ namespace G3D {
                 }
 
             return;
-        }
-
+        //}
 
 #if 0
         // Put this code inside an ifdef because it won't compile
         // on non-SSE compilers otherwise.
 #if defined(SSE) && defined(G3D_WIN32)
-            // The high performance path interpolates between two arrays of floats.
-            // We first convert the vertices and normals into this format.
+        // The high performance path interpolates between two arrays of floats.
+        // We first convert the vertices and normals into this format.
 
-            // n0 and v0 are first moved to the interpolated frame then
-            // lerped in place
+        // n0 and v0 are first moved to the interpolated frame then
+        // lerped in place
 
-            const int numFloats = numVertices * 3;
+        const int numFloats = numVertices * 3;
 
-            static Array<Vector3> normal1;
+        static Array<Vector3> normal1;
 
-            normal1.resize(numVertices, DONT_SHRINK_UNDERLYING_ARRAY);
+        normal1.resize(numVertices, DONT_SHRINK_UNDERLYING_ARRAY);
 
-            {
-                // Expand the normals out
-                const uint8* n0Index = frame0.normalArray.getCArray();
-                const uint8* n1Index = frame1.normalArray.getCArray();
+        {
+            // Expand the normals out
+            const uint8 *n0Index = frame0.normalArray.getCArray();
+            const uint8 *n1Index = frame1.normalArray.getCArray();
 
-                Vector3* n0Vector = out.normalArray.getCArray();
-                Vector3* n1Vector = normal1.getCArray();
+            Vector3 *n0Vector = out.normalArray.getCArray();
+            Vector3 *n1Vector = normal1.getCArray();
 
-                for (int i = numVertices - 1; i >= 0; --i) {
+            for (int i = numVertices - 1; i >= 0; --i) {
                     n0Vector[i] = normalTable[n0Index[i]];
                     n1Vector[i] = normalTable[n1Index[i]];
                 }
-            }
+        }
 
-            const float* v0 = reinterpret_cast<const float*>(frame0.vertexArray.getCArray());
-            const float* v1 = reinterpret_cast<const float*>(frame1.vertexArray.getCArray());
+        const float *v0 = reinterpret_cast<const float *>(frame0.vertexArray.getCArray());
+        const float *v1 = reinterpret_cast<const float *>(frame1.vertexArray.getCArray());
 
-            const float* n1 = reinterpret_cast<const float*>(normal1.getCArray());
+        const float *n1 = reinterpret_cast<const float *>(normal1.getCArray());
 
-            // Interpolated values
-            float* vI = reinterpret_cast<float*>(out.vertexArray.getCArray());
-            float* nI = reinterpret_cast<float*>(out.normalArray.getCArray());
+        // Interpolated values
+        float *vI = reinterpret_cast<float *>(out.vertexArray.getCArray());
+        float *nI = reinterpret_cast<float *>(out.normalArray.getCArray());
 
-            // Copy over vertices so we can mutate them in place
-            System::memcpy(vI, v0, numFloats * sizeof(float));
+        // Copy over vertices so we can mutate them in place
+        System::memcpy(vI, v0, numFloats * sizeof(float));
 
-            alwaysAssertM(((int)(size_t)v1 % 16) == 0, "SEE array not aligned to 16-bytes");
-            alwaysAssertM(((int)(size_t)vI % 16) == 0, "SEE array not aligned to 16-bytes");
-            alwaysAssertM(((int)(size_t)n1 % 16) == 0, "SEE array not aligned to 16-bytes");
-            alwaysAssertM(((int)(size_t)nI % 16) == 0, "SEE array not aligned to 16-bytes");
+        alwaysAssertM(((int) v1 % 16) == 0, "SEE array not aligned to 16-bytes");
+        alwaysAssertM(((int) vI % 16) == 0, "SEE array not aligned to 16-bytes");
+        alwaysAssertM(((int) n1 % 16) == 0, "SEE array not aligned to 16-bytes");
+        alwaysAssertM(((int) nI % 16) == 0, "SEE array not aligned to 16-bytes");
 
-            const int num128 = numFloats / sizeof(float);
+        const int num128 = numFloats / sizeof(float);
 
-            debugAssert(frame1.vertexArray.size() * 3 == numFloats);
-            debugAssert(normal1.size() * 3 == numFloats);
+        debugAssert(frame1.vertexArray.size() * 3 == numFloats);
+        debugAssert(normal1.size() * 3 == numFloats);
 
-            // Spread alpha across a vector
-            const __m128 alpha128 = _mm_set_ps(alpha, alpha, alpha, alpha);
+        // Spread alpha across a vector
+        const __m128 alpha128 = _mm_set_ps(alpha, alpha, alpha, alpha);
 
-            // Our goal:
-            //   vI = vI + (v1 - vI) * alpha
-            //   nI = nI + (n1 - nI) * alpha
-            __asm {
-                mov     ecx,  num128
+        // Our goal:
+        //   vI = vI + (v1 - vI) * alpha
+        //   nI = nI + (n1 - nI) * alpha
+        __asm {
+                mov     ecx, num128
                 movaps  xmm7, alpha128
 
-                // Set up source and destination registers
+            // Set up source and destination registers
                 mov     edi, vI
                 mov     esi, v1
 
                 mov     edx, nI
                 mov     eax, n1
 
-            beginLoop:
-                // Load vI and nI
-                movaps  xmm0, [edi]
-                movaps  xmm2, [edx]
+                beginLoop:
+            // Load vI and nI
+                movaps  xmm0,[edi]
+                movaps  xmm2,[edx]
 
-                // Load v1 and n1
-                movaps  xmm1, [esi]
-                movaps  xmm3, [eax]
+            // Load v1 and n1
+                movaps  xmm1,[esi]
+                movaps  xmm3,[eax]
 
-                // Compute (v1 - v0) and (n1 - n0)
+            // Compute (v1 - v0) and (n1 - n0)
                 subps   xmm1, xmm0
                 subps   xmm3, xmm2
 
-                // Multiply each by alpha
+            // Multiply each by alpha
                 mulps   xmm1, xmm7
                 mulps   xmm3, xmm7
 
-                // Add the totals to v0 and n0
+            // Add the totals to v0 and n0
                 addps   xmm0, xmm1
                 addps   xmm2, xmm3
 
-                // Store the results back in vI and nI
-                movaps  [edi], xmm0
-                movaps  [edx], xmm2
+            // Store the results back in vI and nI
+                movaps[edi], xmm0
+                movaps[edx], xmm2
 
-                // Increment all pointers
+            // Increment all pointers
                 add     edi, 16
                 add     esi, 16
                 add     edx, 16
@@ -765,10 +763,10 @@ namespace G3D {
 
                 dec     ecx
                 jnz     beginLoop
-            }
+        }
 
-            // The last few floats may have been missed by the previous loop.
-            for (int i = num128 * 4; i < numFloats; ++i) {
+        // The last few floats may have been missed by the previous loop.
+        for (int i = num128 * 4; i < numFloats; ++i) {
                 vI[i] = vI[i] + (v1[i] - vI[i]) * alpha;
                 nI[i] = nI[i] + (n1[i] - nI[i]) * alpha;
             }

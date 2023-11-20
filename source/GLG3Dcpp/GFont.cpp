@@ -39,6 +39,8 @@ namespace G3D {
     }
 
     GFontRef GFont::fromMemory(const std::string &name, const uint8 *bytes, const int size) {
+        // Note that we do not need to copy the memory since GFont will be done with it
+        // by the time this method returns.
         BinaryInput b(bytes, size, G3D_LITTLE_ENDIAN, true, false);
         return new GFont(NULL, name, b);
     }

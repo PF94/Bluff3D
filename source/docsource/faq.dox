@@ -17,12 +17,13 @@ There are several reoccuring questions that appear at the <A HREF="http://source
 10. <a href="#intersectmodel">Proximity and ray intersection with PosedModel</a><BR>
 11. <a href="#rotation">How do I rotate an object when it's drawn?</a><BR>
 12. <a href="#orthographic">Is there a way to make the GCamera do an orthographic projection?</a><BR>
-13. <a href="#VS2005">My G3D based project will not build with Visual Studio 2005</a><BR>
-14. <a href="#fullscreen">A fullscreen application shows the window title bar</a><BR>
-15. <a href="#headers">Why are the headers out of date?/What header files are included with G3D</a><BR>
-16. <a href="#buildsystem">Why does the source distribution not include the build system?</a><BR>
-17. <a href="#precision">Float / Double precision errors. Warnings in truncation, or overload errors with argument types</a><BR>
-18. <a href="#join">How can I join the G3D Core Dev team</a><BR>
+13. <a href="#worldmouse">How do I get the world-space coordinates of the mouse cursor?</a><BR>
+14. <a href="#VS2005">My G3D based project will not build with Visual Studio 2005</a><BR>
+15. <a href="#fullscreen">A fullscreen application shows the window title bar</a><BR>
+16. <a href="#headers">Why are the headers out of date?/What header files are included with G3D</a><BR>
+17. <a href="#buildsystem">Why does the source distribution not include the build system?</a><BR>
+18. <a href="#precision">Float / Double precision errors. Warnings in truncation, or overload errors with argument types</a><BR>
+19. <a href="#join">How can I join the G3D Core Dev team</a><BR>
 
 <a NAME="graphicscard"></a>
 <B>What graphics hardware does G3D support?</B><P>
@@ -117,6 +118,24 @@ G3D::Draw is easy to use and fairly powerful. It is also fairly slow (as indicat
 No, orthographic cameras are fundamentally different from perspective cameras because there is no center of projection. An orthographic camera has to be *huge* to do what you'd want--the viewport would have to be the size of your scene. GCamera can't be adjusted to do this without breaking it.
 
 It is possible to build your own orthographic camera since RenderDevice accepts any 4x4 matrix as the projection matrix, if anyone implements this, please let the development team know, as we'd like to use it too.
+
+<a NAME="worldmouse"></a>
+<P><B>How do I get the world-space coordinates of the mouse cursor?</B><P>
+First get the ray from the mouse cursor into the world:
+<pre>
+camera->worldRay(userInput->mouseXY().x, userInput->mouseXY().y, renderDevice->getViewport());
+</pre>
+From then, there are two methods. The first is to use CollisionDetection to calculate the intersection between this ray
+and the geometry of the world. Another method is to convert it to depth Z-Buffer using:
+<pre>
+depth = readback
+float csz = lerp(camera.nearPlaneZ(), camera.farPlaneZ(), depth);
+
+Vector3 csv(0,0,csz);
+
+camera.getCoordinateFrame().pointToWorldSpace(csv);
+</pre>
+
 
 <a NAME="VS2005"></a>
 <P><B>My G3D based project will not build with Visual Studio 2005</B><P>

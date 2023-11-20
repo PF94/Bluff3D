@@ -229,6 +229,10 @@ namespace G3D {
 
         bool _swapBuffersAutomatically;
 
+        /** Manually swap the front and back buffers.  Using swapBuffersAutomatically() is recommended
+            instead of manually swapping because it has higher performance.*/
+        void swapBuffers();
+
         /** True after endFrame until swapGLBuffers is invoked.
             Used to correctly manage value changes of _swapBuffersAutomatically
             so that a frame not intended to be seen is never rendered.*/

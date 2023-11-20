@@ -1,149 +1,149 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile doxygen_version="1.9.8" doxygen_gitid="c2fe5c3e4986974eb2a97608b24086683502f07f">
   <compound kind="file">
-    <name>changelog.h</name>
+    <name>changelog.dox</name>
     <path>docsource/</path>
-    <filename>changelog_8h.html</filename>
+    <filename>changelog_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>contributors.h</name>
+    <name>contributors.dox</name>
     <path>docsource/</path>
-    <filename>contributors_8h.html</filename>
+    <filename>contributors_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>error.h</name>
+    <name>error.dox</name>
     <path>docsource/</path>
-    <filename>error_8h.html</filename>
+    <filename>error_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>faq.h</name>
+    <name>faq.dox</name>
     <path>docsource/</path>
-    <filename>faq_8h.html</filename>
+    <filename>faq_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>frequent.h</name>
+    <name>frequent.dox</name>
     <path>docsource/</path>
-    <filename>frequent_8h.html</filename>
+    <filename>frequent_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-app.h</name>
+    <name>guide-app.dox</name>
     <path>docsource/</path>
-    <filename>guide-app_8h.html</filename>
+    <filename>guide-app_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-brown.h</name>
+    <name>guide-brown.dox</name>
     <path>docsource/</path>
-    <filename>guide-brown_8h.html</filename>
+    <filename>guide-brown_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-collision.h</name>
+    <name>guide-collision.dox</name>
     <path>docsource/</path>
-    <filename>guide-collision_8h.html</filename>
+    <filename>guide-collision_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-compiling.h</name>
+    <name>guide-compiling.dox</name>
     <path>docsource/</path>
-    <filename>guide-compiling_8h.html</filename>
+    <filename>guide-compiling_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-concepts.h</name>
+    <name>guide-concepts.dox</name>
     <path>docsource/</path>
-    <filename>guide-concepts_8h.html</filename>
+    <filename>guide-concepts_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-debug.h</name>
+    <name>guide-debug.dox</name>
     <path>docsource/</path>
-    <filename>guide-debug_8h.html</filename>
+    <filename>guide-debug_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-effects.h</name>
+    <name>guide-effects.dox</name>
     <path>docsource/</path>
-    <filename>guide-effects_8h.html</filename>
+    <filename>guide-effects_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-fbo.h</name>
+    <name>guide-fbo.dox</name>
     <path>docsource/</path>
-    <filename>guide-fbo_8h.html</filename>
+    <filename>guide-fbo_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-files.h</name>
+    <name>guide-files.dox</name>
     <path>docsource/</path>
-    <filename>guide-files_8h.html</filename>
+    <filename>guide-files_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-install.h</name>
+    <name>guide-install.dox</name>
     <path>docsource/</path>
-    <filename>guide-install_8h.html</filename>
+    <filename>guide-install_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-intro.h</name>
+    <name>guide-intro.dox</name>
     <path>docsource/</path>
-    <filename>guide-intro_8h.html</filename>
+    <filename>guide-intro_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-macosx.h</name>
+    <name>guide-macosx.dox</name>
     <path>docsource/</path>
-    <filename>guide-macosx_8h.html</filename>
+    <filename>guide-macosx_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-meshes.h</name>
+    <name>guide-meshes.dox</name>
     <path>docsource/</path>
-    <filename>guide-meshes_8h.html</filename>
+    <filename>guide-meshes_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-network.h</name>
+    <name>guide-network.dox</name>
     <path>docsource/</path>
-    <filename>guide-network_8h.html</filename>
+    <filename>guide-network_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-opengl.h</name>
+    <name>guide-opengl.dox</name>
     <path>docsource/</path>
-    <filename>guide-opengl_8h.html</filename>
+    <filename>guide-opengl_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-physics.h</name>
+    <name>guide-physics.dox</name>
     <path>docsource/</path>
-    <filename>guide-physics_8h.html</filename>
+    <filename>guide-physics_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-shaders.h</name>
+    <name>guide-shaders.dox</name>
     <path>docsource/</path>
-    <filename>guide-shaders_8h.html</filename>
+    <filename>guide-shaders_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-tutorial.h</name>
+    <name>guide-tutorial.dox</name>
     <path>docsource/</path>
-    <filename>guide-tutorial_8h.html</filename>
+    <filename>guide-tutorial_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-ui.h</name>
+    <name>guide-ui.dox</name>
     <path>docsource/</path>
-    <filename>guide-ui_8h.html</filename>
+    <filename>guide-ui_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-var.h</name>
+    <name>guide-var.dox</name>
     <path>docsource/</path>
-    <filename>guide-var_8h.html</filename>
+    <filename>guide-var_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-video.h</name>
+    <name>guide-video.dox</name>
     <path>docsource/</path>
-    <filename>guide-video_8h.html</filename>
+    <filename>guide-video_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>guide-welcome.h</name>
+    <name>guide-welcome.dox</name>
     <path>docsource/</path>
-    <filename>guide-welcome_8h.html</filename>
+    <filename>guide-welcome_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>license.h</name>
+    <name>license.dox</name>
     <path>docsource/</path>
-    <filename>license_8h.html</filename>
+    <filename>license_8dox.html</filename>
   </compound>
   <compound kind="file">
-    <name>topic-index.h</name>
+    <name>topic-index.dox</name>
     <path>docsource/</path>
-    <filename>topic-index_8h.html</filename>
+    <filename>topic-index_8dox.html</filename>
   </compound>
   <compound kind="file">
     <name>AABox.h</name>
@@ -227,6 +227,21 @@
       <anchor>ae6fa9aa08ffc8295bc7d636d8f26739e</anchor>
       <arglist>(const G3D::Triangle &amp;t, G3D::AABox &amp;out)</arglist>
     </member>
+  </compound>
+  <compound kind="file">
+    <name>AnyVal.h</name>
+    <path>include/G3D/</path>
+    <filename>AnyVal_8h.html</filename>
+    <includes id="platform_8h" name="platform.h" local="yes" import="no" module="no" objc="no">platform.h</includes>
+    <includes id="Array_8h" name="Array.h" local="yes" import="no" module="no" objc="no">Array.h</includes>
+    <includes id="TextInput_8h" name="TextInput.h" local="yes" import="no" module="no" objc="no">TextInput.h</includes>
+    <class kind="class">G3D::AnyVal</class>
+    <class kind="class">G3D::AnyVal::Exception</class>
+    <class kind="class">G3D::AnyVal::WrongType</class>
+    <class kind="class">G3D::AnyVal::KeyNotFound</class>
+    <class kind="class">G3D::AnyVal::IndexOutOfBounds</class>
+    <class kind="class">G3D::AnyVal::CorruptText</class>
+    <namespace>G3D</namespace>
   </compound>
   <compound kind="file">
     <name>Array.h</name>
@@ -837,8 +852,8 @@
     <name>Matrix4.h</name>
     <path>include/G3D/</path>
     <filename>Matrix4_8h.html</filename>
-    <includes id="platform_8h" name="platform.h" local="yes" import="no" module="no" objc="no">platform.h</includes>
-    <includes id="debugAssert_8h" name="debugAssert.h" local="yes" import="no" module="no" objc="no">debugAssert.h</includes>
+    <includes id="platform_8h" name="platform.h" local="yes" import="no" module="no" objc="no">G3D/platform.h</includes>
+    <includes id="debugAssert_8h" name="debugAssert.h" local="yes" import="no" module="no" objc="no">G3D/debugAssert.h</includes>
     <class kind="class">G3D::Matrix4</class>
     <namespace>G3D</namespace>
   </compound>
@@ -1425,6 +1440,7 @@
     <includes id="Renderbuffer_8h" name="Renderbuffer.h" local="yes" import="no" module="no" objc="no">GLG3D/Renderbuffer.h</includes>
     <includes id="Framebuffer_8h" name="Framebuffer.h" local="yes" import="no" module="no" objc="no">GLG3D/Framebuffer.h</includes>
     <includes id="GModule_8h" name="GModule.h" local="yes" import="no" module="no" objc="no">GLG3D/GModule.h</includes>
+    <includes id="ThirdPersonManipulator_8h" name="ThirdPersonManipulator.h" local="yes" import="no" module="no" objc="no">GLG3D/ThirdPersonManipulator.h</includes>
   </compound>
   <compound kind="file">
     <name>Draw.h</name>
@@ -1973,6 +1989,22 @@
     <includes id="Texture_8h" name="Texture.h" local="yes" import="no" module="no" objc="no">Texture.h</includes>
     <class kind="class">G3D::TextureManager</class>
     <namespace>G3D</namespace>
+  </compound>
+  <compound kind="file">
+    <name>ThirdPersonManipulator.h</name>
+    <path>include/GLG3D/</path>
+    <filename>ThirdPersonManipulator_8h.html</filename>
+    <includes id="Array_8h" name="Array.h" local="yes" import="no" module="no" objc="no">G3D/Array.h</includes>
+    <includes id="Vector3_8h" name="Vector3.h" local="yes" import="no" module="no" objc="no">G3D/Vector3.h</includes>
+    <includes id="LineSegment_8h" name="LineSegment.h" local="yes" import="no" module="no" objc="no">G3D/LineSegment.h</includes>
+    <includes id="ConvexPolyhedron_8h" name="ConvexPolyhedron.h" local="yes" import="no" module="no" objc="no">G3D/ConvexPolyhedron.h</includes>
+    <includes id="ReferenceCount_8h" name="ReferenceCount.h" local="yes" import="no" module="no" objc="no">G3D/ReferenceCount.h</includes>
+    <includes id="ManualCameraController_8h" name="ManualCameraController.h" local="yes" import="no" module="no" objc="no">GLG3D/ManualCameraController.h</includes>
+    <class kind="class">G3D::_internal::PolyLineGeneric</class>
+    <class kind="class">G3D::_internal::UIGeom</class>
+    <class kind="class">G3D::ThirdPersonManipulator</class>
+    <namespace>G3D</namespace>
+    <namespace>G3D::_internal</namespace>
   </compound>
   <compound kind="file">
     <name>UserInput.h</name>
@@ -2624,6 +2656,601 @@
       <anchorfile>classG3D_1_1AABSPTree.html</anchorfile>
       <anchor>a5ff39e5a0a196b378c6383edc058bad1</anchor>
       <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>G3D::AnyVal</name>
+    <filename>classG3D_1_1AnyVal.html</filename>
+    <class kind="class">G3D::AnyVal::CorruptText</class>
+    <class kind="class">G3D::AnyVal::Exception</class>
+    <class kind="class">G3D::AnyVal::IndexOutOfBounds</class>
+    <class kind="class">G3D::AnyVal::KeyNotFound</class>
+    <class kind="class">G3D::AnyVal::WrongType</class>
+    <member kind="enumeration">
+      <type></type>
+      <name>Type</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>NIL</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda0edf70b26df8b0cf8af1b8620a49c35a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>NUMBER</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9f122ca7ecd704b42bc808133df967b2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BOOLEAN</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9a75ee26a0a8b41a1d4d46eec1d88bd4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>STRING</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdaf3223af924d7b7a2d64315be922b990c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR2</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdabdc39e0fd0a08b81b6fa7d638ba2534c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdaa9e3bb91b6b8ed0228e0e8242aaf9c5f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda0bfcb2b6b3803426004e0ef4eb4c4c9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MATRIX3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda513a22daf7ff9434a67ddd4db2e8f6d6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MATRIX4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda4a1c20b85c7247b0585cc08fed4c3ff3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>QUAT</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9c0b7ab7aec22e6020366422416defa6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COORDINATEFRAME</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdab0024d0942d979e52d4e0c689ed535c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COLOR3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda6624b957ba9c9e47e6a9d18ff7b24186</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COLOR4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda09e597e56fe34bae45084370e1724b57</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>ARRAY</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdab2002a718e89c24080e021e78efb5b7f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>TABLE</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda51a388405026c48f0c3dd56f8cb474bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>NIL</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda0edf70b26df8b0cf8af1b8620a49c35a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>NUMBER</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9f122ca7ecd704b42bc808133df967b2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>BOOLEAN</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9a75ee26a0a8b41a1d4d46eec1d88bd4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>STRING</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdaf3223af924d7b7a2d64315be922b990c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR2</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdabdc39e0fd0a08b81b6fa7d638ba2534c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdaa9e3bb91b6b8ed0228e0e8242aaf9c5f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>VECTOR4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda0bfcb2b6b3803426004e0ef4eb4c4c9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MATRIX3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda513a22daf7ff9434a67ddd4db2e8f6d6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>MATRIX4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda4a1c20b85c7247b0585cc08fed4c3ff3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>QUAT</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda9c0b7ab7aec22e6020366422416defa6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COORDINATEFRAME</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdab0024d0942d979e52d4e0c689ed535c1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COLOR3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda6624b957ba9c9e47e6a9d18ff7b24186</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>COLOR4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda09e597e56fe34bae45084370e1724b57</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>ARRAY</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fdab2002a718e89c24080e021e78efb5b7f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>TABLE</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ade1cb467d95f5a2ed384b398c9f958fda51a388405026c48f0c3dd56f8cb474bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a1232bc8185f80e2667e8b1faa4704f9d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a577999ad094c10fb0f4922f0f1ebd2c8</anchor>
+      <arglist>(G3D::TextInput &amp;t)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ae059e4a571f7ce5d3c78253934957c71</anchor>
+      <arglist>(double)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a8a5a38d139182c00a1121bbb2433560a</anchor>
+      <arglist>(bool)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a1c6811a3503f14059d5a3aa14fa654f4</anchor>
+      <arglist>(const G3D::Vector2 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a8b7c757eb478018dfe8c031dba792730</anchor>
+      <arglist>(const G3D::Vector3 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ac9b48107a72108c3d908518f54ff2149</anchor>
+      <arglist>(const G3D::Vector4 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a58a284b621db7c0de6acd81d22a8e0bc</anchor>
+      <arglist>(const G3D::Color3 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a6f40b6d90cf780e424e013e7b9c0ca0f</anchor>
+      <arglist>(const G3D::Color4 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ab075db8462f8e795d4c9eb874b901a66</anchor>
+      <arglist>(const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>aa54dfc1c9ec0ad857803528cf2049327</anchor>
+      <arglist>(const char *)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ad6e0653431b8cada2f563bd39f79dba8</anchor>
+      <arglist>(const G3D::Quat &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a0e57d648e76a54fbe5dc67951de9a653</anchor>
+      <arglist>(const G3D::CoordinateFrame &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a23d49db759e9eafae2bc709b717d5bea</anchor>
+      <arglist>(const G3D::Matrix3 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ae67928fd596f2e16192ec72ef229de35</anchor>
+      <arglist>(const G3D::Matrix4 &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a2a48397588657ffddfbaa1f76fac05f2</anchor>
+      <arglist>(const AnyVal &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a39a380b89efcb19ec0096efd95974eec</anchor>
+      <arglist>(Type arrayOrTable)</arglist>
+    </member>
+    <member kind="function">
+      <type>AnyVal &amp;</type>
+      <name>operator=</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a1513ddd62079d1b42a9e4f0169477823</anchor>
+      <arglist>(const AnyVal &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>~AnyVal</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a9c64f4238c0ef8479afa39fabe7d4402</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>Type</type>
+      <name>type</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a4253ae5c05bdd085a7268b533edb6ff3</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>serialize</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a13733249adcc1c4df1e29be1ac855a7a</anchor>
+      <arglist>(G3D::TextOutput &amp;t) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>deserialize</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ab1529806ce53fcc272783d9617f1be8c</anchor>
+      <arglist>(G3D::TextInput &amp;t)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>number</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ac78ab7575fc8feb08a6fd2b58473b871</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>number</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a8333fecec3ecdbf2636d7fa05eef6004</anchor>
+      <arglist>(double defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>boolean</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ac536559af092c0e6d69794db61e0a0c0</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>boolean</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a21a07eeba0300d6405b6faeab2f21525</anchor>
+      <arglist>(bool b) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>string</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>af7437a48e763a0bb525e25e696296e57</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>string</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a53bce1417a7b4cb23175d2d4e152e0bb</anchor>
+      <arglist>(const std::string &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector2 &amp;</type>
+      <name>vector2</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a5e900adae2b2c9aeceba3734c0208ba0</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector2 &amp;</type>
+      <name>vector2</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a11ec6263dad45216e58f366560c1794a</anchor>
+      <arglist>(const G3D::Vector2 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector3 &amp;</type>
+      <name>vector3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>aef69d3428ed56154385627e5e88187f9</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector3 &amp;</type>
+      <name>vector3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a7875007ad886a077c79de59f608ad475</anchor>
+      <arglist>(const G3D::Vector3 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector4 &amp;</type>
+      <name>vector4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ada727b17ddffeb250ec278b95e5b9c84</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Vector4 &amp;</type>
+      <name>vector4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a88ea657a21a44888ea26dc3ac72c28f2</anchor>
+      <arglist>(const G3D::Vector4 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Color3 &amp;</type>
+      <name>color3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ad78247a6bcbf25e866395efc628d85b9</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Color3 &amp;</type>
+      <name>color3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>adce46583fa2cc4022c28453d4975b9c7</anchor>
+      <arglist>(const G3D::Color3 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Color4 &amp;</type>
+      <name>color4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>af5265563b6b57446866dd200f76b20cf</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Color4 &amp;</type>
+      <name>color4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a63a62be182e709a8261843be36164347</anchor>
+      <arglist>(const G3D::Color4 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::CoordinateFrame &amp;</type>
+      <name>coordinateFrame</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>abff3cf0ed58269640425c8dba0ed3cd1</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::CoordinateFrame &amp;</type>
+      <name>coordinateFrame</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ab19bc98a0502961a9f6431b64eed1b2c</anchor>
+      <arglist>(const G3D::CoordinateFrame &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Matrix3 &amp;</type>
+      <name>matrix3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>aa34efe1f92ad935ec51dcf22e02643d5</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Matrix3 &amp;</type>
+      <name>matrix3</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a2e229b3416602d7af8454d855bd5783a</anchor>
+      <arglist>(const G3D::Matrix3 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Matrix4 &amp;</type>
+      <name>matrix4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a1703b5f3379f8b1a8bcbb9cf6a930e24</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Matrix4 &amp;</type>
+      <name>matrix4</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a088a5da96dba194a6f58519c5c9c2840</anchor>
+      <arglist>(const G3D::Matrix4 &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Quat &amp;</type>
+      <name>quat</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a67017c7d29f9613c7bea09f527cd83ed</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const G3D::Quat &amp;</type>
+      <name>quat</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a0ec97ace43cdf65d28a91b93c115a6ad</anchor>
+      <arglist>(const G3D::Quat &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>operator[]</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ae9cd9d507b13b986f5998a43f346e97e</anchor>
+      <arglist>(int) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>append</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a3fb5bcc003e206d0a675a220b144e058</anchor>
+      <arglist>(const AnyVal &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>AnyVal &amp;</type>
+      <name>operator[]</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a67b155f01277b3015836f81dc9b73353</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>get</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a987d4190e9391aa1f5485ddcc5833987</anchor>
+      <arglist>(int i, const AnyVal &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>get</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a55ab08609db645474ab4826c589fa34c</anchor>
+      <arglist>(int i) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>get</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>af94e682b3b81b0137dccc685ede58044</anchor>
+      <arglist>(const std::string &amp;key, const AnyVal &amp;defaultVal) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>get</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>af94f93fe78bbe8ed997d879bf4a2c895</anchor>
+      <arglist>(const std::string &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>const AnyVal &amp;</type>
+      <name>operator[]</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ab401d4f8618fe0ff1d751fe13379b718</anchor>
+      <arglist>(const std::string &amp;) const</arglist>
+    </member>
+    <member kind="function">
+      <type>AnyVal &amp;</type>
+      <name>operator[]</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a8f4880d3e2cb2b87e76e1604b1ac769d</anchor>
+      <arglist>(const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>size</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>a2565b72bc5d08d24b31a43b80dd382e6</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getKeys</name>
+      <anchorfile>classG3D_1_1AnyVal.html</anchorfile>
+      <anchor>ae147b8631934cf691ece523d1f78719e</anchor>
+      <arglist>(G3D::Array&lt; std::string &gt; &amp;) const</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -7672,6 +8299,39 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>G3D::AnyVal::CorruptText</name>
+    <filename>classG3D_1_1AnyVal_1_1CorruptText.html</filename>
+    <base>G3D::AnyVal::Exception</base>
+    <member kind="function">
+      <type></type>
+      <name>CorruptText</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1CorruptText.html</anchorfile>
+      <anchor>a5192b4d7ba379b0047ebeedd890cf2b0</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>CorruptText</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1CorruptText.html</anchorfile>
+      <anchor>a3a9d23ca0a7658e1f8c6050219d9fc91</anchor>
+      <arglist>(const std::string &amp;s, const G3D::Token &amp;t)</arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>message</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1CorruptText.html</anchorfile>
+      <anchor>a58ad61f2cc07db1c9316d9403c0b15e8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>G3D::Token</type>
+      <name>token</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1CorruptText.html</anchorfile>
+      <anchor>a46ec4e54dc996c87970d1d8be082e15c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>G3D::Crypto</name>
     <filename>classG3D_1_1Crypto.html</filename>
     <member kind="function">
@@ -8887,6 +9547,17 @@
       <anchorfile>classG3D_1_1GImage_1_1Error.html</anchorfile>
       <anchor>aca5b3b65627edf2e8ce40e8889f3973e</anchor>
       <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>G3D::AnyVal::Exception</name>
+    <filename>classG3D_1_1AnyVal_1_1Exception.html</filename>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~Exception</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1Exception.html</anchorfile>
+      <anchor>a088ab469016f916110e6f1f3a06d759b</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -12939,6 +13610,39 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>G3D::AnyVal::IndexOutOfBounds</name>
+    <filename>classG3D_1_1AnyVal_1_1IndexOutOfBounds.html</filename>
+    <base>G3D::AnyVal::Exception</base>
+    <member kind="function">
+      <type></type>
+      <name>IndexOutOfBounds</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1IndexOutOfBounds.html</anchorfile>
+      <anchor>a3effa98d661140af39a31ef2bb07e270</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>IndexOutOfBounds</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1IndexOutOfBounds.html</anchorfile>
+      <anchor>aa5d80294b686edfce70f317574b1ada2</anchor>
+      <arglist>(int i, int s)</arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>index</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1IndexOutOfBounds.html</anchorfile>
+      <anchor>a6738d937e116c496355300346045e7a6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>size</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1IndexOutOfBounds.html</anchorfile>
+      <anchor>a089063fc107776acaa4e900fdfd865d2</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>G3D::AABSPTree::Iterator</name>
     <filename>classG3D_1_1AABSPTree_1_1Iterator.html</filename>
     <member kind="function">
@@ -13115,6 +13819,32 @@
       <name>Table&lt; Key, Value &gt;</name>
       <anchorfile>classG3D_1_1Table_1_1Iterator.html</anchorfile>
       <anchor>ad8edd87b3e27cbc08a9d5a8d02510469</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>G3D::AnyVal::KeyNotFound</name>
+    <filename>classG3D_1_1AnyVal_1_1KeyNotFound.html</filename>
+    <base>G3D::AnyVal::Exception</base>
+    <member kind="function">
+      <type></type>
+      <name>KeyNotFound</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1KeyNotFound.html</anchorfile>
+      <anchor>a99b3dadac416d04028863ecfcc962051</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>KeyNotFound</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1KeyNotFound.html</anchorfile>
+      <anchor>a55437c8fa73ff424ee54c68e6a6e8407</anchor>
+      <arglist>(const std::string &amp;k)</arglist>
+    </member>
+    <member kind="variable">
+      <type>std::string</type>
+      <name>key</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1KeyNotFound.html</anchorfile>
+      <anchor>a2991ae0c07b1a0389e6172d0291b84ea</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14921,6 +15651,13 @@
       <anchorfile>classG3D_1_1Matrix4.html</anchorfile>
       <anchor>ad307441e11f1b90d4d8724d4fa56dfa3</anchor>
       <arglist>(float left, float right, float bottom, float top, float nearval, float farval)</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static Matrix4</type>
+      <name>orthogonalProjection</name>
+      <anchorfile>classG3D_1_1Matrix4.html</anchorfile>
+      <anchor>aabc60216109bc777d2a5c2df6f983c3c</anchor>
+      <arglist>(const class Rect2D &amp;rect, float nearval, float farval)</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static Matrix4</type>
@@ -18111,6 +18848,68 @@
       <anchorfile>classG3D_1_1ReferenceCountedObject.html</anchorfile>
       <anchor>a96c2d0c11f430ffb3fa74f3aa20d3950</anchor>
       <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>G3D::_internal::PolyLineGeneric</name>
+    <filename>classG3D_1_1__internal_1_1PolyLineGeneric.html</filename>
+    <templarg>class SegmentType</templarg>
+    <templarg>class VertexType</templarg>
+    <member kind="function">
+      <type></type>
+      <name>PolyLineGeneric</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a6db3591ffd29470c5de4b3c73bafa804</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>PolyLineGeneric</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a7041b3e5720beed282c5a6aab196221f</anchor>
+      <arglist>(const Array&lt; VertexType &gt; &amp;v, bool reverse=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>numVertices</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>ac37d4db3b5821d9d0375f47515199874</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>closed</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>aefb278d5322d5022562528f880840bea</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>VertexType</type>
+      <name>vertex</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a04ef345fa15417977647a369abe75157</anchor>
+      <arglist>(int i) const</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>numSegments</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a7d00c74cfb4157b1aef6664588469cdf</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>const SegmentType &amp;</type>
+      <name>segment</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a34cdb587b9e31fe65697e03d1aaebbf5</anchor>
+      <arglist>(int s) const</arglist>
+    </member>
+    <member kind="function">
+      <type>float</type>
+      <name>distance</name>
+      <anchorfile>classG3D_1_1__internal_1_1PolyLineGeneric.html</anchorfile>
+      <anchor>a96eee92b669a0ef70fbfbc3981f6e022</anchor>
+      <arglist>(const VertexType &amp;p, int &amp;segmentIndex=dummyInt) const</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -28284,6 +29083,13 @@
     </member>
     <member kind="function" static="yes">
       <type>static bool</type>
+      <name>hasSSE3</name>
+      <anchorfile>classG3D_1_1System.html</anchorfile>
+      <anchor>a7ff0df5164d610b297773ac7dddcceab</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
       <name>has3DNow</name>
       <anchorfile>classG3D_1_1System.html</anchorfile>
       <anchor>ac5326d1782bcb02ea5146fbf5b8079c0</anchor>
@@ -30857,6 +31663,221 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>G3D::ThirdPersonManipulator</name>
+    <filename>classG3D_1_1ThirdPersonManipulator.html</filename>
+    <base>G3D::Manipulator</base>
+    <member kind="function">
+      <type>void</type>
+      <name>render</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a933a5743196eacbd5f9fa3cfd80ab1a5</anchor>
+      <arglist>(RenderDevice *rd)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onDragBegin</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a9b88e04b4e2ffe8c7de8da67e533a35a</anchor>
+      <arglist>(const Vector2 &amp;start)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onDragEnd</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a04787e8c40fc980726d7f81af0d45473</anchor>
+      <arglist>(const Vector2 &amp;stop)</arglist>
+    </member>
+    <member kind="function">
+      <type>Vector3</type>
+      <name>singleAxisTranslationDrag</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>ad51bbe7c6fac80aa52d1a96324b4fa85</anchor>
+      <arglist>(int a, const Vector2 &amp;delta)</arglist>
+    </member>
+    <member kind="function">
+      <type>Vector3</type>
+      <name>doubleAxisTranslationDrag</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>af41891708ff1ac79a836eaac780d6e8e</anchor>
+      <arglist>(int a0, int a1, const Vector2 &amp;delta)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onDrag</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>ada993a9845e176c890fd3772c182f96e</anchor>
+      <arglist>(const Vector2 &amp;delta)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>computeProjection</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a3428ce0603b97656a0d9695257e30754</anchor>
+      <arglist>(RenderDevice *rd)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>ThirdPersonManipulator</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a3a65ed41deb9863a55f633892d10af12</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setRotationEnabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a16780c29297cb23cc01f7aa86ee8843f</anchor>
+      <arglist>(bool r)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>rotationEnabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>abd43194fb4dd5a4b8aec9c561f07ad27</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setTranslationEnabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a70f40599bffaacba0cdfaeac877b4f93</anchor>
+      <arglist>(bool r)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>translationEnabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>ad720bdc8aa39e4e098a5ecc5ff86a2f7</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>enabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>acef07162d0dd5a93611a3a03a919a354</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setEnabled</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>aa849e34d2453540da82b4b3161f272fa</anchor>
+      <arglist>(bool e)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual CoordinateFrame</type>
+      <name>frame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a25250d6234e6c3c7dc53ea892879a1ae</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>getPosedModel</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>abef6e26b9ca6106dbef91770990859b0</anchor>
+      <arglist>(Array&lt; PosedModelRef &gt; &amp;posedArray, Array&lt; PosedModel2DRef &gt; &amp;posed2DArray)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setControlFrame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>ad50abd5ba3a0160add75ca3453b08d7a</anchor>
+      <arglist>(const CoordinateFrame &amp;c)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getControlFrame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a7f30d8dc4095c6f7ccf7184337f89114</anchor>
+      <arglist>(CoordinateFrame &amp;c) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>setFrame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>afef015ffdae7da112a7b011c2149f2d0</anchor>
+      <arglist>(const CoordinateFrame &amp;c)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>getFrame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a1f62c02b4bf23f40742ab17f84de1c76</anchor>
+      <arglist>(CoordinateFrame &amp;c) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>onSimulation</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a5bffe85e1bce7ae65b160272a9ecfea4</anchor>
+      <arglist>(RealTime rdt, SimTime sdt, SimTime idt)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>onEvent</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a351f74990cdfdf4beeef4a731a3e0ec4</anchor>
+      <arglist>(const GEvent &amp;event)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>onUserInput</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>aaa0d085afa4c54d0908257e9d07fc75f</anchor>
+      <arglist>(UserInput *ui)</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onNetwork</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>aa3cbbcf7601702bd56e2e9aad1b9ce0a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" virtualness="virtual">
+      <type>virtual void</type>
+      <name>onLogic</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>acf7b583341ee08f1e45b5798caccc3ee</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>ReferenceCountedObject_zeroWeakPointers</name>
+      <anchorfile>classG3D_1_1ReferenceCountedObject.html</anchorfile>
+      <anchor>ae4738233cd8236f2cb7f97bf534922e4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static CoordinateFrame</type>
+      <name>computeOffsetFrame</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a43b09bbffadecd5b0d67fba3efeeaf4b</anchor>
+      <arglist>(const CoordinateFrame &amp;controlFrame, const CoordinateFrame &amp;objectFrame)</arglist>
+    </member>
+    <member kind="variable">
+      <type>AtomicInt32</type>
+      <name>ReferenceCountedObject_refCount</name>
+      <anchorfile>classG3D_1_1ReferenceCountedObject.html</anchorfile>
+      <anchor>a9e218221bf76dd7e2569afd416f02294</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>_WeakPtrLinkedList *</type>
+      <name>ReferenceCountedObject_weakPointer</name>
+      <anchorfile>classG3D_1_1ReferenceCountedObject.html</anchorfile>
+      <anchor>a96c2d0c11f430ffb3fa74f3aa20d3950</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="friend" protection="private">
+      <type>friend class</type>
+      <name>TPMPosedModel</name>
+      <anchorfile>classG3D_1_1ThirdPersonManipulator.html</anchorfile>
+      <anchor>a9bdaef574eb4cef49764a31e609850a1</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
     <name>G3D::Token</name>
     <filename>classG3D_1_1Token.html</filename>
     <member kind="enumeration">
@@ -31230,6 +32251,122 @@
       <name>Ray</name>
       <anchorfile>classG3D_1_1Triangle.html</anchorfile>
       <anchor>a27756b7a995fbc560ed9ec3bfa661a39</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>G3D::_internal::UIGeom</name>
+    <filename>classG3D_1_1__internal_1_1UIGeom.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>UIGeom</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a18bba328b82de3c93564247dbc3f2f39</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>contains</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a28ecbb327f9c04396b5f15910435b360</anchor>
+      <arglist>(const Vector2 &amp;p, float &amp;nearestDepth, Vector2 &amp;tangent2D, float &amp;projectionW, float lineRadius=9) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>computeProjection</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a32643b357c6d8fd5b908611954f2fb9a</anchor>
+      <arglist>(RenderDevice *rd)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>render</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>adedc5e10f089200427cdc4446fdbb516</anchor>
+      <arglist>(RenderDevice *rd, float lineScale=1.0f)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; PolyLine &gt;</type>
+      <name>line3D</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a45e2e85f23fac9a96e989ea9924e1e7a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; ConvexPolygon &gt;</type>
+      <name>poly3D</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a5c51c35ef320755a4dd5c5277ba9262f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>bool</type>
+      <name>visible</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>ae987bde3ee14f7051b7b1316249bc110</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; PolyLine2D &gt;</type>
+      <name>line2D</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a467529745e7ab7cd0c490f24753a2ea1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; Array&lt; float &gt; &gt;</type>
+      <name>lineDepth</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a14e49f2aa7a1295b3e1e1c085fe6aa9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; Array&lt; float &gt; &gt;</type>
+      <name>lineW</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a85454e8d92271fea36091e5922ef45a4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; ConvexPolygon2D &gt;</type>
+      <name>poly2D</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a86da57625b6bca85ac05398c07630ff7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; float &gt;</type>
+      <name>polyDepth</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>ae42811a2aa12ac3f1deef83e07d2c37c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Array&lt; bool &gt;</type>
+      <name>polyBackfacing</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a45fe5f7de07c936bb8d098a0f5e57ba9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function" protection="protected" static="yes">
+      <type>static Vector3</type>
+      <name>segmentNormal</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a760aac24691269f77f66bac2007e6506</anchor>
+      <arglist>(const LineSegment &amp;seg, const Vector3 &amp;eye)</arglist>
+    </member>
+    <member kind="function" protection="protected" static="yes">
+      <type>static Vector3</type>
+      <name>computeEye</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>a85d00726757344b6403b521386d1e374</anchor>
+      <arglist>(RenderDevice *rd)</arglist>
+    </member>
+    <member kind="variable" protection="protected">
+      <type>bool</type>
+      <name>m_twoSidedPolys</name>
+      <anchorfile>classG3D_1_1__internal_1_1UIGeom.html</anchorfile>
+      <anchor>ad9e7a05a0ff022e5cc17f4f0d1888144</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -37868,6 +39005,39 @@
       <arglist></arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>G3D::AnyVal::WrongType</name>
+    <filename>classG3D_1_1AnyVal_1_1WrongType.html</filename>
+    <base>G3D::AnyVal::Exception</base>
+    <member kind="function">
+      <type></type>
+      <name>WrongType</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1WrongType.html</anchorfile>
+      <anchor>a55cb4b27dc9b1cb1671350b9fd42463f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>WrongType</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1WrongType.html</anchorfile>
+      <anchor>a02a6b3d2f2baf011f92834f1ee7edf31</anchor>
+      <arglist>(Type e, Type a)</arglist>
+    </member>
+    <member kind="variable">
+      <type>Type</type>
+      <name>expected</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1WrongType.html</anchorfile>
+      <anchor>af99fc5d04ae1c3b19beddfdd3b77255a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>Type</type>
+      <name>actual</name>
+      <anchorfile>classG3D_1_1AnyVal_1_1WrongType.html</anchorfile>
+      <anchor>a62813185bf5c22ec5dcdb8fcdf7ffa71</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
   <compound kind="namespace">
     <name>G3D</name>
     <filename>namespaceG3D.html</filename>
@@ -37876,6 +39046,7 @@
     <class kind="class">G3D::_WeakPtrLinkedList</class>
     <class kind="class">G3D::AABox</class>
     <class kind="class">G3D::AABSPTree</class>
+    <class kind="class">G3D::AnyVal</class>
     <class kind="class">G3D::Array</class>
     <class kind="class">G3D::AtomicInt32</class>
     <class kind="class">G3D::AxesShape</class>
@@ -37981,6 +39152,7 @@
     <class kind="class">G3D::Texture</class>
     <class kind="class">G3D::TextureFormat</class>
     <class kind="class">G3D::TextureManager</class>
+    <class kind="class">G3D::ThirdPersonManipulator</class>
     <class kind="class">G3D::Token</class>
     <class kind="class">G3D::Triangle</class>
     <class kind="class">G3D::UserInput</class>
@@ -38321,6 +39493,13 @@
       <name>TextureRef</name>
       <anchorfile>namespaceG3D.html</anchorfile>
       <anchor>a7ccfed4492917150cd5367ce005a3694</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>ReferenceCountedPointer&lt; class ThirdPersonManipulator &gt;</type>
+      <name>ThirdPersonManipulatorRef</name>
+      <anchorfile>namespaceG3D.html</anchorfile>
+      <anchor>acc42e7044a9a820e2b840e7117c9af93</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -40630,6 +41809,22 @@
     <filename>namespaceG3D_1_1__internal.html</filename>
     <class kind="class">G3D::_internal::_BinaryFormat</class>
     <class kind="class">G3D::_internal::_GLFormat</class>
+    <class kind="class">G3D::_internal::PolyLineGeneric</class>
+    <class kind="class">G3D::_internal::UIGeom</class>
+    <member kind="typedef">
+      <type>PolyLineGeneric&lt; LineSegment, Vector3 &gt;</type>
+      <name>PolyLine</name>
+      <anchorfile>namespaceG3D_1_1__internal.html</anchorfile>
+      <anchor>a499b54e125a0d96cb9510a1ad146c1c9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>PolyLineGeneric&lt; LineSegment2D, Vector2 &gt;</type>
+      <name>PolyLine2D</name>
+      <anchorfile>namespaceG3D_1_1__internal.html</anchorfile>
+      <anchor>a41d2db939f117e172fbddb0da24e572a</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function">
       <type>bool</type>
       <name>_handleDebugAssert_</name>
@@ -40732,6 +41927,7 @@
     <docanchor file="faq.html">intersectmodel</docanchor>
     <docanchor file="faq.html">rotation</docanchor>
     <docanchor file="faq.html">orthographic</docanchor>
+    <docanchor file="faq.html">worldmouse</docanchor>
     <docanchor file="faq.html">VS2005</docanchor>
     <docanchor file="faq.html">fullscreen</docanchor>
     <docanchor file="faq.html">headers</docanchor>
