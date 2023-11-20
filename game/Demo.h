@@ -17,5 +17,7 @@ namespace Game
 		virtual void onUserInput(UserInput*);
 
 		virtual void onGraphics(RenderDevice*);
-	};
+
+        virtual void onImGui();
+    };
 }

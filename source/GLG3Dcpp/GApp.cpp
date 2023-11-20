@@ -20,6 +20,10 @@
 #include "GLG3D/Shader.h"
 #include "GLG3D/Draw.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl2.h"
+
 #undef main // fix sdl_main
 
 namespace G3D {
@@ -488,7 +492,13 @@ namespace G3D {
         app->renderDevice->pushState();
         onGraphics(app->renderDevice);
         app->renderDevice->popState();
+        ImGui_ImplOpenGL2_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+        onImGui();
         app->renderDebugInfo();
+        ImGui::Render();
+        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
         app->renderDevice->endFrame();
         app->debugText.clear();
         app->m_graphicsWatch.tock();
@@ -597,6 +607,7 @@ namespace G3D {
                 default:;
             }
 
+            ImGui_ImplSDL2_ProcessEvent(&event);
             app->userInput->processEvent(event);
         }
 

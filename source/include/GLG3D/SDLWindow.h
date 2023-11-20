@@ -49,6 +49,9 @@ namespace G3D {
         /** The window itself */
         SDL_Window *window;
 
+        /** OpenGL context */
+        SDL_GLContext context;
+
         /** Window title */
         std::string _caption;
 

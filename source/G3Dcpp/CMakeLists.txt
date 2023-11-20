@@ -74,9 +74,11 @@ add_library(G3D STATIC
 cmake_print_variables(PROJECT_SOURCE_DIR)
 
 target_include_directories(${PROJECT_NAME}
-        PUBLIC ${PROJECT_SOURCE_DIR}/../include
+        PUBLIC
+        ${PROJECT_SOURCE_DIR}/../include
         ${SDL2_INCLUDE_DIR}
         ${JPEG_INCLUDE_DIR}
+        ${PROJECT_SOURCE_DIR}/../imgui
 )
 
-target_link_libraries(G3D PUBLIC ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)
+target_link_libraries(G3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${JPEG_LIBRARIES} ${PNG_LIBRARIES} wsock32 ws2_32 version)

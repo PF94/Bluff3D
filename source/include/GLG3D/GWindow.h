@@ -230,6 +230,7 @@ namespace G3D {
 
             @deprecated Call GLCaps::init instead.
         */
+
         void G3D_DEPRECATED loadExtensions();
 
         int m_inputCaptureCount;

@@ -665,6 +665,12 @@ namespace G3D {
         virtual void onUserInput(class UserInput *userInput) {
             (void) userInput;
         }
+
+        /**
+         Routine for processing ImGui.
+         */
+        virtual void onImGui() {
+        }
     };
 
 /**

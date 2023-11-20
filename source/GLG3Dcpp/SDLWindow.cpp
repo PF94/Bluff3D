@@ -13,6 +13,10 @@
 #include "GLG3D/glcalls.h"
 #include "GLG3D/GLCaps.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_opengl2.h"
+
 #ifdef G3D_WIN32
 // GetSystemMetrics parameters missing in header files
 #ifndef SM_XVIRTUALSCREEN
@@ -173,8 +177,8 @@ static bool SDL_handleErrorCheck_(
         SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, settings.rgbBits);
         SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, settings.alphaBits);
         SDL_GL_SetAttribute(SDL_GL_STEREO, settings.stereo);
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-        SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 #if SDL_FSAA
         if (settings.fsaaSamples > 1) {
@@ -204,7 +208,7 @@ static bool SDL_handleErrorCheck_(
             exit(2);
         }
 
-        SDL_GLContext context = SDL_GL_CreateContext(window);
+        context = SDL_GL_CreateContext(window);
         if (context == NULL) {
             debugAssert(false);
             Log::common()->printf("Unable to create OpenGL screen: %s\n",
@@ -331,6 +335,17 @@ static bool SDL_handleErrorCheck_(
         }
 
         GLCaps::init();
+
+        // Setup Dear ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+// Setup Platform/Renderer backends
+        ImGui_ImplSDL2_InitForOpenGL(window, context);
+        ImGui_ImplOpenGL2_Init();
 
         // Register this window as the current window
         makeCurrent();
