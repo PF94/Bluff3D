@@ -129,7 +129,7 @@ static bool SDL_handleErrorCheck_(
     SDLWindow::SDLWindow(const GWindowSettings &settings) {
 
         if (SDL_Init(SDL_INIT_NOPARACHUTE | SDL_INIT_VIDEO |
-                     SDL_INIT_JOYSTICK) < 0) {
+                             SDL_INIT_GAMECONTROLLER) < 0) {
 
             fprintf(stderr, "Unable to initialize SDL: %s\n", SDL_GetError());
             debugPrintf("Unable to initialize SDL: %s\n", SDL_GetError());
@@ -315,6 +315,8 @@ static bool SDL_handleErrorCheck_(
         }
 #endif
 
+        updateSDL_GameController();
+
         // Check for joysticks
         int j = SDL_NumJoysticks();
         if ((j < 0) || (j > 10)) {
@@ -389,6 +391,34 @@ static bool SDL_handleErrorCheck_(
         }
     }
 
+    ::SDL_GameController *SDLWindow::getSDL_GameController() const {
+        if (controller) {
+            return controller;
+        } else {
+            return nullptr;
+        }
+    }
+
+    // FIXME: This does not detect the controller even after being replugged, requiring a full restart of G3D.
+    void SDLWindow::updateSDL_GameController() {
+        SDL_GameControllerUpdate();
+
+        if (controller == nullptr) {
+        for (int i = 0; i < SDL_NumJoysticks(); i++) {
+                if (SDL_IsGameController(i)) {
+                    controller = SDL_GameControllerOpen(i);
+                    if (controller) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (controller != nullptr && !SDL_GameControllerGetAttached(controller)) {
+            SDL_GameControllerClose(controller);
+            controller = nullptr;
+        }
+    }
 
     void SDLWindow::getSettings(GWindowSettings &settings) const {
         settings = _settings;
@@ -510,27 +540,45 @@ static bool SDL_handleErrorCheck_(
         return joy.size();
     }
 
+    bool SDLWindow::isGameControllerConnected() const {
+        if (controller) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     void SDLWindow::getJoystickState(
             unsigned int stickNum,
             Array<float> &axis,
             Array<bool> &button) {
 
-        debugAssert(stickNum < ((unsigned int) joy.size()));
+        updateSDL_GameController();
 
-        SDL_Joystick *sdlstick = joy[stickNum];
+        if (controller) {
+            axis.resize(6, DONT_SHRINK_UNDERLYING_ARRAY);
 
-        axis.resize(SDL_JoystickNumAxes(sdlstick), DONT_SHRINK_UNDERLYING_ARRAY);
+            axis[0] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTX) / 32768.0;
+            axis[1] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_LEFTY) / 32768.0;
+            axis[2] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTX) / 32768.0;
+            axis[3] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_RIGHTY) / 32768.0;
+            axis[4] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERLEFT) / 32768.0;
+            axis[5] = SDL_GameControllerGetAxis(controller, SDL_CONTROLLER_AXIS_TRIGGERRIGHT) / 32768.0;
 
-        for (int a = 0; a < axis.size(); ++a) {
-                axis[a] = SDL_JoystickGetAxis(sdlstick, a) / 32768.0;
-            }
+            button.resize(10, DONT_SHRINK_UNDERLYING_ARRAY);
 
-        button.resize(SDL_JoystickNumButtons(sdlstick), DONT_SHRINK_UNDERLYING_ARRAY);
-
-        for (int b = 0; b < button.size(); ++b) {
-                button[b] = (SDL_JoystickGetButton(sdlstick, b) != 0);
-            }
+            button[0] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_A);
+            button[1] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_B);
+            button[2] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_X);
+            button[3] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_Y);
+            button[4] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_UP);
+            button[5] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+            button[6] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+            button[7] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+            button[8] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_LEFTSHOULDER);
+            button[9] = SDL_GameControllerGetButton(controller, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER);
+        }
     }
 
 

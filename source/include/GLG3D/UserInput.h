@@ -182,7 +182,12 @@ namespace G3D {
          */
         static KeyCode stringToKeyCode(const std::string &s);
 
+        /**
+         @deprecated
+        */
         bool useJoystick;
+
+        bool useGameController;
 
         /**
          @param keyMapping Mapping of various key codes to UI functions.

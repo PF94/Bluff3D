@@ -273,12 +273,12 @@ namespace G3D {
         initialized = true;
 
         if ((G3D_VER % 100) != 0) {
-            sprintf(versionCstr, "G3D %d.%02d beta %d",
+            sprintf(versionCstr, "Bluff3D %d.%02d beta %d",
                     G3D_VER / 10000,
                     (G3D_VER / 100) % 100,
                     G3D_VER % 100);
         } else {
-            sprintf(versionCstr, "G3D %d.%02d",
+            sprintf(versionCstr, "Bluff3D %d.%02d",
                     G3D_VER / 10000,
                     (G3D_VER / 100) % 100);
         }

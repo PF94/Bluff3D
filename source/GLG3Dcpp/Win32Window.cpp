@@ -790,6 +790,10 @@ bool Win32Window::ClosestSupportedWindowSettings(const GWindow::Settings& desire
         return _diDevices->getNumJoysticks();
     }
 
+    bool Win32Window::isGameControllerConnected() const {
+        return false; // on windows, we switched over to sdl
+    }
+
 
     std::string Win32Window::joystickName(unsigned int sticknum) {
         enableDirectInput();

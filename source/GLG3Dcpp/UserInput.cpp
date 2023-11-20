@@ -87,6 +87,7 @@ namespace G3D {
         }
 
         useJoystick = _window->numJoysticks() > 0;
+        useGameController = _window->isGameControllerConnected();
         _window->getRelativeMouseState(mouse, mouseButtons);
         guiMouse = mouse;
 
@@ -159,7 +160,11 @@ namespace G3D {
         debugAssert(inEventProcessing);
 
         inEventProcessing = false;
-        if (useJoystick) {
+        useGameController = _window->isGameControllerConnected();
+
+        if (useGameController) {
+            SDL_GameControllerUpdate();
+
             static Array<float> axis;
             static Array<bool> button;
             _window->getJoystickState(0, axis, button);
@@ -228,11 +233,11 @@ namespace G3D {
         }
 
         if (stick == 0) {
-            if (useJoystick && (fabs(jx) > 0.1)) {
+            if (useGameController && (fabs(jx) > 0.1)) {
                 return (float) jx;
             }
         } else if (stick == 1) {
-            if (useJoystick && (fabs(kx) > 0.1)) {
+            if (useGameController && (fabs(kx) > 0.1)) {
                 return (float) kx;
             }
         }
@@ -250,11 +255,11 @@ namespace G3D {
         }
 
         if (stick == 0) {
-            if (useJoystick && (fabs(jy) > 0.1)) {
+            if (useGameController && (fabs(jy) > 0.1)) {
                 return (float) jy;
             }
         } else if (stick == 1) {
-            if (useJoystick && (fabs(ky) > 0.1)) {
+            if (useGameController && (fabs(ky) > 0.1)) {
                 return (float) ky;
             }
         }
@@ -655,15 +660,6 @@ namespace G3D {
             case SDLK_LGUI:
                 return "L Meta";
 
-                // pretty sure this is the same thing as LGUI/RGUI???
-#if 0
-                case SDLK_LSUPER:
-                return "L Win";
-
-            case SDLK_RSUPER:
-                return "R Win";
-#endif
-
             case SDLK_MODE:
                 return "Alt Gr";
 
@@ -676,13 +672,6 @@ namespace G3D {
             case SDLK_SYSREQ:
                 return "Sys Req";
         }
-
-        // SDL2 docs implies that the pause key is also the break key.
-#if 0
-        case SDLK_BREAK:
-        return "Break";
-    }
-#endif
 
         return "";
     }

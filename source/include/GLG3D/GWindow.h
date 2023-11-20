@@ -287,6 +287,9 @@ namespace G3D {
         /** Returns 0 if there are no joysticks available */
         virtual int numJoysticks() const = 0;
 
+        /** Returns true if there's a game controller connected */
+        virtual bool isGameControllerConnected() const = 0;
+
         /** The name by which the OS refers to this joystick (e.g. "Gravis Gamepad") */
         virtual std::string joystickName(unsigned int sticknum) = 0;
 

@@ -109,7 +109,11 @@ void Game::onImGui() {
     ImGui::Checkbox("AM/PM", &timeAmPm);
     ImGui::BeginDisabled(true);
     ImGui::Checkbox("Use Joystick", &this->app->userInput->useJoystick);
+    ImGui::Checkbox("Use Game Controller", &this->app->userInput->useGameController);
     ImGui::EndDisabled();
+    ImGui::Text("Controller X: (0: %f - 1: %f)", this->app->userInput->getX(0), this->app->userInput->getX(1));
+    ImGui::Text("Controller Y: (0: %f - 1: %f)", this->app->userInput->getY(0), this->app->userInput->getY(1));
+
     ImGui::End();
 }
 

@@ -220,17 +220,16 @@ namespace G3D {
             direction.unitize();
 
             Vector2 direction1(userInput->getX(1), userInput->getY(1));
-            direction1.unitize();
 
             // Translate forward
             translation += (getLookVector() * direction.y +
                             getStrafeVector() * direction.x) * elapsedTime * maxMoveRate;
 
-            delta.x = direction1.x;
-            delta.y = direction1.y;
+            delta.x = direction1.x * elapsedTime * maxMoveRate;
+            delta.y = direction1.y * elapsedTime * maxMoveRate;
         }
 
-        if (!userInput->useJoystick) {
+        if (!userInput->useGameController) {
             switch (m_mouseMode) {
                 case MOUSE_DIRECT_RIGHT_BUTTON: {
                     bool mouseDown = userInput->keyDown(SDL_RIGHT_MOUSE_KEY);
