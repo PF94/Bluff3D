@@ -245,23 +245,12 @@ namespace G3D {
             int minAll = renderDevice->debugNumMinorStateChanges();
             int pushCalls = renderDevice->debugNumPushStateCalls();
 
-            renderDevice->push2D();
-            Color3 color = Color3::white();
-            double size = 10;
-
-            double x = 5;
-            Vector2 pos(x, 5);
-
             if (debugShowRenderingStats) {
+                ImGui::Begin("Debugging");
 
-                renderDevice->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
-                Draw::fastRect2D(Rect2D::xywh(2, 2, 796, size * 5), renderDevice, Color4(0, 0, 0, 0.3f));
+                std::string gpu = renderDevice->getCardDescription() + "   " + System::version();
 
-                Color3 statColor = Color3::yellow();
-
-                debugFont->draw2D(renderDevice->getCardDescription() + "   " + System::version(),
-                                  pos, size, color);
-                pos.y += size * 1.5f;
+                ImGui::Text(gpu.c_str());
 
                 std::string s = format(
                         "% 4dfps % 4.1gM tris % 4.1gM tris/s   GL Calls: %d/%d Maj; %d/%d Min; %d push",
@@ -269,11 +258,9 @@ namespace G3D {
                         iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
                         iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
                         majGL, majAll, minGL, minAll, pushCalls);
-                debugFont->draw2D(s, pos, size, statColor);
+                ImGui::Text(s.c_str());
 
-                pos.x = x;
-                pos.y += size * 1.5;
-
+#if 0
                 {
                     float g = m_graphicsWatch.smoothElapsedTime();
                     float n = m_networkWatch.smoothElapsedTime();
@@ -295,22 +282,20 @@ namespace G3D {
                     w *= norm;
 
                     std::string str =
-                            format("Time: %3.0f%% Gfx, %3.0f%% Sim, %3.0f%% Lgc, %3.0f%% Net, %3.0f%% UI, %3.0f%% wait",
+                            format("Time: %3.0f% Gfx, %3.0f% Sim, %3.0f% Lgc, %3.0f% Net, %3.0f% UI, %3.0f% wait",
                                    g, s, L, n, u, w);
-                    debugFont->draw2D(str, pos, size, statColor);
+                    ImGui::Text(str.c_str());
                 }
+#else
+                ImGui::Text("FIXME: Profiler(?) causes a segfault.");
+#endif
 
-                pos.x = x;
-                pos.y += size * 3;
+                ImGui::End();
             }
 
             for (int i = 0; i < debugText.length(); ++i) {
-                    debugFont->draw2D(debugText[i], pos, size, color, Color3::black());
-                    pos.y += size * 1.5;
+                    ImGui::Text(debugText[i].c_str());
                 }
-
-
-            renderDevice->pop2D();
         }
     }
 
