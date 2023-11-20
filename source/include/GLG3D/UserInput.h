@@ -153,10 +153,12 @@ namespace G3D {
         uint8 mouseButtons;
 
         /**
-         Joystick x, y
+         Joystick x, y (for both axis?)
          */
         double jx;
         double jy;
+        double kx;
+        double ky;
 
         /**
          In pixels
@@ -263,7 +265,7 @@ namespace G3D {
          input from the user.  Keyboard overrides joystick.
          @deprecated
          */
-        float G3D_DEPRECATED getX() const;
+        float G3D_DEPRECATED getX(int stick = 0) const;
 
         /**
          Returns a number between -1 and 1 indicating the vertical
@@ -271,7 +273,7 @@ namespace G3D {
          Keyboard overrides joystick.
          @deprecated
          */
-        float G3D_DEPRECATED getY() const;
+        float G3D_DEPRECATED getY(int stick = 0) const;
 
         /**
          @deprecated

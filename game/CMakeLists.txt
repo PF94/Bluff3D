@@ -6,8 +6,6 @@ find_package(PNG REQUIRED)
 find_package(SDL2 REQUIRED)
 
 add_executable(Game
-        Demo.cpp
-        Demo.h
         main.cpp
 )
 

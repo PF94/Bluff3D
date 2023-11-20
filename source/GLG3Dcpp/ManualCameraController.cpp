@@ -210,72 +210,80 @@ namespace G3D {
 
         RealTime elapsedTime = sdt;
 
-        {
-            // Translation direction
-            Vector2 direction(userInput->getX(), userInput->getY());
-            direction.unitize();
-
-            // Translate forward
-            translation += (getLookVector() * direction.y +
-                            getStrafeVector() * direction.x) * elapsedTime * maxMoveRate;
-        }
-
         // Desired change in yaw and pitch
         Vector2 delta;
         float maxTurn = maxTurnRate * elapsedTime;
 
-        switch (m_mouseMode) {
-            case MOUSE_DIRECT_RIGHT_BUTTON: {
-                bool mouseDown = userInput->keyDown(SDL_RIGHT_MOUSE_KEY);
-                userInput->setPureDeltaMouse(mouseDown);
-                if (!mouseDown) {
-                    // Skip bottom case
+        {
+            // Translation direction
+            Vector2 direction(userInput->getX(0), userInput->getY(0));
+            direction.unitize();
+
+            Vector2 direction1(userInput->getX(1), userInput->getY(1));
+            direction1.unitize();
+
+            // Translate forward
+            translation += (getLookVector() * direction.y +
+                            getStrafeVector() * direction.x) * elapsedTime * maxMoveRate;
+
+            delta.x = direction1.x;
+            delta.y = direction1.y;
+        }
+
+        if (!userInput->useJoystick) {
+            switch (m_mouseMode) {
+                case MOUSE_DIRECT_RIGHT_BUTTON: {
+                    bool mouseDown = userInput->keyDown(SDL_RIGHT_MOUSE_KEY);
+                    userInput->setPureDeltaMouse(mouseDown);
+                    if (!mouseDown) {
+                        // Skip bottom case
+                        break;
+                    }
+                }
+                    // Intentionally fall through to MOUSE_DIRECT
+
+                case MOUSE_DIRECT:
+                    delta = userInput->mouseDXY() / 100.0f;
                     break;
+
+
+                case MOUSE_SCROLL_AT_EDGE: {
+                    Rect2D viewport = Rect2D::xywh(0, 0, userInput->window()->width(), userInput->window()->height());
+                    Vector2 mouse = userInput->mouseXY();
+
+                    Vector2 hotExtent(max(50.0f, viewport.width() / 8),
+                                      max(50.0f, viewport.height() / 6));
+
+                    // The hot region is outside this rect
+                    Rect2D hotRegion = Rect2D::xyxy(
+                            viewport.x0() + hotExtent.x, viewport.y0() + hotExtent.y,
+                            viewport.x1() - hotExtent.y, viewport.y1() - hotExtent.y);
+
+                    // See if the mouse is near an edge
+                    if (mouse.x <= hotRegion.x0()) {
+                        delta.x = -square(1.0 - (mouse.x - viewport.x0()) / hotExtent.x);
+                        // - Yaw
+                    } else if (mouse.x >= hotRegion.x1()) {
+                        delta.x = square(1.0 - (viewport.x1() - mouse.x) / hotExtent.x);
+                        // + Yaw
+                    }
+
+                    if (mouse.y <= hotRegion.y0()) {
+                        delta.y = -square(1.0 - (mouse.y - viewport.y0()) / hotExtent.y) * 0.6;
+                        // - pitch
+                    } else if (mouse.y >= hotRegion.y1()) {
+                        delta.y = square(1.0 - (viewport.y1() - mouse.y) / hotExtent.y) * 0.6;
+                        // + pitch
+                    }
+
+                    delta *= maxTurn / 5;
                 }
-            }
-                // Intentionally fall through to MOUSE_DIRECT
-
-            case MOUSE_DIRECT:
-                delta = userInput->mouseDXY() / 100.0f;
-                break;
-
-
-            case MOUSE_SCROLL_AT_EDGE: {
-                Rect2D viewport = Rect2D::xywh(0, 0, userInput->window()->width(), userInput->window()->height());
-                Vector2 mouse = userInput->mouseXY();
-
-                Vector2 hotExtent(max(50.0f, viewport.width() / 8),
-                                  max(50.0f, viewport.height() / 6));
-
-                // The hot region is outside this rect
-                Rect2D hotRegion = Rect2D::xyxy(
-                        viewport.x0() + hotExtent.x, viewport.y0() + hotExtent.y,
-                        viewport.x1() - hotExtent.y, viewport.y1() - hotExtent.y);
-
-                // See if the mouse is near an edge
-                if (mouse.x <= hotRegion.x0()) {
-                    delta.x = -square(1.0 - (mouse.x - viewport.x0()) / hotExtent.x);
-                    // - Yaw
-                } else if (mouse.x >= hotRegion.x1()) {
-                    delta.x = square(1.0 - (viewport.x1() - mouse.x) / hotExtent.x);
-                    // + Yaw
-                }
-
-                if (mouse.y <= hotRegion.y0()) {
-                    delta.y = -square(1.0 - (mouse.y - viewport.y0()) / hotExtent.y) * 0.6;
-                    // - pitch
-                } else if (mouse.y >= hotRegion.y1()) {
-                    delta.y = square(1.0 - (viewport.y1() - mouse.y) / hotExtent.y) * 0.6;
-                    // + pitch
-                }
-
-                delta *= maxTurn / 5;
-            }
-                break;
+                    break;
 
 //    case MOUSE_PUSH_AT_EDGE: 
-            default:
-                debugAssert(false);
+                default:
+                    debugAssert(false);
+            }
         }
 
 

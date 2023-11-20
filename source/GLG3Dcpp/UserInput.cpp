@@ -57,7 +57,7 @@ namespace G3D {
         windowCenter = Vector2((float) window->width() / 2.0f, (float) window->height() / 2.0f);
 
         up = left = down = right = false;
-        jx = jy = 0.0;
+        jx = jy = kx = ky = 0.0;
 
         inEventProcessing = false;
 
@@ -167,6 +167,9 @@ namespace G3D {
             if (axis.size() >= 2) {
                 jx = axis[0];
                 jy = -axis[1];
+
+                kx = axis[2];
+                ky = axis[3];
             }
         }
 
@@ -216,7 +219,7 @@ namespace G3D {
     }
 
 
-    float UserInput::getX() const {
+    float UserInput::getX(int stick) const {
 
         if (left && !right) {
             return -1.0f;
@@ -224,23 +227,36 @@ namespace G3D {
             return 1.0f;
         }
 
-        if (useJoystick && (fabs(jx) > 0.1)) {
-            return (float) jx;
+        if (stick == 0) {
+            if (useJoystick && (fabs(jx) > 0.1)) {
+                return (float) jx;
+            }
+        } else if (stick == 1) {
+            if (useJoystick && (fabs(kx) > 0.1)) {
+                return (float) kx;
+            }
         }
+
 
         return 0.0f;
     }
 
 
-    float UserInput::getY() const {
+    float UserInput::getY(int stick) const {
         if (down && !up) {
             return -1.0f;
         } else if (up && !down) {
             return 1.0f;
         }
 
-        if (useJoystick && (fabs(jy) > 0.1)) {
-            return (float) jy;
+        if (stick == 0) {
+            if (useJoystick && (fabs(jy) > 0.1)) {
+                return (float) jy;
+            }
+        } else if (stick == 1) {
+            if (useJoystick && (fabs(ky) > 0.1)) {
+                return (float) ky;
+            }
         }
 
         return 0.0f;
