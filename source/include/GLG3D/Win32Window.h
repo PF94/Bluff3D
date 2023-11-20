@@ -37,7 +37,12 @@ namespace G3D {
     }
     using _internal::_DirectInput;
 
+/**
+ An implementation of G3D::Window that uses the Windows API.
 
+ @deprecated Win32Window is not supported on Bluff3D.
+ It is recommended to use SDLWindow, even on Windows platforms.
+ */
     class Win32Window : public GWindow {
     private:
 
