@@ -31,8 +31,9 @@
 *.out
 *.app
 
-
 cmake-build-*
 .idea
-
 log.txt
+
+# Doxygen
+temp
