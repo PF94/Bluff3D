@@ -65,6 +65,8 @@ namespace G3D {
 
         Array<::SDL_Joystick *> joy;
 
+        ::SDL_GameController *controller;
+
         bool _mouseVisible;
 
         GLContext _glContext;
@@ -119,6 +121,8 @@ namespace G3D {
 
         virtual int numJoysticks() const;
 
+        virtual bool isGameControllerConnected() const;
+
         virtual std::string joystickName(unsigned int sticknum);
 
         virtual void getJoystickState(unsigned int stickNum, Array<float> &axis, Array<bool> &button);
@@ -145,6 +149,11 @@ namespace G3D {
 
         /** Returns the underlying SDL joystick pointer */
         ::SDL_Joystick *getSDL_Joystick(unsigned int num) const;
+
+        /** Returns the underlying SDL game controller pointer */
+        ::SDL_GameController *getSDL_GameController() const;
+
+        void updateSDL_GameController();
 
 #if defined(G3D_LINUX)
         Window   x11Window() const;

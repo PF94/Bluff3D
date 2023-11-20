@@ -189,6 +189,8 @@ namespace G3D {
 
         virtual int numJoysticks() const;
 
+        virtual bool isGameControllerConnected() const;
+
         virtual std::string joystickName(unsigned int sticknum);
 
         virtual std::string caption();
