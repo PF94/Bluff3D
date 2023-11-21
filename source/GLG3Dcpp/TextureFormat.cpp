@@ -11,6 +11,8 @@
 #include "GLG3D/glheaders.h"
 #include "GLG3D/glcalls.h"
 
+#include <GL/glext.h>
+
 namespace G3D {
     static bool INT = false;
     static bool FLOAT = true;
@@ -158,22 +160,22 @@ namespace G3D {
 
 // These formats are for use with Renderbuffers only!
     const TextureFormat *TextureFormat::STENCIL1 = new TextureFormat(1, false, GL_STENCIL_INDEX1_EXT,
-                                                                     GL_STENCIL_INDEX_EXT, 0, 0, 0, 0, 0, 0, 1, 1, 1,
+                                                                     GL_STENCIL_INDEX, 0, 0, 0, 0, 0, 0, 1, 1, 1,
                                                                      !OPAQUEx, INT, TextureFormat::CODE_STENCIL1,
                                                                      TextureFormat::COLOR_SPACE_NONE);
 
-    const TextureFormat *TextureFormat::STENCIL4 = new TextureFormat(1, false, GL_STENCIL_INDEX4_EXT,
-                                                                     GL_STENCIL_INDEX_EXT, 0, 0, 0, 0, 0, 0, 4, 4, 4,
+    const TextureFormat *TextureFormat::STENCIL4 = new TextureFormat(1, false, GL_STENCIL_INDEX4,
+                                                                     GL_STENCIL_INDEX, 0, 0, 0, 0, 0, 0, 4, 4, 4,
                                                                      !OPAQUEx, INT, TextureFormat::CODE_STENCIL4,
                                                                      TextureFormat::COLOR_SPACE_NONE);
 
-    const TextureFormat *TextureFormat::STENCIL8 = new TextureFormat(1, false, GL_STENCIL_INDEX8_EXT,
-                                                                     GL_STENCIL_INDEX_EXT, 0, 0, 0, 0, 0, 0, 8, 8, 8,
+    const TextureFormat *TextureFormat::STENCIL8 = new TextureFormat(1, false, GL_STENCIL_INDEX8,
+                                                                     GL_STENCIL_INDEX, 0, 0, 0, 0, 0, 0, 8, 8, 8,
                                                                      !OPAQUEx, INT, TextureFormat::CODE_STENCIL8,
                                                                      TextureFormat::COLOR_SPACE_NONE);
 
-    const TextureFormat *TextureFormat::STENCIL16 = new TextureFormat(1, false, GL_STENCIL_INDEX16_EXT,
-                                                                      GL_STENCIL_INDEX_EXT, 0, 0, 0, 0, 0, 0, 16, 16,
+    const TextureFormat *TextureFormat::STENCIL16 = new TextureFormat(1, false, GL_STENCIL_INDEX16,
+                                                                      GL_STENCIL_INDEX, 0, 0, 0, 0, 0, 0, 16, 16,
                                                                       16, !OPAQUEx, INT, TextureFormat::CODE_STENCIL16,
                                                                       TextureFormat::COLOR_SPACE_NONE);
 

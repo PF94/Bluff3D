@@ -95,34 +95,34 @@ int screenHeight(Display* display) {
 #if defined(G3D_LINUX)
 
     /** Replacement for the default assertion hook on Linux. */
-static bool SDL_handleDebugAssert_(
-    const char* expression,
-    const std::string& message,
-    const char* filename,
-    int         lineNumber,
-    bool&       ignoreAlways,
-    bool        useGuiPrompt) {
+    static bool SDL_handleDebugAssert_(
+            const char* expression,
+            const std::string& message,
+            const char* filename,
+            int         lineNumber,
+            bool&       ignoreAlways,
+            bool        useGuiPrompt) {
 
-    SDL_ShowCursor(SDL_ENABLE);
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
+        SDL_ShowCursor(SDL_ENABLE);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
 
-    return _internal::_handleDebugAssert_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
-}
+        return _internal::_handleDebugAssert_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
+    }
 
 /** Replacement for the default failure hook on Linux. */
-static bool SDL_handleErrorCheck_(
-    const char* expression,
-    const std::string& message,
-    const char* filename,
-    int         lineNumber,
-    bool&       ignoreAlways,
-    bool        useGuiPrompt) {
+    static bool SDL_handleErrorCheck_(
+            const char* expression,
+            const std::string& message,
+            const char* filename,
+            int         lineNumber,
+            bool&       ignoreAlways,
+            bool        useGuiPrompt) {
 
-    SDL_ShowCursor(SDL_ENABLE);
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
+        SDL_ShowCursor(SDL_ENABLE);
+        SDL_SetRelativeMouseMode(SDL_FALSE);
 
-    return _internal::_handleErrorCheck_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
-}
+        return _internal::_handleErrorCheck_(expression, message, filename, lineNumber, ignoreAlways, useGuiPrompt);
+    }
 #endif
 
 
@@ -267,7 +267,7 @@ static bool SDL_handleErrorCheck_(
         // Extract SDL's internal Display pointer on Linux        
         _X11Display = info.info.x11.display;
         _X11Window  = info.info.x11.window;
-        _X11WMWindow  = info.info.x11.wmwindow;
+        _X11WMWindow  = info.info.x11.window;
 
         if (glXGetCurrentDisplay != NULL) {
             G3D::_internal::x11Display = glXGetCurrentDisplay();
@@ -521,7 +521,7 @@ static bool SDL_handleErrorCheck_(
             }
         BOOL success = SetDeviceGammaRamp(wglGetCurrentDC(), wptr);
 #else
-        bool success = (SDL_SetGammaRamp(ptr, ptr, ptr) != -1);
+        bool success = (SDL_SetWindowGammaRamp(window, ptr, ptr, ptr) != -1);
 #endif
 
         if (!success) {

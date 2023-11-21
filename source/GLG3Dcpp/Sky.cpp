@@ -339,7 +339,7 @@ namespace G3D {
             // On Radeon Mobility, explicit cube map coordinates don't work right.
             // We instead put cube map coords in the normals and use texgen to copy
             // them over
-            glActiveTextureARB(GL_TEXTURE0_ARB + 0);
+            glActiveTexture(GL_TEXTURE0_ARB + 0);
             glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
             glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
             glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);

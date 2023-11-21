@@ -135,7 +135,7 @@ namespace G3D {
 
 
     inline void glMultiTexCoord(GLint unit, const G3D::Vector4 &v) {
-        glMultiTexCoord4fvARB(unit, (const float *) &v);
+        glMultiTexCoord4fv(unit, (const float *) &v);
     }
 
 

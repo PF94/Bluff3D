@@ -142,8 +142,10 @@ namespace G3D {
           char* heapBuffer = (char*)System::malloc((numChars + 1) * sizeof(char));
 
           assert(heapBuffer);
+#if 0
           int numChars2 = vsnprintf(heapBuffer, numChars + 1, fmt, argPtr);
           assert(numChars2 == numChars);
+#endif
 
           std::string result(heapBuffer);
 

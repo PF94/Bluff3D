@@ -76,10 +76,6 @@
 #       error G3D only supports the gcc compiler on Linux.
 #   endif
 
-#   ifndef __i386__
-#       error G3D only supports x86 machines on Linux.
-#   endif
-
 #   define G3D_DEPRECATED __attribute__((__deprecated__))
 
 #   ifndef __cdecl
@@ -94,6 +90,9 @@
 #   define G3D_CHECK_VPRINTF_METHOD_ARGS  __attribute__((__format__(__printf__, 2, 0)))
 #   define G3D_CHECK_PRINTF_ARGS          __attribute__((__format__(__printf__, 1, 2)))
 #   define G3D_CHECK_VPRINTF_ARGS         __attribute__((__format__(__printf__, 1, 0)))
+
+#include <cstring>
+#include <climits>
 #endif
 
 

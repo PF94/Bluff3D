@@ -3,6 +3,9 @@ include(CMakePrintHelpers)
 
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
+if (LINUX)
+    find_package(X11 REQUIRED)
+endif()
 
 add_library(GLG3D STATIC
         DDSTexture.cpp
@@ -54,7 +57,12 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC
         ${PROJECT_SOURCE_DIR}/../include
         ${SDL2_INCLUDE_DIR}
+        ${OPENGL_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/../imgui
 )
 
-target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+if (LINUX)
+    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${X11_LIBRARIES})
+else()
+    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+endif()

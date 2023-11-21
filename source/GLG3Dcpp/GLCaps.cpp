@@ -154,13 +154,13 @@ namespace G3D {
         LOAD_EXTENSION(glMultiTexCoord2fARB);
         LOAD_EXTENSION(glMultiTexCoord1fARB);
         LOAD_EXTENSION(glMultiTexCoord2fvARB);
-        LOAD_EXTENSION(glMultiTexCoord3fvARB);
+        LOAD_EXTENSION(glMultiTexCoord3fv);
         LOAD_EXTENSION(glMultiTexCoord4fvARB);
         LOAD_EXTENSION(glMultiTexCoord1dARB);
         LOAD_EXTENSION(glMultiTexCoord2dvARB);
         LOAD_EXTENSION(glMultiTexCoord3dvARB);
         LOAD_EXTENSION(glMultiTexCoord4dvARB);
-        LOAD_EXTENSION(glActiveTextureARB);
+        LOAD_EXTENSION(glActiveTexture);
         LOAD_EXTENSION(glClientActiveTextureARB);
 #endif
 
@@ -231,7 +231,7 @@ namespace G3D {
         LOAD_EXTENSION(glUnmapBufferARB);
         LOAD_EXTENSION(glGetBufferParameterivARB);
         LOAD_EXTENSION(glGetBufferPointervARB);
-        LOAD_EXTENSION(glDrawRangeElements);
+        //LOAD_EXTENSION(glDrawRangeElements); segfault
 
         LOAD_EXTENSION(glDeleteObjectARB);
         LOAD_EXTENSION(glGetHandleARB);
@@ -257,7 +257,7 @@ namespace G3D {
         LOAD_EXTENSION(glUniformMatrix4fvARB);
         LOAD_EXTENSION(glGetInfoLogARB);
         LOAD_EXTENSION(glGetUniformLocationARB);
-        LOAD_EXTENSION(glGetAttribLocationARB);
+        //LOAD_EXTENSION(glGetAttribLocationARB);
         LOAD_EXTENSION(glGetObjectParameterivARB);
         LOAD_EXTENSION(glGetActiveUniformARB);
 
@@ -270,7 +270,7 @@ namespace G3D {
         LOAD_EXTENSION(glSampleMapATI);
         LOAD_EXTENSION(glSetFragmentShaderConstantATI);
         LOAD_EXTENSION(glColorFragmentOp1ATI);
-        LOAD_EXTENSION(glColorFragmentOp2ATI);
+        //LOAD_EXTENSION(glColorFragmentOp2ATI);
         LOAD_EXTENSION(glColorFragmentOp3ATI);
         LOAD_EXTENSION(glAlphaFragmentOp1ATI);
         LOAD_EXTENSION(glAlphaFragmentOp2ATI);
@@ -377,11 +377,11 @@ namespace G3D {
 
             // Verify that multitexture loaded correctly
             if (supports_GL_ARB_multitexture() &&
-                ((glActiveTextureARB == NULL) ||
+                ((glActiveTexture == NULL) ||
                  (glMultiTexCoord4fvARB == NULL))) {
                 _supports_GL_ARB_multitexture = false;
 #ifdef G3D_WIN32
-                *((void **) &glActiveTextureARB) = (void *) glIgnore;
+                *((void **) &glActiveTexture) = (void *) glIgnore;
 #endif
             }
 
@@ -602,7 +602,7 @@ namespace G3D {
         unsigned char color[6];
 
         // Create a cube map
-        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glActiveTexture(GL_TEXTURE0_ARB);
         glBindTexture(GL_TEXTURE_CUBE_MAP_ARB, id);
         glEnable(GL_TEXTURE_CUBE_MAP_ARB);
 
@@ -641,7 +641,7 @@ namespace G3D {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glActiveTextureARB(GL_TEXTURE0_ARB + 0);
+        glActiveTexture(GL_TEXTURE0_ARB + 0);
         glMatrixMode(GL_TEXTURE);
         glLoadIdentity();
 
@@ -689,7 +689,7 @@ namespace G3D {
                 // First time through, use multitex coord
                 if (i == 1) {
                     // Second time through, use normal map generation
-                    glActiveTextureARB(GL_TEXTURE0_ARB + 0);
+                    glActiveTexture(GL_TEXTURE0_ARB + 0);
                     glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
                     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
                     glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
@@ -703,19 +703,19 @@ namespace G3D {
                 for (int f = 0; f < 6; ++f) {
                         const float s = 10.0f;
 
-                        glMultiTexCoord3fvARB(GL_TEXTURE0_ARB, corner + 12 * f + 0);
+                        glMultiTexCoord3fv(GL_TEXTURE0_ARB, corner + 12 * f + 0);
                         glNormal3fv(corner + 12 * f + 0);
                         glVertex4f(f * s, 0, -1, 1);
 
-                        glMultiTexCoord3fvARB(GL_TEXTURE0_ARB, corner + 12 * f + 3);
+                        glMultiTexCoord3fv(GL_TEXTURE0_ARB, corner + 12 * f + 3);
                         glNormal3fv(corner + 12 * f + 3);
                         glVertex4f(f * s, s, -1, 1);
 
-                        glMultiTexCoord3fvARB(GL_TEXTURE0_ARB, corner + 12 * f + 6);
+                        glMultiTexCoord3fv(GL_TEXTURE0_ARB, corner + 12 * f + 6);
                         glNormal3fv(corner + 12 * f + 6);
                         glVertex4f((f + 1) * s, s, -1, 1);
 
-                        glMultiTexCoord3fvARB(GL_TEXTURE0_ARB, corner + 12 * f + 9);
+                        glMultiTexCoord3fv(GL_TEXTURE0_ARB, corner + 12 * f + 9);
                         glNormal3fv(corner + 12 * f + 9);
                         glVertex4f((f + 1) * s, 0, -1, 1);
                     }

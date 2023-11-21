@@ -194,14 +194,14 @@ namespace G3D {
                      "Graphics card does not support multitexture");
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glClientActiveTextureARB(GL_TEXTURE0_ARB + unit);
+            glClientActiveTexture(GL_TEXTURE0_ARB + unit);
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(elementSize / sizeOfGLFormat(underlyingRepresentation),
                           underlyingRepresentation, elementSize, _pointer);
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glClientActiveTextureARB(GL_TEXTURE0_ARB);
+            glClientActiveTexture(GL_TEXTURE0_ARB);
         }
     }
 

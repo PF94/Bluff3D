@@ -324,8 +324,8 @@ namespace G3D {
         for (int t = 0; t < numUnits; ++t) {
 
                 result += format("// Texture Unit %d\n", t);
-                result += format("glActiveTextureARB(GL_TEXTURE0_ARB + %d);\n", t);
-                glActiveTextureARB(GL_TEXTURE0_ARB + t);
+                result += format("glActiveTexture(GL_TEXTURE0_ARB + %d);\n", t);
+                glActiveTexture(GL_TEXTURE0_ARB + t);
 
                 // See if this unit is on
                 bool enabled = false;
@@ -377,8 +377,8 @@ namespace G3D {
             }
 
         // Restore the active texture unit
-        glActiveTextureARB(active);
-        result += format("glActiveTextureARB(GL_TEXTURE0_ARB + %d);\n\n", active - GL_TEXTURE0_ARB);
+        glActiveTexture(active);
+        result += format("glActiveTexture(GL_TEXTURE0_ARB + %d);\n\n", active - GL_TEXTURE0_ARB);
 
         return result;
     }

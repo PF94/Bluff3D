@@ -30,12 +30,12 @@
 #define G3D_GL_ARB_multitexture_static
 #endif
 
-#include "../GL/gl.h"
-#include "../GL/glext.h"
+#include <GL/gl.h>
+#include <GL/glext.h>
 
 #ifdef G3D_WIN32
 
-#include "../GL/wglext.h"
+#include <GL/wglext.h>
 
 #endif
 
@@ -43,11 +43,10 @@
 #ifdef __glxext_h_
 #error Picked up wrong version of glxext
 #endif
-#include "../GL/glxext.h"
-//	#include "../GL/glx.h"
+#include <GL/glx.h>
 #endif
 
-#include "../GL/glext.h"
+#include <GL/glext.h>
 
 #ifdef G3D_OSX
 #include <OpenGL/glu.h>
@@ -178,7 +177,7 @@ extern PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB;
 extern PFNGLGETBUFFERPARAMETERIVARBPROC glGetBufferParameterivARB;
 extern PFNGLGETBUFFERPOINTERVARBPROC glGetBufferPointervARB;
 
-extern PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements;
+//extern PFNGLDRAWRANGEELEMENTSPROC glDrawRangeElements;
 
 
 extern PFNGLDELETEOBJECTARBPROC glDeleteObjectARB;
@@ -207,7 +206,7 @@ extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
 extern PFNGLGETUNIFORMLOCATIONARBPROC glGetUniformLocationARB;
 extern PFNGLGETOBJECTPARAMETERIVARBPROC glGetObjectParameterivARB;
 extern PFNGLGETACTIVEUNIFORMARBPROC glGetActiveUniformARB;
-extern PFNGLGETATTRIBLOCATIONARB glGetAttribLocationARB;
+//extern PFNGLGETATTRIBLOCATIONARB glGetAttribLocationARB;
 
 extern PFNGLTEXIMAGE3DEXTPROC glTexImage3DEXT;
 
@@ -275,7 +274,7 @@ extern PFNGLXCREATECONTEXTWITHCONFIGSGIX glXCreateContextWithConfigSGIX;
 // Occlusion query
 extern PFNGLBEGINQUERYARBPROC glBeginQueryARB;
 extern PFNGLDELETEQUERIESARBPROC glDeleteQueriesARB;
-extern PFNGLENDQUERYARB glEndQueryARB;
+extern PFNGLENDQUERYARBPROC glEndQueryARB;
 extern PFNGLGENQUERIESARBPROC glGenQueriesARB;
 extern PFNGLGETQUERYIVARBPROC glGetQueryivARB;
 extern PFNGLGETQUERYOBJECTIVARBPROC glGetQueryObjectivARB;
@@ -291,7 +290,7 @@ extern PFNGLPASSTEXCOORDATIPROC glPassTexCoordATI;
 extern PFNGLSAMPLEMAPATIPROC glSampleMapATI;
 extern PFNGLSETFRAGMENTSHADERCONSTANTATIPROC glSetFragmentShaderConstantATI;
 extern PFNGLCOLORFRAGMENTOP1ATIPROC glColorFragmentOp1ATI;
-extern PPFNGLCOLORFRAGMENTOP2ATIPROC glColorFragmentOp2ATI;
+//extern PPFNGLCOLORFRAGMENTOP2ATIPROC glColorFragmentOp2ATI;
 extern PFNGLCOLORFRAGMENTOP3ATIPROC glColorFragmentOp3ATI;
 extern PFNGLALPHAFRAGMENTOP1ATIPROC glAlphaFragmentOp1ATI;
 extern PFNGLALPHAFRAGMENTOP2ATIPROC glAlphaFragmentOp2ATI;

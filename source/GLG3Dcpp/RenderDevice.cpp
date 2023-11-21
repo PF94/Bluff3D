@@ -839,17 +839,17 @@ namespace G3D {
             glDepthRange(0, 1);
 
             // Set up the texture units.
-            if (glMultiTexCoord4fvARB != NULL) {
+            if (glMultiTexCoord4fv != NULL) {
                 for (int t = _numTextureCoords - 1; t >= 0; --t) {
                         float f[] = {0, 0, 0, 1};
-                        glMultiTexCoord4fvARB(GL_TEXTURE0_ARB + t, f);
+                        glMultiTexCoord4fv(GL_TEXTURE0_ARB + t, f);
                     }
             } else if (_numTextureCoords > 0) {
                 glTexCoord(Vector4(0, 0, 0, 1));
             }
 
-            if (glActiveTextureARB != NULL) {
-                glActiveTextureARB(GL_TEXTURE0_ARB);
+            if (glActiveTexture != NULL) {
+                glActiveTexture(GL_TEXTURE0_ARB);
             }
         }
         debugAssertGLOk();
@@ -2309,7 +2309,7 @@ namespace G3D {
         state.touchedTextureUnit(unit);
         memcpy(state.textureUnit[unit].textureMatrix, m, sizeof(float) * 16);
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+            glActiveTexture(GL_TEXTURE0_ARB + unit);
         }
 
         // Transpose the texture matrix
@@ -2425,7 +2425,7 @@ namespace G3D {
             state.touchedTextureUnit(unit);
 
             if (GLCaps::supports_GL_ARB_multitexture()) {
-                glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+                glActiveTexture(GL_TEXTURE0_ARB + unit);
             }
 
             state.textureUnit[unit].LODBias = bias;
@@ -2456,7 +2456,7 @@ namespace G3D {
             state.textureUnit[unit].combineMode = mode;
 
             if (GLCaps::supports_GL_ARB_multitexture()) {
-                glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+                glActiveTexture(GL_TEXTURE0_ARB + unit);
             }
 
             static const bool hasAdd = GLCaps::supports("GL_EXT_texture_env_add");
@@ -2712,7 +2712,7 @@ namespace G3D {
         state.touchedTextureUnit(unit);
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+            glActiveTexture(GL_TEXTURE0_ARB + unit);
         }
 
         // Turn off whatever was on previously if this is a fixed function unit
@@ -3100,7 +3100,7 @@ namespace G3D {
         setTexture(unit, shadowMap);
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glActiveTextureARB(GL_TEXTURE0_ARB + unit);
+            glActiveTexture(GL_TEXTURE0_ARB + unit);
         }
 
         static const Matrix4 bias(
@@ -3158,7 +3158,7 @@ namespace G3D {
 
         minStateChange();
         minGLStateChange();
-        glActiveTextureARB(GL_TEXTURE0_ARB + textureUnit);
+        glActiveTexture(GL_TEXTURE0_ARB + textureUnit);
         glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_ARB);
         glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_ARB);
         glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_ARB);
@@ -3276,7 +3276,7 @@ namespace G3D {
             case GL_FRAMEBUFFER_COMPLETE_EXT:
                 return true;
 
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENTS_EXT:
+            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT:
                 whyNot = "Framebuffer Incomplete: Incomplete Attachment.";
                 break;
 

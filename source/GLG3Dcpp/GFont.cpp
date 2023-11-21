@@ -306,7 +306,7 @@ namespace G3D {
         const float b = renderDevice->getBrightScale();
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
-            glActiveTextureARB(GL_TEXTURE0_ARB);
+            glActiveTexture(GL_TEXTURE0_ARB);
         }
 
 

@@ -35,13 +35,15 @@
 
 #elif defined(G3D_LINUX)
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/select.h>
 #include <termios.h>
+#if HAVE_STROPTS_H
 #include <stropts.h>
+#endif
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <sys/time.h>
@@ -1142,7 +1144,7 @@ namespace G3D {
             (void) bytes;
             debugAssert(tinyBufferSize >= bytes);
 
-            void *ptr = NULL;
+            void *ptr = nullptr;
 
             if (tinyPoolSize > 0) {
                 --tinyPoolSize;
