@@ -1,4 +1,4 @@
-/** 
+/**
   @file Sky.cpp
 
   @author Morgan McGuire, matrix@graphics3d.com
@@ -339,7 +339,7 @@ namespace G3D {
             // On Radeon Mobility, explicit cube map coordinates don't work right.
             // We instead put cube map coords in the normals and use texgen to copy
             // them over
-            glActiveTexture(GL_TEXTURE0_ARB + 0);
+            //glActiveTexture(GL_TEXTURE0_ARB + 0); causes segfault on linux
             glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
             glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);
             glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_NORMAL_MAP_ARB);

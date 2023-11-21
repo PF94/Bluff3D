@@ -460,7 +460,10 @@ namespace G3D {
 
         alwaysAssertM(_loadedExtensions, "Cannot check for OpenGL bugs before extensions are loaded.");
 
+        //causes segfaults on linux??? (caused by glActiveTexture)
+#if 0
         checkBug_cubeMapBugs();
+#endif
         checkBug_redBlueMipmapSwap();
         checkBug_mipmapGeneration();
         checkBug_slowVBO();
