@@ -674,7 +674,7 @@ namespace G3D {
 
             case GL_SAMPLER_2D_RECT_SHADOW_ARB:
             case GL_SAMPLER_2D_RECT_ARB:
-                return GLX_TEXTURE_RECTANGLE_EXT;
+                return GL_TEXTURE_RECTANGLE_EXT;
 
             default:
                 // Return the input
@@ -812,7 +812,7 @@ namespace G3D {
 
                         case GL_TEXTURE_2D:
                         case GL_TEXTURE_CUBE_MAP_ARB:
-                        case GLX_TEXTURE_RECTANGLE_EXT:
+                        case GL_TEXTURE_RECTANGLE_EXT:
                             // Textures are bound as if they were integers.  The
                             // value of the texture is the texture unit into which
                             // the texture is placed.

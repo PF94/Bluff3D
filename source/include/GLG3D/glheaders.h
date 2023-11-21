@@ -30,6 +30,7 @@
 #define G3D_GL_ARB_multitexture_static
 #endif
 
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
 
@@ -45,8 +46,6 @@
 #endif
 #include <GL/glx.h>
 #endif
-
-#include <GL/glext.h>
 
 #ifdef G3D_OSX
 #include <OpenGL/glu.h>

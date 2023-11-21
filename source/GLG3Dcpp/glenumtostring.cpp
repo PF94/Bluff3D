@@ -416,7 +416,7 @@ namespace G3D {
             S(GL_SAMPLER_2D_SHADOW_ARB);
             S(GL_SAMPLER_2D_RECT_ARB);
             S(GL_SAMPLER_2D_RECT_SHADOW_ARB);
-            S(GLX_TEXTURE_RECTANGLE_EXT);
+            S(GL_TEXTURE_RECTANGLE_EXT);
 
                 //S(GL_LOGIC_OP GL_INDEX_LOGIC_O);
                 //S(GL_TEXTURE_COMPONENTS GL_TEXTURE_INTERNAL_FORMAT);

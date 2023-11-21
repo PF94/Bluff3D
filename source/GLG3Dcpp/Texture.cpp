@@ -141,7 +141,7 @@ void Texture::Settings::deserialize(class TextInput& t) {
 // or back up state that will be corrupted.
     static void glStatePush() {
         glPushAttrib(GL_ALL_ATTRIB_BITS);
-        glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+        glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 
         if (GLCaps::supports_GL_ARB_multitexture()) {
             glActiveTexture(GL_TEXTURE0_ARB);
@@ -167,15 +167,8 @@ void Texture::Settings::deserialize(class TextInput& t) {
             case Texture::DIM_2D:
                 return GL_TEXTURE_2D;
 
-                //searching for GL_TEXTURE_RECTANGLE_EXT yields macos-only shit from decades ago that makes no
-                //fucking sense because google is a piece of FUCKING SHIT
-#if 0
             case Texture::DIM_2D_RECT:
                 return GL_TEXTURE_RECTANGLE_EXT;
-#else
-            case Texture::DIM_2D_RECT:
-                return GL_TEXTURE_2D;
-#endif
 
             default:
                 debugAssert(false);
@@ -242,7 +235,6 @@ void Texture::Settings::deserialize(class TextInput& t) {
                 }
 
                 // Intentionally fall through for power of 2 case
-#if 0
             case GL_TEXTURE_RECTANGLE_EXT:
 
                 // Note code falling through from above
@@ -264,7 +256,6 @@ void Texture::Settings::deserialize(class TextInput& t) {
                                  bytes);
                 }
                 break;
-#endif
             default:
                 debugAssertM(false, "Fell through switch");
         }
@@ -391,7 +382,7 @@ void Texture::Settings::deserialize(class TextInput& t) {
         debugAssertGLOk();
 
         bool hasMipMaps =
-                //(target != GL_TEXTURE_RECTANGLE_EXT) &&
+                (target != GL_TEXTURE_RECTANGLE_EXT) &&
                 (settings.interpolateMode != Texture::BILINEAR_NO_MIPMAP) &&
                 (settings.interpolateMode != Texture::NO_INTERPOLATION) &&
                 (settings.interpolateMode != Texture::NEAREST_NO_MIPMAP);
@@ -1477,11 +1468,7 @@ void Texture::Settings::deserialize(class TextInput& t) {
                 return GL_TEXTURE_2D;
 
             case Texture::DIM_2D_RECT:
-#if 0
                 return GL_TEXTURE_RECTANGLE_EXT;
-#else
-                return GL_TEXTURE_2D;
-#endif
 
             default:
                 debugAssertM(false, "Fell through switch");

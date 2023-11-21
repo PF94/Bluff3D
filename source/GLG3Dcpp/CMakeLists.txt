@@ -3,6 +3,7 @@ include(CMakePrintHelpers)
 
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 if (LINUX)
     find_package(X11 REQUIRED)
 endif()
@@ -59,10 +60,11 @@ target_include_directories(${PROJECT_NAME}
         ${SDL2_INCLUDE_DIR}
         ${OPENGL_INCLUDE_DIR}
         ${PROJECT_SOURCE_DIR}/../imgui
+        ${GLEW_INCLUDE_DIRS}
 )
 
 if (LINUX)
-    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${X11_LIBRARIES})
+    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARIES} ${X11_LIBRARIES})
 else()
-    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY})
+    target_link_libraries(GLG3D PUBLIC IMGUI ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY} ${GLEW_LIBRARIES})
 endif()

@@ -33,7 +33,7 @@ PFNGLMULTITEXCOORD3DVARBPROC glMultiTexCoord3dvARB = NULL;
 PFNGLMULTITEXCOORD4FVARBPROC glMultiTexCoord4fvARB = NULL;
 PFNGLMULTITEXCOORD4DVARBPROC glMultiTexCoord4dvARB = NULL;
 
-PFNglActiveTexturePROC glActiveTexture = NULL;
+PFNGLACTIVETEXTUREPROC glActiveTexture = NULL;
 PFNGLCLIENTACTIVETEXTUREARBPROC glClientActiveTextureARB = NULL;
 #endif
 
@@ -393,11 +393,9 @@ namespace G3D {
             glDisable(GL_TEXTURE_CUBE_MAP_ARB);
         }
         glDisable(GL_TEXTURE_1D);
-#if 0
         if (GLCaps::supports_GL_EXT_texture_rectangle()) {
             glDisable(GL_TEXTURE_RECTANGLE_EXT);
         }
-#endif
     }
 
 
