@@ -12,6 +12,7 @@
 #include "G3D/prompt.h"
 #include "G3D/platform.h"
 
+#include <iostream>
 #include <stdio.h>
 
 #ifdef G3D_WIN32
@@ -485,8 +486,10 @@ namespace G3D {
 
         int c = -1;
         if (numChoices > 1) {
-            printf("\n");
-            printf("Choose an option by number:");
+            // std::cout my beloved :) - rgb
+
+            std::cout << "\n";
+            std::cout << "Choose an option by number:" << std::endl;
 
             while ((c < 0) || (c >= numChoices)) {
                 printf("\n");
