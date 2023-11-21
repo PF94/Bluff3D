@@ -284,7 +284,8 @@ namespace G3D {
 
         virtual void setCaption(const std::string &caption) = 0;
 
-        /** Returns 0 if there are no joysticks available */
+        /** Returns 0 if there are no joysticks available
+         @deprecated use isGameControllerConnected */
         virtual int numJoysticks() const = 0;
 
         /** Returns true if there's a game controller connected */

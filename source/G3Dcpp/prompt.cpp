@@ -573,20 +573,6 @@ namespace G3D {
             const char **choice,
             int numChoices,
             bool useGui) {
-
-#ifdef G3D_WIN32
-        if (useGui) {
-            // Build the message box
-            return guiPrompt(windowTitle, prompt, choice, numChoices);
-        }
-#endif
-
-#ifdef G3D_OSX
-        if (useGui){
-                //Will default to text prompt if numChoices > 4
-                return guiPrompt(windowTitle, prompt, choice, numChoices);
-        }
-#endif
         // janky fix
         return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, windowTitle, prompt, NULL);
     }
@@ -595,9 +581,7 @@ namespace G3D {
     void msgBox(
             const std::string &message,
             const std::string &title) {
-
-        const char *choice[] = {"Ok"};
-        prompt(title.c_str(), message.c_str(), choice, 1, true);
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, title.c_str(), message.c_str(), NULL);
     }
 
 #ifndef G3D_WIN32

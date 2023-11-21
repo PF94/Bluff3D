@@ -538,7 +538,7 @@ int screenHeight(Display* display) {
 
 
     int SDLWindow::numJoysticks() const {
-        return joy.size();
+        return 0;
     }
 
     bool SDLWindow::isGameControllerConnected() const {
