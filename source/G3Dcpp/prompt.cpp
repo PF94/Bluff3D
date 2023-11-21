@@ -11,7 +11,9 @@
 
 #include "G3D/prompt.h"
 #include "G3D/platform.h"
+#include "GLG3D/SDLWindow.h"
 
+#include <SDL_messagebox.h>
 #include <iostream>
 #include <stdio.h>
 
@@ -585,7 +587,8 @@ namespace G3D {
                 return guiPrompt(windowTitle, prompt, choice, numChoices);
         }
 #endif
-        return textPrompt(windowTitle, prompt, choice, numChoices);
+        // janky fix
+        return SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, windowTitle, prompt, NULL);
     }
 
 

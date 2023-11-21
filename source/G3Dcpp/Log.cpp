@@ -75,7 +75,7 @@ namespace G3D {
 
         // Make sure we don't leave a dangling pointer
         if (Log::commonLog == this) {
-            Log::commonLog = NULL;
+            Log::commonLog = nullptr;
         }
 
         fclose(logFile);
