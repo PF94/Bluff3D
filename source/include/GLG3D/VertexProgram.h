@@ -7,8 +7,7 @@
   @edited  2004-04-25
 */
 
-#ifndef GLG3D_VERTEXPROGRAM_H
-#define GLG3D_VERTEXPROGRAM_H
+#pragma once
 
 #include "GPUProgram.h"
 
@@ -57,5 +56,3 @@ namespace G3D {
     };
 
 }
-
-#endif

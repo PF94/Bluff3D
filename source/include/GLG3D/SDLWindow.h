@@ -6,8 +6,7 @@
   @edited  2006-01-29
 */
 
-#ifndef G3D_SDLWINDOW_H
-#define G3D_SDLWINDOW_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "GWindowSettings.h"
@@ -165,5 +164,3 @@ namespace G3D {
     };
 
 } // namespace
-
-#endif

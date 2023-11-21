@@ -5,8 +5,7 @@
   @edited  2006-02-06
 */
 
-#ifndef GLG3D_VARAREA_H
-#define GLG3D_VARAREA_H
+#pragma once
 
 #include "../G3D/ReferenceCount.h"
 #include "Milestone.h"
@@ -230,4 +229,3 @@ inline unsigned int hashCode(const G3D::VARArea *v) {
 #   endif
 }
 
-#endif

@@ -7,8 +7,7 @@
   @edited  2006-02-28
  */
 
-#ifndef G3D_USERINPUT_H
-#define G3D_USERINPUT_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "../G3D/Array.h"
@@ -371,6 +370,3 @@ namespace G3D {
     };
 
 }
-
-
-#endif

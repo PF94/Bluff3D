@@ -7,8 +7,7 @@
   @edited  2006-06-09
 */
 
-#ifndef G3D_THIRDPERSONMANIPULATOR_H
-#define G3D_THIRDPERSONMANIPULATOR_H
+#pragma once
 
 #include "G3D/Array.h"
 #include "G3D/Vector3.h"
@@ -372,4 +371,3 @@ public:
 };
 
 }
-#endif

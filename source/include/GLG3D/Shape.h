@@ -6,8 +6,8 @@
   @created 2005-08-10
   @edited  2006-03-25
 */
-#ifndef G3D_SHAPE_H
-#define G3D_SHAPE_H
+
+#pragma once
 
 #include "../G3D/platform.h"
 #include "../G3D/ReferenceCount.h"
@@ -20,6 +20,7 @@
 #include "../G3D/Color4.h"
 #include "../G3D/Box.h"
 #include "../G3D/AABSPTree.h"
+#include "G3D/g3dmath.h"
 
 namespace G3D {
 
@@ -349,7 +350,7 @@ namespace G3D {
 
         /** Bounds the graphic representation of the ray */
         virtual Sphere BoundingSphere() const {
-            return Sphere(geometry.origin + geometry.direction / 2, geometry.direction.length() / 2);
+            return Sphere(geometry.origin + geometry.direction / 2, geometry.direction.magnitude() / 2);
         }
 
         /** Bounds the graphic representation of the ray */
@@ -367,7 +368,7 @@ namespace G3D {
 
         /** Returns a random point along the ray */
         virtual Vector3 randomInteriorPoint() const {
-            return geometry.origin + geometry.direction * unitRandom();
+            return geometry.origin + geometry.direction * uniformRandom();
         }
 
     };
@@ -664,5 +665,3 @@ namespace G3D {
     };
 
 }
-
-#endif

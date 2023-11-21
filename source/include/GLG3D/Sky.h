@@ -7,8 +7,7 @@
   @edited  2006-02-11
 */
 
-#ifndef G3D_SKY_H
-#define G3D_SKY_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "Texture.h"
@@ -237,6 +236,4 @@ namespace G3D {
     }
 
 }
-
-#endif
 

@@ -10,8 +10,7 @@
   All rights reserved.
  */
 
-#ifndef G3D_TESSELATE_H
-#define G3D_TESSELATE_H
+#pragma once
 
 #include "../G3D/Vector3.h"
 #include "../G3D/Triangle.h"
@@ -30,5 +29,3 @@ namespace G3D {
     void tesselateComplexPolygon(Array<Vector3> &input, Array<Triangle> &output);
 
 }
-
-#endif

@@ -48,9 +48,7 @@ protected:
 
 public:
     SkyRef sky;
-
     Game *applet;
-
     App(const GAppSettings &settings);
 
     ~App();
@@ -154,7 +152,7 @@ void App::main() {
     debugController.setActive(true);
 
     // Load objects here
-    sky = Sky::create(renderDevice, dataDir + "sky/");
+    sky = Sky::fromFile(renderDevice, dataDir + "sky/");
 
     debugShowRenderingStats = true;
 

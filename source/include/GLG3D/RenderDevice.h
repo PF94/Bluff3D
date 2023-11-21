@@ -13,8 +13,7 @@
   Copyright 2001-2006, Morgan McGuire
 */
 
-#ifndef GLG3D_RENDERDEVICE_H
-#define GLG3D_RENDERDEVICE_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "../G3D/Array.h"
@@ -1993,5 +1992,3 @@ namespace G3D {
 
 
 } // namespace
-
-#endif

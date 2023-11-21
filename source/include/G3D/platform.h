@@ -72,27 +72,27 @@
 // processor.
 
 #ifdef G3D_LINUX
-#   ifndef __GNUC__
-#       error G3D only supports the gcc compiler on Linux.
-#   endif
+    #ifndef __GNUC__
+        #error G3D only supports the gcc compiler on Linux.
+    #endif
 
-#   define G3D_DEPRECATED __attribute__((__deprecated__))
+    #define G3D_DEPRECATED __attribute__((__deprecated__))
 
-#   ifndef __cdecl
-#       define __cdecl __attribute__((cdecl))
-#   endif
+    #ifndef __cdecl
+        #define __cdecl __attribute__((cdecl))
+    #endif
 
-#   ifndef __stdcall
-#       define __stdcall __attribute__((stdcall))
-#   endif
+    #ifndef __stdcall
+        #define __stdcall __attribute__((stdcall))
+    #endif
 
-#   define G3D_CHECK_PRINTF_METHOD_ARGS   __attribute__((__format__(__printf__, 2, 3)))
-#   define G3D_CHECK_VPRINTF_METHOD_ARGS  __attribute__((__format__(__printf__, 2, 0)))
-#   define G3D_CHECK_PRINTF_ARGS          __attribute__((__format__(__printf__, 1, 2)))
-#   define G3D_CHECK_VPRINTF_ARGS         __attribute__((__format__(__printf__, 1, 0)))
+    #define G3D_CHECK_PRINTF_METHOD_ARGS   __attribute__((__format__(__printf__, 2, 3)))
+    #define G3D_CHECK_VPRINTF_METHOD_ARGS  __attribute__((__format__(__printf__, 2, 0)))
+    #define G3D_CHECK_PRINTF_ARGS          __attribute__((__format__(__printf__, 1, 2)))
+    #define G3D_CHECK_VPRINTF_ARGS         __attribute__((__format__(__printf__, 1, 0)))
 
-#include <cstring>
-#include <climits>
+    #include <cstring>
+    #include <climits>
 #endif
 
 

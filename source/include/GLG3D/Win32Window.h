@@ -11,8 +11,7 @@
  All rights reserved.
 */
 
-#ifndef G3D_WIN32WINDOW_H
-#define G3D_WIN32WINDOW_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "../G3D/Set.h"
@@ -242,5 +241,3 @@ namespace G3D {
 
 
 #endif // G3D_WIN32
-
-#endif // G3D_WIN32WINDOW_H

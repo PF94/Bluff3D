@@ -7,8 +7,7 @@
  @edited  2006-05-04
  */
 
-#ifndef G3D_SHADER_H
-#define G3D_SHADER_H
+#pragma once
 
 #include "glheaders.h"
 #include "Texture.h"
@@ -698,5 +697,3 @@ namespace G3D {
 
 
 }
-
-#endif

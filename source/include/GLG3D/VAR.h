@@ -6,8 +6,7 @@
   @edited  2004-01-06
 */
 
-#ifndef GLG3D_VAR_H
-#define GLG3D_VAR_H
+#pragma once
 
 #include "RenderDevice.h"
 #include "getOpenGLState.h"
@@ -161,5 +160,3 @@ namespace G3D {
     };
 
 }
-
-#endif

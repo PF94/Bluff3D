@@ -7,8 +7,7 @@
   @edited  2006-01-11
 */
 
-#ifndef GLG3D_TEXTUREFORMAT_H
-#define GLG3D_TEXTUREFORMAT_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "glheaders.h"
@@ -335,4 +334,3 @@ inline unsigned int hashCode(const G3D::TextureFormat *f) {
 #   endif
 }
 
-#endif

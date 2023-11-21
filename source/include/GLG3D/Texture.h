@@ -7,8 +7,7 @@
   @edited  2006-02-28
 */
 
-#ifndef GLG3D_TEXTURE_H
-#define GLG3D_TEXTURE_H
+#pragma once
 
 #include "../G3D/ReferenceCount.h"
 #include "../G3D/Array.h"
@@ -774,5 +773,3 @@ inline bool G3D_DEPRECATED operator!=(const void* b, const TextureRef& a) {
 } // namespace
 
 G3D::uint32 hashCode(const G3D::Texture::Parameters &p);
-
-#endif

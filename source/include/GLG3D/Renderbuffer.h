@@ -7,8 +7,7 @@
   @edited  2006-02-14
 */
 
-#ifndef GLG3D_RENDERBUFFER_H
-#define GLG3D_RENDERBUFFER_H
+#pragma once
 
 #include <string>
 #include "../G3D/ReferenceCount.h"
@@ -133,6 +132,3 @@ namespace G3D {
 
     }; // class Renderbuffer
 } // G3D
-
-#endif // GLG3D_RENDERBUFFER_H 
-

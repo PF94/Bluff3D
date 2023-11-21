@@ -10,8 +10,7 @@
  All rights reserved.
 */
 
-#ifndef G3D_X11WINDOW_H
-#define G3D_X11WWINDOW_H
+#pragma once
 
 #include <G3D/platform.h>
 
@@ -23,5 +22,3 @@
 #include "SDLWindow.h"
 
 #define X11Window SDLWindow
-
-#endif

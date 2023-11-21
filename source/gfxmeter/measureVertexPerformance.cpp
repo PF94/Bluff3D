@@ -359,7 +359,7 @@ float measureDrawElementsRAMPerformance(Model &model) {
     const int V = model.cpuVertex.size();
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     configureCameraAndLights();
 
@@ -436,7 +436,7 @@ float measureDrawElementsVBOPerformance(Model &model) {
     double t0 = 0;
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     GLuint vbo, indexBuffer;
     glGenBuffersARB(1, &vbo);
@@ -540,7 +540,7 @@ float measureDrawElementsVBO16Performance(Model &model) {
     glGenBuffersARB(1, &indexBuffer);
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     size_t vertexSize = V * sizeof(float) * 3;
     size_t normalSize = V * sizeof(float) * 3;
@@ -648,7 +648,7 @@ float measureDrawElementsVBOIPerformance(Model &model) {
     glGenBuffersARB(1, &indexBuffer);
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     size_t vertexSize = V * sizeof(float) * 3;
     size_t normalSize = V * sizeof(float) * 3;
@@ -780,7 +780,7 @@ float measureDrawElementsVBOPeakPerformance(Model &model) {
     glGenBuffersARB(1, &indexBuffer);
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     size_t vertexSize = V * sizeof(float) * 3;
     size_t totalSize = vertexSize;
@@ -874,7 +874,7 @@ float measureDrawArraysVBOPeakPerformance(Model &model) {
     glGenBuffersARB(1, &indexBuffer);
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+    glPushClientAttrib(GL_ALL_ATTRIB_BITS);
 
     size_t vertexSize = V * sizeof(float) * 3;
     size_t totalSize = vertexSize;

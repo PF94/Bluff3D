@@ -7,8 +7,7 @@
   @edited  2006-04-22
  */
 
-#ifndef GLG3D_POSEDMODEL_H
-#define GLG3D_POSEDMODEL_H
+#pragma once
 
 #include "../G3D/Array.h"
 #include "Texture.h"
@@ -377,5 +376,3 @@ namespace G3D {
 
 
 }
-
-#endif

@@ -8,8 +8,7 @@
   @edited  2006-02-01
 */
 
-#ifndef G3D_TEXTUREMANAGER_H
-#define G3D_TEXTUREMANAGER_H
+#pragma once
 
 #include "../G3D/Table.h"
 #include "Texture.h"
@@ -139,5 +138,3 @@ namespace G3D {
 
 
 }
-
-#endif

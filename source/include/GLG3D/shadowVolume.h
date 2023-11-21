@@ -7,8 +7,7 @@
  @edited  2006-02-31
  */
 
-#ifndef G3D_SHADOWVOLUME_H
-#define G3D_SHADOWVOLUME_H
+#pragma once
 
 #include "../G3D/platform.h"
 #include "PosedModel.h"
@@ -93,5 +92,3 @@ namespace G3D {
             const Vector4 &light);
 
 }
-
-#endif
