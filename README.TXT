@@ -1,3 +1,9 @@
-Bluff3D uses CMake instead of Visual Studio 2005/2008 or Python(?).
+Bluff3D is a fork of Graphics3D version 6 from 2006.
 
-Please note that Bluff3D is primarily developed on Windows, so Linux/Mac support is untested.
+Bluff3D is primarily developed on Windows, with additional testing done on Linux. Mac is untested and unsupported.
+
+Required dependencies:
+* SDL2
+* OpenGL
+* GLEW
+* X11 (Linux)
