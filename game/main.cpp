@@ -169,8 +169,7 @@ App::~App() {
     delete applet;
 }
 
-
-int main() 
+int main(int argc, char** argv)
 {
     GAppSettings settings;
     settings.useNetwork = false;
