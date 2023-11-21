@@ -310,6 +310,7 @@ float measureBeginEndPerformance(Model &model) {
     float k = 0;
 
     double t0 = 0, t1 = 0;
+
     for (int j = 0; j < frames + 1; ++j) {
             // Don't count the first frame against us; it is cache warmup
             if (j == 1) {

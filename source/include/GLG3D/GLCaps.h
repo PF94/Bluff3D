@@ -115,30 +115,29 @@ public:                                         \
         return _supports_##extname;             \
     }                                           \
 private:
-
-        // New extensions must be added in 3 places: 1. here.
-        // 2. at the top of GLCaps.cpp.  3. underneath the LOAD_EXTENSION code.
-    DECLARE_EXT(GL_ARB_texture_non_power_of_two);
-    DECLARE_EXT(GL_EXT_texture_rectangle);
-    DECLARE_EXT(GL_ARB_vertex_program);
-    DECLARE_EXT(GL_NV_vertex_program2);
-    DECLARE_EXT(GL_ARB_vertex_buffer_object);
-    DECLARE_EXT(GL_ARB_fragment_program);
-    DECLARE_EXT(GL_ARB_multitexture);
-    DECLARE_EXT(GL_EXT_texture_edge_clamp);
-    DECLARE_EXT(GL_ARB_texture_border_clamp);
-    DECLARE_EXT(GL_EXT_texture_3D);
-    DECLARE_EXT(GL_EXT_stencil_wrap);
-    DECLARE_EXT(GL_EXT_stencil_two_side);
-    DECLARE_EXT(GL_ATI_separate_stencil);
-    DECLARE_EXT(GL_EXT_texture_compression_s3tc);
-    DECLARE_EXT(GL_EXT_texture_cube_map);
-    DECLARE_EXT(GL_ARB_shadow);
-    DECLARE_EXT(GL_ARB_shader_objects);
-    DECLARE_EXT(GL_ARB_shading_language_100);
-    DECLARE_EXT(GL_ARB_fragment_shader);
-    DECLARE_EXT(GL_ARB_vertex_shader);
-    DECLARE_EXT(GL_EXT_framebuffer_object);
+    // New extensions must be added in 3 places: 1. here.
+    // 2. at the top of GLCaps.cpp.  3. underneath the LOAD_EXTENSION code.
+    DECLARE_EXT(GL_ARB_texture_non_power_of_two)
+    DECLARE_EXT(GL_EXT_texture_rectangle)
+    DECLARE_EXT(GL_ARB_vertex_program)
+    DECLARE_EXT(GL_NV_vertex_program2)
+    DECLARE_EXT(GL_ARB_vertex_buffer_object)
+    DECLARE_EXT(GL_ARB_fragment_program)
+    DECLARE_EXT(GL_ARB_multitexture)
+    DECLARE_EXT(GL_EXT_texture_edge_clamp)
+    DECLARE_EXT(GL_ARB_texture_border_clamp)
+    DECLARE_EXT(GL_EXT_texture_3D)
+    DECLARE_EXT(GL_EXT_stencil_wrap)
+    DECLARE_EXT(GL_EXT_stencil_two_side)
+    DECLARE_EXT(GL_ATI_separate_stencil)
+    DECLARE_EXT(GL_EXT_texture_compression_s3tc)
+    DECLARE_EXT(GL_EXT_texture_cube_map)
+    DECLARE_EXT(GL_ARB_shadow)
+    DECLARE_EXT(GL_ARB_shader_objects)
+    DECLARE_EXT(GL_ARB_shading_language_100)
+    DECLARE_EXT(GL_ARB_fragment_shader)
+    DECLARE_EXT(GL_ARB_vertex_shader)
+    DECLARE_EXT(GL_EXT_framebuffer_object)
 
 #undef DECLARE_EXT
 

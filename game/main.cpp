@@ -1,5 +1,6 @@
 #include <G3DAll.h>
 
+#include "GLG3D/RenderDevice.h"
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl2.h"
@@ -55,8 +56,7 @@ public:
 };
 
 
-Game::Game(App *_app) : GApplet(_app), app(_app) {
-}
+Game::Game(App *_app) : GApplet(_app), app(_app) {}
 
 
 void Game::onInit() {
@@ -84,8 +84,7 @@ void Game::onNetwork() {
 
 
 void Game::onSimulation(RealTime rdt, SimTime sdt, SimTime idt) {
-    // Add physical simulation here.  You can make your time advancement
-    // based on any of the three arguments.
+    // Add physical simulation here.  You can make your time advancement based on any of the three arguments.
 }
 
 
@@ -116,7 +115,6 @@ void Game::onImGui() {
 }
 
 void Game::onGraphics(RenderDevice *rd) {
-
     LightingParameters lighting(G3D::toSeconds(
             timeArray[0],
             timeArray[1],
@@ -172,10 +170,12 @@ App::~App() {
 }
 
 
-int main(int argc, char** argv) 
+int main() 
 {
     GAppSettings settings;
     settings.useNetwork = false;
+
     App(settings).run();
+    
     return 0;
 }

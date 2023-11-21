@@ -156,7 +156,7 @@ namespace G3D {
             const int cIgnoreAlways = 2;
             const int cAbort = 3;
 
-            static char *choices[] = {"Debug", "Ignore", "Ignore Always", "Exit"};
+            static const char *choices[] = {"Debug", "Ignore", "Ignore Always", "Exit"};
 
             // Log the error
             Log::common()->print(std::string("\n**************************\n\n") + dialogTitle + "\n" + dialogText);

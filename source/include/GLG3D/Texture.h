@@ -319,7 +319,7 @@ namespace G3D {
                 float maxAnisotropy = 2.0f);
 
 
-        static TextureRef G3D_DEPRECATED fromFile(
+        static TextureRef fromFile(
                 const std::string &filename,
                 const class TextureFormat *desiredFormat,
                 WrapMode wrap,

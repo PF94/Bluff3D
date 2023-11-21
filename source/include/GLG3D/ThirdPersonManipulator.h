@@ -148,7 +148,7 @@ protected:
 
 public:
 
-    UIGeom() :  m_twoSidedPolys(true), visible(true) {}
+    UIGeom() :  visible(true), m_twoSidedPolys(true) {}
 
     /** 
       Returns true and sets nearestDepth (on the range 0 = close, 1 = far)
