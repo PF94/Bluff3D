@@ -7,3 +7,11 @@ Required dependencies:
 * OpenGL
 * GLEW
 * X11 (Linux)
+
+Build instructions (Linux):
+mkdir build && cd build
+cmake ..
+make
+
+Build instructions (Windows):
+WIP
