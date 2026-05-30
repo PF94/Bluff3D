@@ -1,10 +1,10 @@
 /**
- @file GApp.cpp
-  
- @maintainer Morgan McGuire, matrix@graphics3d.com
- 
- @created 2003-11-03
- @edited  2006-04-22
+ * @file GApp.cpp
+ *
+ * @maintainer Morgan McGuire, matrix@graphics3d.com
+ *
+ * @created 2003-11-03
+ * @edited  2006-04-22
  */
 
 #include "G3D/platform.h"
@@ -20,15 +20,15 @@
 #include "GLG3D/Shader.h"
 #include "GLG3D/Draw.h"
 
-/** #include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl2.h" */ 
+ #include "imgui.h"
+  #include "imgui_impl_sdl2.h"
+  #include "imgui_impl_opengl2.h"
 
 #undef main // fix sdl_main
 
 namespace G3D {
 
-/** Attempt to write license file */
+    /** Attempt to write license file */
     static void writeLicense() {
         FILE *f = fopen("g3d-license.txt", "wt");
         if (f != NULL) {
@@ -147,10 +147,10 @@ namespace G3D {
             debugFont = GFont::fromFile(renderDevice, filename);
         } else {
             debugLog->printf(
-                    "Warning: G3D::GApp could not load font \"%s\".\n"
-                    "This may be because the G3D::GApp::Settings::dataDir was not\n"
-                    "properly set in main().\n",
-                    filename.c_str());
+                "Warning: G3D::GApp could not load font \"%s\".\n"
+                "This may be because the G3D::GApp::Settings::dataDir was not\n"
+                "properly set in main().\n",
+                             filename.c_str());
 
             debugFont = NULL;
         }
@@ -252,10 +252,10 @@ namespace G3D {
             double x = 5;
             Vector2 pos(x, 5);
 
-         
+
             if (debugShowRenderingStats) {
-     
-               renderDevice->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
+
+                renderDevice->setBlendFunc(RenderDevice::BLEND_SRC_ALPHA, RenderDevice::BLEND_ONE_MINUS_SRC_ALPHA);
                 Draw::fastRect2D(Rect2D::xywh(2, 2, 796, size * 5), renderDevice, Color4(0, 0, 0, 0.3f));
 
                 Color3 statColor = Color3::yellow();
@@ -265,11 +265,11 @@ namespace G3D {
                 pos.y += size * 1.5f;
 
                 std::string s = format(
-                        "% 4dfps % 4.1gM tris % 4.1gM tris/s   GL Calls: %d/%d Maj; %d/%d Min; %d push",
-                        iRound(m_graphicsWatch.smoothFPS()),
-                        iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
-                        iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
-                        majGL, majAll, minGL, minAll, pushCalls);
+                    "% 4dfps % 4.1gM tris % 4.1gM tris/s   GL Calls: %d/%d Maj; %d/%d Min; %d push",
+                    iRound(m_graphicsWatch.smoothFPS()),
+                                       iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
+                                       iRound(renderDevice->getTrianglesPerFrame() / 1e5) * .1f,
+                                       majGL, majAll, minGL, minAll, pushCalls);
                 debugFont->draw2D(s, pos, size, statColor);
 
                 pos.x = x;
@@ -297,20 +297,20 @@ namespace G3D {
                     w *= norm;
 
                     std::string str =
-                            format("Time: %3.0f%% Gfx, %3.0f%% Sim, %3.0f%% Lgc, %3.0f%% Net, %3.0f%% UI, %3.0f%% wait",
-                    debugFont->draw2D(str, pos, size, statColor);
+                    format("Time: %3.0f%% Gfx, %3.0f%% Sim, %3.0f%% Lgc, %3.0f%% Net, %3.0f%% UI, %3.0f%% wait");
+                        debugFont->draw2D(str, pos, size, statColor);
                 }
 
-  pos.x = x;
+                pos.x = x;
                 pos.y += size * 3;
             }
 
             for (int i = 0; i < debugText.length(); ++i) {
-                    debugFont->draw2D(debugText[i], pos, size, color, Color3::black());
-                    pos.y += size * 1.5;               
+                debugFont->draw2D(debugText[i], pos, size, color, Color3::black());
+                pos.y += size * 1.5;
             }
 
-                     renderDevice->pop2D();
+            renderDevice->pop2D();
         }
     }
 
@@ -323,295 +323,295 @@ namespace G3D {
         m_moduleManager->remove(module);
     }
 
-//////////////////////////////////////////////
+    //////////////////////////////////////////////
 
 
     GApplet::GApplet(GApp *_app) :
-            app(_app),
-            lastWaitTime(System::time()),
-            m_desiredFrameRate(inf()),
-            m_simTimeRate(1.0),
-            m_realTime(0),
-            m_simTime(0),
-            m_moduleManager(GModuleManager::create()) {
+    app(_app),
+                           lastWaitTime(System::time()),
+                           m_desiredFrameRate(inf()),
+                           m_simTimeRate(1.0),
+                           m_realTime(0),
+                           m_simTime(0),
+                           m_moduleManager(GModuleManager::create()) {
 
-        debugAssert(app != NULL);
-    }
+                               debugAssert(app != NULL);
+                           }
 
 
-    bool GApplet::onEvent(const GEvent &event) {
-        processEvent(event); // TODO: Remove when deprecated
+                           bool GApplet::onEvent(const GEvent &event) {
+                               processEvent(event); // TODO: Remove when deprecated
 
-        return GModuleManager::onEvent(event, app->m_moduleManager, m_moduleManager);
-    }
+                               return GModuleManager::onEvent(event, app->m_moduleManager, m_moduleManager);
+                           }
 
 
-    void GApplet::getPosedModel(
-            Array<PosedModelRef> &posedArray,
-            Array<PosedModel2DRef> &posed2DArray) {
+                           void GApplet::getPosedModel(
+                               Array<PosedModelRef> &posedArray,
+                               Array<PosedModel2DRef> &posed2DArray) {
 
-        m_moduleManager->getPosedModel(posedArray, posed2DArray);
-        app->m_moduleManager->getPosedModel(posedArray, posed2DArray);
+                               m_moduleManager->getPosedModel(posedArray, posed2DArray);
+                               app->m_moduleManager->getPosedModel(posedArray, posed2DArray);
 
-    }
+                               }
 
 
-    void GApplet::onGraphics(RenderDevice *rd) {
-        (void) rd;
-        doGraphics();
-    }
+                               void GApplet::onGraphics(RenderDevice *rd) {
+                                   (void) rd;
+                                   doGraphics();
+                               }
 
 
-    void GApplet::doGraphics() {
-        Array<PosedModelRef> posedArray;
-        Array<PosedModel2DRef> posed2DArray;
-        Array<PosedModelRef> opaque, transparent;
+                               void GApplet::doGraphics() {
+                                   Array<PosedModelRef> posedArray;
+                                   Array<PosedModel2DRef> posed2DArray;
+                                   Array<PosedModelRef> opaque, transparent;
 
-        // By default, render the installed modules
-        getPosedModel(posedArray, posed2DArray);
+                                   // By default, render the installed modules
+                                   getPosedModel(posedArray, posed2DArray);
 
-        // 3D
-        if (posedArray.size() > 0) {
-            Vector3 lookVector = app->renderDevice->getCameraToWorldMatrix().lookVector();
-            PosedModel::sort(posedArray, lookVector, opaque, transparent);
+                                   // 3D
+                                   if (posedArray.size() > 0) {
+                                       Vector3 lookVector = app->renderDevice->getCameraToWorldMatrix().lookVector();
+                                       PosedModel::sort(posedArray, lookVector, opaque, transparent);
 
-            for (int i = 0; i < opaque.size(); ++i) {
-                    opaque[i]->render(app->renderDevice);
-                }
+                                       for (int i = 0; i < opaque.size(); ++i) {
+                                           opaque[i]->render(app->renderDevice);
+                                       }
 
-            for (int i = 0; i < transparent.size(); ++i) {
-                    transparent[i]->render(app->renderDevice);
-                }
-        }
+                                       for (int i = 0; i < transparent.size(); ++i) {
+                                           transparent[i]->render(app->renderDevice);
+                                       }
+                                   }
 
-        // 2D
-        if (posed2DArray.size() > 0) {
-            app->renderDevice->push2D();
-            PosedModel2D::sort(posed2DArray);
-            for (int i = 0; i < posed2DArray.size(); ++i) {
-                    posed2DArray[i]->render(app->renderDevice);
-                }
-            app->renderDevice->pop2D();
-        }
-    }
-
-
-    void GApplet::onNetwork() {
-        doNetwork();
-    }
-
-
-    void GApplet::addModule(const GModuleRef &module, GModuleManager::EventPriority priority) {
-        m_moduleManager->add(module, priority);
-    }
-
-
-    void GApplet::removeModule(const GModuleRef &module) {
-        m_moduleManager->remove(module);
-    }
-
-
-    void GApplet::beginRun() {
-        endApplet = false;
-
-        onInit();
-
-        // Move the controller to the camera's location
-        app->debugController.setCoordinateFrame
-                (app->debugCamera.getCoordinateFrame());
-
-        now = System::getTick() - 0.001;
-    }
-
-
-    void GApplet::oneFrame() {
-        lastTime = now;
-        now = System::getTick();
-        RealTime timeStep = now - lastTime;
-
-        // User input
-        app->m_userInputWatch.tick();
-        doUserInput(); // TODO: remove
-        onUserInput(app->userInput);
-        app->m_moduleManager->onUserInput(app->userInput);
-        m_moduleManager->onUserInput(app->userInput);
-        app->m_userInputWatch.tock();
-
-        // Network
-        app->m_networkWatch.tick();
-        onNetwork();
-        app->m_moduleManager->onNetwork();
-        m_moduleManager->onNetwork();
-        app->m_networkWatch.tock();
-
-        // Simulation
-        app->m_simulationWatch.tick();
-        app->debugController.doSimulation(clamp(timeStep, 0.0, 0.1));
-        app->debugCamera.setCoordinateFrame
-                (app->debugController.getCoordinateFrame());
-
-        double rate = simTimeRate();
-        RealTime rdt = timeStep;
-        SimTime sdt = timeStep * rate;
-        SimTime idt = desiredFrameDuration() * rate;
-
-        onSimulation(rdt, sdt, idt);
-        app->m_moduleManager->onSimulation(rdt, sdt, idt);
-        m_moduleManager->onSimulation(rdt, sdt, idt);
-
-        setRealTime(realTime() + rdt);
-        setSimTime(simTime() + sdt);
-        setIdealSimTime(idealSimTime() + idt);
-        app->m_simulationWatch.tock();
-
-        // Logic
-        app->m_logicWatch.tick();
-        onLogic();
-        app->m_moduleManager->onLogic();
-        m_moduleManager->onLogic();
-        app->m_logicWatch.tock();
-
-        // Wait
-        // Note: we might end up spending all of our time inside of
-        // RenderDevice::beginFrame.  Waiting here isn't double waiting,
-        // though, because while we're sleeping the CPU the GPU is working
-        // to catch up.
-
-        app->m_waitWatch.tick();
-        {
-            RealTime now = System::time();
-            // Compute accumulated time
-            onWait(now - lastWaitTime, desiredFrameDuration());
-            lastWaitTime = System::time();
-        }
-        app->m_waitWatch.tock();
-
-        // Graphics
-        app->m_graphicsWatch.tick();
-        app->renderDevice->beginFrame();
-        app->renderDevice->pushState();
-        onGraphics(app->renderDevice);
-        app->renderDevice->popState();
-        ImGui_ImplOpenGL2_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-        onImGui();
-        app->renderDebugInfo();
-        ImGui::Render();
-        ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
-        app->renderDevice->endFrame();
-        app->debugText.clear();
-        app->m_graphicsWatch.tock();
-
-        if ((endApplet || app->endProgram) && app->window()->requiresMainLoop()) {
-            app->window()->popLoopBody();
-        }
-    }
-
-
-    void GApplet::onWait(RealTime t, RealTime desiredT) {
-        System::sleep(max(0.0, desiredT - t));
-    }
-
-
-    void GApplet::endRun() {
-        onCleanup();
-
-        Log::common()->section("Files Used");
-        for (int i = 0; i < _internal::currentFilesUsed.size(); ++i) {
-                Log::common()->println(_internal::currentFilesUsed[i]);
-            }
-        Log::common()->println("");
-
-        if (app->window()->requiresMainLoop() && app->endProgram) {
-            exit(0);
-        }
-    }
-
-
-    void GApplet::run() {
-
-        if (app->window()->requiresMainLoop()) {
-
-            app->window()->pushLoopBody(this);
-
-        } else {
-            beginRun();
-
-            // Main loop
-            do {
-                oneFrame();
-            } while (!app->endProgram && !endApplet);
-
-            endRun();
-        }
-    }
-
-
-    void GApplet::doUserInput() {
-
-        app->userInput->beginEvents();
-
-        // Event handling
-        GEvent event;
-        while (app->window()->pollEvent(event)) {
-
-            if (onEvent(event)) {
-                continue;
-            }
-
-            switch (event.type) {
-                case SDL_QUIT:
-                    app->endProgram = true;
-                    endApplet = true;
-                    break;
-
-                case SDL_WINDOWEVENT_RESIZED:
-                    if (app->autoResize) {
-                        app->renderDevice->notifyResize
-                                (event.window.data1, event.window.data2);
-                        Rect2D full =
-                                Rect2D::xywh(0, 0,
-                                             app->renderDevice->getWidth(),
-                                             app->renderDevice->getHeight());
-                        app->renderDevice->setViewport(full);
-                    }
-                    break;
-
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_ESCAPE:
-                            if (app->debugMode() && app->debugQuitOnEscape) {
-                                app->endProgram = true;
-                            }
-                            break;
-
-                        case SDLK_TAB:
-                            // Make sure it wasn't ALT-TAB that was pressed !
-                            if (app->debugMode() && app->debugTabSwitchCamera &&
-                                !(app->userInput->keyDown(SDLK_RALT) ||
-                                  app->userInput->keyDown(SDLK_LALT))) {
-
-                                app->debugController.setActive
-                                        (!app->debugController.active());
-                            }
-                            break;
-
-                            // Add other key handlers here
-                        default:;
-                    }
-                    break;
-
-                    // Add other event handlers here
-
-                default:;
-            }
-
-            ImGui_ImplSDL2_ProcessEvent(&event);
-            app->userInput->processEvent(event);
-        }
-
-        app->userInput->endEvents();
-    }
+                                   // 2D
+                                   if (posed2DArray.size() > 0) {
+                                       app->renderDevice->push2D();
+                                       PosedModel2D::sort(posed2DArray);
+                                       for (int i = 0; i < posed2DArray.size(); ++i) {
+                                           posed2DArray[i]->render(app->renderDevice);
+                                       }
+                                       app->renderDevice->pop2D();
+                                   }
+                               }
+
+
+                               void GApplet::onNetwork() {
+                                   doNetwork();
+                               }
+
+
+                               void GApplet::addModule(const GModuleRef &module, GModuleManager::EventPriority priority) {
+                                   m_moduleManager->add(module, priority);
+                               }
+
+
+                               void GApplet::removeModule(const GModuleRef &module) {
+                                   m_moduleManager->remove(module);
+                               }
+
+
+                               void GApplet::beginRun() {
+                                   endApplet = false;
+
+                                   onInit();
+
+                                   // Move the controller to the camera's location
+                                   app->debugController.setCoordinateFrame
+                                   (app->debugCamera.getCoordinateFrame());
+
+                                   now = System::getTick() - 0.001;
+                               }
+
+
+                               void GApplet::oneFrame() {
+                                   lastTime = now;
+                                   now = System::getTick();
+                                   RealTime timeStep = now - lastTime;
+
+                                   // User input
+                                   app->m_userInputWatch.tick();
+                                   doUserInput(); // TODO: remove
+                                   onUserInput(app->userInput);
+                                   app->m_moduleManager->onUserInput(app->userInput);
+                                   m_moduleManager->onUserInput(app->userInput);
+                                   app->m_userInputWatch.tock();
+
+                                   // Network
+                                   app->m_networkWatch.tick();
+                                   onNetwork();
+                                   app->m_moduleManager->onNetwork();
+                                   m_moduleManager->onNetwork();
+                                   app->m_networkWatch.tock();
+
+                                   // Simulation
+                                   app->m_simulationWatch.tick();
+                                   app->debugController.doSimulation(clamp(timeStep, 0.0, 0.1));
+                                   app->debugCamera.setCoordinateFrame
+                                   (app->debugController.getCoordinateFrame());
+
+                                   double rate = simTimeRate();
+                                   RealTime rdt = timeStep;
+                                   SimTime sdt = timeStep * rate;
+                                   SimTime idt = desiredFrameDuration() * rate;
+
+                                   onSimulation(rdt, sdt, idt);
+                                   app->m_moduleManager->onSimulation(rdt, sdt, idt);
+                                   m_moduleManager->onSimulation(rdt, sdt, idt);
+
+                                   setRealTime(realTime() + rdt);
+                                   setSimTime(simTime() + sdt);
+                                   setIdealSimTime(idealSimTime() + idt);
+                                   app->m_simulationWatch.tock();
+
+                                   // Logic
+                                   app->m_logicWatch.tick();
+                                   onLogic();
+                                   app->m_moduleManager->onLogic();
+                                   m_moduleManager->onLogic();
+                                   app->m_logicWatch.tock();
+
+                                   // Wait
+                                   // Note: we might end up spending all of our time inside of
+                                   // RenderDevice::beginFrame.  Waiting here isn't double waiting,
+                                   // though, because while we're sleeping the CPU the GPU is working
+                                   // to catch up.
+
+                                   app->m_waitWatch.tick();
+                                   {
+                                       RealTime now = System::time();
+                                       // Compute accumulated time
+                                       onWait(now - lastWaitTime, desiredFrameDuration());
+                                       lastWaitTime = System::time();
+                                   }
+                                   app->m_waitWatch.tock();
+
+                                   // Graphics
+                                   app->m_graphicsWatch.tick();
+                                   app->renderDevice->beginFrame();
+                                   app->renderDevice->pushState();
+                                   onGraphics(app->renderDevice);
+                                   app->renderDevice->popState();
+                                   ImGui_ImplOpenGL2_NewFrame();
+                                   ImGui_ImplSDL2_NewFrame();
+                                   ImGui::NewFrame();
+                                   onImGui();
+                                   app->renderDebugInfo();
+                                   ImGui::Render();
+                                   ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+                                   app->renderDevice->endFrame();
+                                   app->debugText.clear();
+                                   app->m_graphicsWatch.tock();
+
+                                   if ((endApplet || app->endProgram) && app->window()->requiresMainLoop()) {
+                                       app->window()->popLoopBody();
+                                   }
+                               }
+
+
+                               void GApplet::onWait(RealTime t, RealTime desiredT) {
+                                   System::sleep(max(0.0, desiredT - t));
+                               }
+
+
+                               void GApplet::endRun() {
+                                   onCleanup();
+
+                                   Log::common()->section("Files Used");
+                                   for (int i = 0; i < _internal::currentFilesUsed.size(); ++i) {
+                                       Log::common()->println(_internal::currentFilesUsed[i]);
+                                   }
+                                   Log::common()->println("");
+
+                                   if (app->window()->requiresMainLoop() && app->endProgram) {
+                                       exit(0);
+                                   }
+                               }
+
+
+                               void GApplet::run() {
+
+                                   if (app->window()->requiresMainLoop()) {
+
+                                       app->window()->pushLoopBody(this);
+
+                                   } else {
+                                       beginRun();
+
+                                       // Main loop
+                                       do {
+                                           oneFrame();
+                                       } while (!app->endProgram && !endApplet);
+
+                                       endRun();
+                                   }
+                               }
+
+
+                               void GApplet::doUserInput() {
+
+                                   app->userInput->beginEvents();
+
+                                   // Event handling
+                                   GEvent event;
+                                   while (app->window()->pollEvent(event)) {
+
+                                       if (onEvent(event)) {
+                                           continue;
+                                       }
+
+                                       switch (event.type) {
+                                           case SDL_QUIT:
+                                               app->endProgram = true;
+                                               endApplet = true;
+                                               break;
+
+                                           case SDL_WINDOWEVENT_RESIZED:
+                                               if (app->autoResize) {
+                                                   app->renderDevice->notifyResize
+                                                   (event.window.data1, event.window.data2);
+                                                   Rect2D full =
+                                                   Rect2D::xywh(0, 0,
+                                                                app->renderDevice->getWidth(),
+                                                                app->renderDevice->getHeight());
+                                                   app->renderDevice->setViewport(full);
+                                               }
+                                               break;
+
+                                           case SDL_KEYDOWN:
+                                               switch (event.key.keysym.sym) {
+                                                   case SDLK_ESCAPE:
+                                                       if (app->debugMode() && app->debugQuitOnEscape) {
+                                                           app->endProgram = true;
+                                                       }
+                                                       break;
+
+                                                   case SDLK_TAB:
+                                                       // Make sure it wasn't ALT-TAB that was pressed !
+                                                       if (app->debugMode() && app->debugTabSwitchCamera &&
+                                                           !(app->userInput->keyDown(SDLK_RALT) ||
+                                                           app->userInput->keyDown(SDLK_LALT))) {
+
+                                                           app->debugController.setActive
+                                                           (!app->debugController.active());
+                                                           }
+                                                           break;
+
+                                                       // Add other key handlers here
+                                                   default:;
+                                               }
+                                               break;
+
+                                               // Add other event handlers here
+
+                                                   default:;
+                                       }
+
+                                       ImGui_ImplSDL2_ProcessEvent(&event);
+                                       app->userInput->processEvent(event);
+                                   }
+
+                                   app->userInput->endEvents();
+                               }
 
 }
