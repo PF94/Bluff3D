@@ -20,9 +20,9 @@
 #include "GLG3D/Shader.h"
 #include "GLG3D/Draw.h"
 
-#include "imgui.h"
+/** #include "imgui.h"
 #include "imgui_impl_sdl2.h"
-#include "imgui_impl_opengl2.h"
+#include "imgui_impl_opengl2.h" */ 
 
 #undef main // fix sdl_main
 
