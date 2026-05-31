@@ -24,3 +24,5 @@ ALSO if you want to run cowblocks then
 go to source/data and copy the font folder and sky folder
 then make a new folder in build/cowblocks called "content"
 and place the font and sky folder in it
+
+as for game just copy the entire source/data/ folder into build/game/data (if directory doesnt exist then make it)
