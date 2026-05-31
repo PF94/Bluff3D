@@ -5,3 +5,4 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wnon-virtual-dtor -pedantic")
 
 add_subdirectory(source)
 add_subdirectory(game)
+add_subdirectory(cowblocks)
