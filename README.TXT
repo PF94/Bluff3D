@@ -21,7 +21,7 @@ added cowblocks because funny (also for testing stuff)
 if too many cows then edit main.cpp in cowblocks and change const int N = 1000; to const int N = 100;
 
 ALSO if you want to run cowblocks then
-go to source/data and copy the font folder and sky folder and ifs folder (rename the folder to models then copy it to build/cowblocks/content)
+go to source/data and copy the font folder (rename folder to fonts) and sky folder and ifs folder (rename the folder to models then copy it to build/cowblocks/content)
 then make a new folder in build/cowblocks called "content"
 and place the font and sky folder in it
 
