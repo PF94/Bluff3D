@@ -16,4 +16,6 @@ make
 Build instructions (Windows):
 WIP
 
-Bonus - cowblocks 
+Bonus:
+added cowblocks because funny (also for testing stuff)
+if too many cows then edit main.cpp in cowblocks and change ``const int N = 1000;`` to ``const int N = 100;``
